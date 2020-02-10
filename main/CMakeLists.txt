@@ -8,9 +8,16 @@ idf_component_register(
         "heavy/HvMessage.c"
         "heavy/HvMessagePool.c"
         "heavy/HvMessageQueue.c"
+        "heavy/HvSignalDel1.c"
+        "heavy/HvSignalLine.c"
         "heavy/HvSignalPhasor.c"
+        "heavy/HvSignalRPole.c"
+        "heavy/HvSignalSamphold.c"
         "heavy/HvSignalSample.c"
         "heavy/HvSignalVar.c"
+        "heavy/HvSignalLine.c"
+        "heavy/HvSignalTabread.c"
+        "heavy/HvSignalTabwrite.c"
         "heavy/HvTable.c"
         "heavy/HvUtils.c"
         "heavy/HvControlBinop.c"
@@ -19,9 +26,19 @@ idf_component_register(
         "heavy/HvControlDelay.c"
         "heavy/HvControlSystem.c"
         "heavy/HvControlVar.c"
+        "heavy/HvControlIf.c"
+        "heavy/HvControlPack.c"
+        "heavy/HvControlRandom.c"
+        "heavy/HvControlTabread.c"
+        #"heavy/HvControlPrint.c"
+        "heavy/HvControlSlice.c"
+        "heavy/HvControlUnop.c"
   INCLUDE_DIRS "heavy/")
 
 set_source_files_properties("heavy/HvHeavy.cpp"
       PROPERTIES COMPILE_FLAGS
       -Wno-unknown-pragmas
   )
+
+add_definitions("-ffast-math -DHV_SIMD_NONE")
+#add_definitions("-ffast-math -DNDEBUG -DHV_SIMD_NONE")
