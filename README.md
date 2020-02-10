@@ -16,3 +16,7 @@ This repo demonstrates a single file solution for running [hvcc](https://github.
 - Add all heavy c and cpp sources to /main/CMakeLists.txt
 - Run `idf.py -p /dev/tty.SLAB_USBtoUART flash monitor` to compile, upload and monitor the esp32 binary
 - Enjoy your pd patch running on the ESP32-Audio-Kit
+
+# Performance
+
+A large and nice sounding puredata patch from "manwithfeathers" on rebeltech.org named ["Fascination IV"](https://www.rebeltech.org/patch-library/patch/Fascination_IV) yields about 60% performance of the ESP32 which looks like a very nice performance / cost ratio!
