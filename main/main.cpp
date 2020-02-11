@@ -9,6 +9,21 @@
 #include "driver/i2s.h"
 #include "Heavy_heavy.h"
 
+// OLED display drivers & settings
+#include <driver/spi_master.h>
+#include "u8g2_esp32_hal.h"
+// CLK - GPIO14
+#define PIN_CLK 14
+// MOSI - GPIO 13
+#define PIN_MOSI 13
+// RESET - GPIO 26
+#define PIN_RESET 12
+// DC - GPIO 27
+#define PIN_DC 23
+// CS - GPIO 15
+#define PIN_CS 15
+u8g2_t u8g2; // a structure which will contain all the data for one display
+
 #define MULT_S32 2147483647
 
 float *inBuffers;
@@ -16,10 +31,37 @@ float *outBuffers;
 HeavyContextInterface *context;
 int blockSize = 256;
 
-static const char* TAG = "heavy";
+static const char* tag = "heavy";
 
 extern "C" {
     void app_main(void);
+}
+
+void task_test_SSD1306() {
+	u8g2_esp32_hal_t u8g2_esp32_hal = U8G2_ESP32_HAL_DEFAULT;
+	u8g2_esp32_hal.clk   = (gpio_num_t)PIN_CLK;
+	u8g2_esp32_hal.mosi  = (gpio_num_t)PIN_MOSI;
+	u8g2_esp32_hal.cs    = (gpio_num_t)PIN_CS;
+	u8g2_esp32_hal.dc    = (gpio_num_t)PIN_DC;
+	u8g2_esp32_hal.reset = (gpio_num_t)PIN_RESET;
+	u8g2_esp32_hal_init(u8g2_esp32_hal);
+
+	u8g2_Setup_ssd1306_128x64_noname_f(
+		&u8g2,
+		U8G2_R0,
+		u8g2_esp32_spi_byte_cb,
+		u8g2_esp32_gpio_and_delay_cb);  // init u8g2 structure
+	u8g2_InitDisplay(&u8g2); // send init sequence to the display, display is in sleep mode after this,
+	u8g2_SetPowerSave(&u8g2, 0); // wake up display
+	ESP_LOGI(tag, "All done!");
+}
+
+void printDemo() {
+  u8g2_ClearBuffer(&u8g2);
+  //u8g2_DrawBox(&u8g2, 10,20, 20, 30);
+  u8g2_SetFont(&u8g2, u8g2_font_t0_13_me);
+  u8g2_DrawStr(&u8g2, 0,15,"H2ello World!");
+  u8g2_SendBuffer(&u8g2); // takes 30us @ 4Mhz
 }
 
 static void timeval_subtract(struct timeval *result, struct timeval *end, struct timeval *start) {
@@ -35,6 +77,9 @@ static void timeval_subtract(struct timeval *result, struct timeval *end, struct
 void app_main()
 {
     printf("app main\n");
+
+    task_test_SSD1306();
+    printf("done display test\n");
 
     // setup and start heavy compiler
     double sampleRate = 48000.0;
@@ -55,6 +100,7 @@ void app_main()
     for (int i = 0; i < numIterations; ++i) {
       hv_process(context, NULL, outBuffers, blockSize);
     }
+    printDemo();
 
     gettimeofday(&end, NULL);
     timeval_subtract(&elapsed, &end, &start);
