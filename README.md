@@ -7,6 +7,21 @@ This repo demonstrates a single file solution for running [hvcc](https://github.
 - Install Espressif IoT Development Framework, the official development framework for ESP32.
 - Install the hvcc compiler
 - Clone this repo
+- Create a folder `components` and issue a `git clone https://github.com/olikraus/u8g2.git` there. You might check [nkolban's repo](https://github.com/nkolban/esp32-snippets/tree/master/hardware/displays/U8G2) for more information regarding ESP32 and SSD1306 displays.
+
+# Hardware setup
+
+To be elaborated more upon, but for now ->
+
+ESP32 pin | SSD1306 pin
+--- | ---
+15 | CS
+23 | DC
+12 | RST
+14 | CLK (D0)
+13 | MOSI (D1)
+
+The jumpers on the ESP32-Audio-kit should be arranged like OFF-OFF-OFF-ON-ON to be able to use the JTAG headers as normal ESP pins 14 12 13 15.
 
 # Usage
 
