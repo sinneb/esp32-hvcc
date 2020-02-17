@@ -256,7 +256,7 @@ esp_err_t AC101::SetMode(Mode_t mode)
 		ret |= SetVolumeHeadphone(50);
 
 		// Enable Speaker output
-		ret |= WriteReg(SPKOUT_CTRL, 0xeabd);
+		ret |= WriteReg(SPKOUT_CTRL, 0xe23d);
 		vTaskDelay(10 / portTICK_PERIOD_MS);
 		ret |= SetVolumeSpeaker(30);
 	}
