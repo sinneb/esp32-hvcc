@@ -13,6 +13,8 @@ This repo demonstrates a single file solution for running [hvcc](https://github.
 
 To be elaborated more upon, but for now ->
 
+OLED Display (SSD1306)
+
 ESP32 pin | SSD1306 pin
 --- | ---
 15 | CS
@@ -20,6 +22,14 @@ ESP32 pin | SSD1306 pin
 12 | RST
 14 | CLK (D0)
 13 | MOSI (D1)
+
+Rotary Encoder
+
+ESP32 pin | Rotary pin
+--- | ---
+21 | A
+22 | B
+GND | C / GND
 
 The jumpers on the ESP32-Audio-kit should be arranged like OFF-OFF-OFF-ON-ON to be able to use the JTAG headers as normal ESP pins 14 12 13 15.
 
