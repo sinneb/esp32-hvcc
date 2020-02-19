@@ -5,32 +5,45 @@
 #include "esp_spi_flash.h"
 #include "esp_log.h"
 #include <sys/time.h>
-//#include "AC101.h"
 #include "WM8978.h"
 #include "driver/i2s.h"
 #include "Heavy_heavy.h"
+#include "esp32/rom/ets_sys.h"
+#include "esp32/rom/gpio.h"
+#include "esp_intr_alloc.h"
+#include "esp_attr.h"
+#include "driver/timer.h"
+#include "driver/gpio.h"
 
 // OLED display drivers & settings
 #include <driver/spi_master.h>
 #include "u8g2_esp32_hal.h"
-// CLK - GPIO14
-#define PIN_CLK 14
-// MOSI - GPIO 13
-#define PIN_MOSI 13
-// RESET - GPIO 26
-#define PIN_RESET 12
-// DC - GPIO 27
-#define PIN_DC 23
-// CS - GPIO 15
-#define PIN_CS 15
 u8g2_t u8g2; // a structure which will contain all the data for one display
 
 #define MULT_S32 2147483647
+#define ADC_CS 2 // chip 10
 
 float *inBuffers;
 float *outBuffers;
 HeavyContextInterface *context;
-int blockSize = 256;
+int blockSize = 16;
+
+static intr_handle_t s_timer_handle;
+
+static int io_state = 0;
+
+uint16_t teller = 0;
+
+//RX TX Buffers
+uint16_t tx_data[10];
+uint16_t rx_data[10];
+
+// global spi handle
+spi_device_handle_t spi;
+
+// global spi_transaction_t
+spi_transaction_ext_t t;
+spi_transaction_ext_t *t_res;
 
 static const char* tag = "heavy";
 
@@ -40,11 +53,11 @@ extern "C" {
 
 void task_test_SSD1306() {
 	u8g2_esp32_hal_t u8g2_esp32_hal = U8G2_ESP32_HAL_DEFAULT;
-	u8g2_esp32_hal.clk   = (gpio_num_t)PIN_CLK;
-	u8g2_esp32_hal.mosi  = (gpio_num_t)PIN_MOSI;
-	u8g2_esp32_hal.cs    = (gpio_num_t)PIN_CS;
-	u8g2_esp32_hal.dc    = (gpio_num_t)PIN_DC;
-	u8g2_esp32_hal.reset = (gpio_num_t)PIN_RESET;
+	u8g2_esp32_hal.clk   = (gpio_num_t)14;
+	u8g2_esp32_hal.mosi  = (gpio_num_t)13;
+	u8g2_esp32_hal.cs    = (gpio_num_t)15;
+	u8g2_esp32_hal.dc    = (gpio_num_t)13; // *23
+	u8g2_esp32_hal.reset = (gpio_num_t)12;
 	u8g2_esp32_hal_init(u8g2_esp32_hal);
 
 	u8g2_Setup_ssd1306_128x64_noname_f(
@@ -75,28 +88,95 @@ static void timeval_subtract(struct timeval *result, struct timeval *end, struct
   }
 }
 
+static void timer_tg0_isr(void* arg)
+{
+	//Reset irq and set for next time
+    TIMERG0.int_clr_timers.t0 = 1;
+    TIMERG0.hw_timer[0].config.alarm_en = 1;
+    //t.base.rx_buffer = &rx_data;
+    // get spi transaction result, dont wait
+    spi_device_get_trans_result(spi, (spi_transaction_t**)&t_res, 0);
+    // place next transaction in queue, dont wait
+    spi_device_queue_trans(spi, (spi_transaction_t*)&t, 0);
+
+
+    //----- HERE EVERY #uS -----
+    teller++;
+	//Toggle a pin so we can verify the timer is working using an oscilloscope
+	// io_state ^= 1;									//Toggle the pins state
+	// gpio_set_direction((gpio_num_t)4, GPIO_MODE_OUTPUT);
+	// gpio_set_level((gpio_num_t)4, io_state);
+}
+
+void timer_tg0_initialise (int timer_period_us)
+{
+    timer_config_t config = {
+            .alarm_en = true,				//Alarm Enable
+            .counter_en = false,			//If the counter is enabled it will start incrementing / decrementing immediately after calling timer_init()
+            .intr_type = TIMER_INTR_LEVEL,	//Is interrupt is triggered on timer’s alarm (timer_intr_mode_t)
+            .counter_dir = TIMER_COUNT_UP,	//Does counter increment or decrement (timer_count_dir_t)
+            .auto_reload = true,			//If counter should auto_reload a specific initial value on the timer’s alarm, or continue incrementing or decrementing.
+            .divider = 80   				//Divisor of the incoming 80 MHz (12.5nS) APB_CLK clock. E.g. 80 = 1uS per timer tick
+    };
+
+    timer_init(TIMER_GROUP_0, TIMER_0, &config);
+    timer_set_counter_value(TIMER_GROUP_0, TIMER_0, 0);
+    timer_set_alarm_value(TIMER_GROUP_0, TIMER_0, timer_period_us);
+    timer_enable_intr(TIMER_GROUP_0, TIMER_0);
+    timer_isr_register(TIMER_GROUP_0, TIMER_0, &timer_tg0_isr, NULL, 0, &s_timer_handle);
+
+    timer_start(TIMER_GROUP_0, TIMER_0);
+}
+
+esp_err_t write_cmd(spi_device_handle_t spi, uint8_t cmd)
+{
+    esp_err_t err;
+    err = spi_device_get_trans_result(spi, (spi_transaction_t**)&t_res, 100);
+    err = spi_device_queue_trans(spi, (spi_transaction_t*)&t, 100);
+    return err;
+}
+
 void app_main()
 {
     printf("app main\n");
 
+    // setup global spi_transaction_t
+    t_res = &t;
+    memset(&t, 0, sizeof(t));
+    t.base.length = 24;
+    t.base.tx_buffer = &tx_data;
+    t.base.rxlength = 24;
+    t.base.rx_buffer = &rx_data;
+    tx_data[0] = 6;
+    tx_data[1] = 0;
+
+    esp_err_t ret;
+
+    spi_bus_config_t buscfg={
+        .mosi_io_num=23,      // chip 11
+        .miso_io_num=19,      // chip 12 *19
+        .sclk_io_num=18,      // chip 13 *18
+        .quadwp_io_num=-1,
+        .quadhd_io_num=-1
+    };
+    spi_device_interface_config_t devcfg={
+        .mode=0,
+        .clock_speed_hz=2000000,
+        .spics_io_num=ADC_CS,
+        .queue_size=1,
+        //.flags = (SPI_DEVICE_HALFDUPLEX),
+        //.cs_ena_pretrans = 2,
+        //.cs_ena_posttrans = 2
+    };
+    // ret=spi_bus_initialize(VSPI_HOST, &buscfg, 1);
+    // assert(ret==ESP_OK);
+    //
+    // ret=spi_bus_add_device(VSPI_HOST, &devcfg, &spi);
+    // assert(ret==ESP_OK);
+
+
     WM8978 wm8978;
     wm8978.init();
-
-    vTaskDelay(1000 / portTICK_RATE_MS);
-    //printf("ret: %d\n",ret);
-    // wm8978.addaCfg(1,1);
-    // wm8978.inputCfg(1,0,0);
-    // wm8978.outputCfg(1,0);
-    // wm8978.micGain(30);
-    // wm8978.auxGain(0);
-    // wm8978.lineinGain(0);
-    // wm8978.spkVolSet(0);
-    // wm8978.hpVolSet(40,40);
-    // wm8978.i2sCfg(2,0);
-    // //
-    // uint16_t regval = 0;
-    // regval = wm8978.readReg(3);        // R3
-    // printf("regval: %d\n",regval);
 
     task_test_SSD1306();
     printf("done display test\n");
@@ -112,15 +192,17 @@ void app_main()
 
     printf("heavy # outputs: %d \n",numOutputChannels);
 
+    vTaskDelay(1000 / portTICK_RATE_MS);
+
     // measure load
-    int numIterations = 100;
+    int numIterations = 5000;
     struct timeval elapsed, start, end;
     gettimeofday(&start, NULL);
 
     for (int i = 0; i < numIterations; ++i) {
       hv_process(context, NULL, outBuffers, blockSize);
     }
-    printDemo();
+    //printDemo();
 
     gettimeofday(&end, NULL);
     timeval_subtract(&elapsed, &end, &start);
@@ -156,6 +238,21 @@ void app_main()
     PIN_FUNC_SELECT(PERIPHS_IO_MUX_GPIO0_U, FUNC_GPIO0_CLK_OUT1);
     REG_WRITE(PIN_CTRL, 0xFFFFFFF0);
 
+    // VSPI DMA Channel 2
+    ret=spi_bus_initialize(VSPI_HOST, &buscfg, 2);
+    assert(ret==ESP_OK);
+
+    ret=spi_bus_add_device(VSPI_HOST, &devcfg, &spi);
+    assert(ret==ESP_OK);
+
+    // queue a single transaction to set things up
+    spi_device_queue_trans(spi, (spi_transaction_t*)&t, 100);
+
+    // Start ADC callback
+    printf("start ADC callback \n");
+    timer_tg0_initialise(80);
+    printf("ADC callback started \n");
+
     int32_t samples_data_out[blockSize*2];
 
     while(1) {
@@ -165,6 +262,6 @@ void app_main()
         samples_data_out[i*2+1] = (int32_t)(outBuffers[1][i] * MULT_S32);
       }
       size_t bytes_written = 0;
-      i2s_write((i2s_port_t)0, &samples_data_out, 256*2*sizeof(int32_t), &bytes_written, portMAX_DELAY);
+      i2s_write((i2s_port_t)0, &samples_data_out, blockSize*2*sizeof(int32_t), &bytes_written, portMAX_DELAY);
     }
 }
