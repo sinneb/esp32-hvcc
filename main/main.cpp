@@ -55,8 +55,8 @@ void task_test_SSD1306() {
 	u8g2_esp32_hal_t u8g2_esp32_hal = U8G2_ESP32_HAL_DEFAULT;
 	u8g2_esp32_hal.clk   = (gpio_num_t)14;
 	u8g2_esp32_hal.mosi  = (gpio_num_t)13;
-	u8g2_esp32_hal.cs    = (gpio_num_t)15;
-	u8g2_esp32_hal.dc    = (gpio_num_t)13; // *23
+	u8g2_esp32_hal.cs    = (gpio_num_t)5;
+	u8g2_esp32_hal.dc    = (gpio_num_t)15; // *23
 	u8g2_esp32_hal.reset = (gpio_num_t)12;
 	u8g2_esp32_hal_init(u8g2_esp32_hal);
 
@@ -111,12 +111,12 @@ static void timer_tg0_isr(void* arg)
 void timer_tg0_initialise (int timer_period_us)
 {
     timer_config_t config = {
-            .alarm_en = (timer_alarm_t)true,				//Alarm Enable
-            .counter_en = (timer_start_t)false,			//If the counter is enabled it will start incrementing / decrementing immediately after calling timer_init()
-            .intr_type = TIMER_INTR_LEVEL,	//Is interrupt is triggered on timer’s alarm (timer_intr_mode_t)
-            .counter_dir = TIMER_COUNT_UP,	//Does counter increment or decrement (timer_count_dir_t)
-            .auto_reload = (timer_autoreload_t)true,			//If counter should auto_reload a specific initial value on the timer’s alarm, or continue incrementing or decrementing.
-            .divider = 80   				//Divisor of the incoming 80 MHz (12.5nS) APB_CLK clock. E.g. 80 = 1uS per timer tick
+            .alarm_en = (timer_alarm_t)true,				  //Alarm Enable
+            .counter_en = (timer_start_t)false,			  //If the counter is enabled it will start incrementing / decrementing immediately after calling timer_init()
+            .intr_type = TIMER_INTR_LEVEL,	          //Is interrupt is triggered on timer’s alarm (timer_intr_mode_t)
+            .counter_dir = TIMER_COUNT_UP,	          //Does counter increment or decrement (timer_count_dir_t)
+            .auto_reload = (timer_autoreload_t)true,	//If counter should auto_reload a specific initial value on the timer’s alarm, or continue incrementing or decrementing.
+            .divider = 80   				                  //Divisor of the incoming 80 MHz (12.5nS) APB_CLK clock. E.g. 80 = 1uS per timer tick
     };
 
     timer_init(TIMER_GROUP_0, TIMER_0, &config);
@@ -134,6 +134,14 @@ esp_err_t write_cmd(spi_device_handle_t spi, uint8_t cmd)
     err = spi_device_get_trans_result(spi, (spi_transaction_t**)&t_res, 100);
     err = spi_device_queue_trans(spi, (spi_transaction_t*)&t, 100);
     return err;
+}
+
+void hello_task(void *pvParameter)
+{
+  while(true) {
+    printf("ticks: %d\n",teller);
+    vTaskDelay(1000 / portTICK_RATE_MS);
+  }
 }
 
 void app_main()
@@ -179,6 +187,7 @@ void app_main()
     wm8978.init();
 
     task_test_SSD1306();
+    printDemo();
     printf("done display test\n");
 
     // setup and start heavy compiler
@@ -202,7 +211,7 @@ void app_main()
     for (int i = 0; i < numIterations; ++i) {
       hv_process(context, NULL, outBuffers, blockSize);
     }
-    //printDemo();
+
 
     gettimeofday(&end, NULL);
     timeval_subtract(&elapsed, &end, &start);
@@ -252,6 +261,9 @@ void app_main()
     printf("start ADC callback \n");
     timer_tg0_initialise(80);
     printf("ADC callback started \n");
+
+    // start main task
+    xTaskCreate(&hello_task, "hello_task", 2048, NULL, 5, NULL);
 
     int32_t samples_data_out[blockSize*2];
 
