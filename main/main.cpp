@@ -20,8 +20,15 @@
 #include "u8g2_esp32_hal.h"
 u8g2_t u8g2; // a structure which will contain all the data for one display
 
+#include "rotary_encoder.h"
+#define ROT_ENC_A_GPIO 2
+#define ROT_ENC_B_GPIO 4
+#define ENABLE_HALF_STEPS false  // Set to true to enable tracking of rotary encoder at half step resolution
+#define RESET_AT          0      // Set to a positive non-zero number to reset the position if this value is exceeded
+#define FLIP_DIRECTION    true  // Set to true to reverse the clockwise/counterclockwise sense
+
 #define MULT_S32 2147483647
-#define ADC_CS 2 // chip 10
+#define ADC_CS 17 // chip 10
 
 float *inBuffers;
 float *outBuffers;
@@ -76,6 +83,57 @@ void printDemo() {
   u8g2_SetFont(&u8g2, u8g2_font_t0_13_me);
   u8g2_DrawStr(&u8g2, 0,15,"H2ello World!");
   u8g2_SendBuffer(&u8g2); // takes 30us @ 4Mhz
+}
+
+void encoderHandler (void *pvParameter) {
+  // Start encoder reader
+  ESP_ERROR_CHECK(gpio_install_isr_service(0));
+  // Initialise the rotary encoder device with the GPIOs for A and B signals
+  rotary_encoder_info_t info;
+  ESP_ERROR_CHECK(rotary_encoder_init(&info, (gpio_num_t)ROT_ENC_A_GPIO, (gpio_num_t)ROT_ENC_B_GPIO));
+  ESP_ERROR_CHECK(rotary_encoder_enable_half_steps(&info, ENABLE_HALF_STEPS));
+
+  // button handler
+  //gpio_isr_handler_add((gpio_num_t)5, isr_handler, void* args);
+
+  #ifdef FLIP_DIRECTION
+  ESP_ERROR_CHECK(rotary_encoder_flip_direction(&info));
+  #endif
+
+  // Create a queue for events from the rotary encoder driver.
+  // Tasks can read from this queue to receive up to date position information.
+  QueueHandle_t event_queue = rotary_encoder_create_queue();
+  ESP_ERROR_CHECK(rotary_encoder_set_queue(&info, event_queue));
+  printf("done ENC init\n");
+  while(1) {
+    // printf("ola\n");
+    // vTaskDelay(1000 / portTICK_PERIOD_MS);
+
+    // Wait for incoming events on the event queue.
+        rotary_encoder_event_t event = { 0 };
+        if (xQueueReceive(event_queue, &event, portMAX_DELAY) == pdTRUE)
+        {
+            //ESP_LOGI(tag, "Event: position %d", event.state.position);
+            //hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_CHANNELA, event.state.position/100.0);
+            //printDemo("channel A",event.state.position);
+            printf("Channel A: %d\n",event.state.position);
+        }
+        // else
+        // {
+        //     // Poll current position and direction
+        //     rotary_encoder_state_t state = { 0 };
+        //     ESP_ERROR_CHECK(rotary_encoder_get_state(&info, &state));
+        //     ESP_LOGI(tag, "Poll: position %d, direction %s", state.position,
+        //              state.direction ? (state.direction == ROTARY_ENCODER_DIRECTION_CLOCKWISE ? "CW" : "CCW") : "NOT_SET");
+        //
+        //     // Reset the device
+        //     if (RESET_AT && (state.position >= RESET_AT || state.position <= -RESET_AT))
+        //     {
+        //         ESP_LOGI(tag, "Reset");
+        //         ESP_ERROR_CHECK(rotary_encoder_reset(&info));
+        //     }
+        // }
+  }
 }
 
 static void timeval_subtract(struct timeval *result, struct timeval *end, struct timeval *start) {
@@ -261,6 +319,9 @@ void app_main()
     printf("start ADC callback \n");
     timer_tg0_initialise(80);
     printf("ADC callback started \n");
+
+    // start encoder service
+    xTaskCreate(&encoderHandler, "encoderHandler", 2048, NULL, 5, NULL);
 
     // start main task
     xTaskCreate(&hello_task, "hello_task", 2048, NULL, 5, NULL);

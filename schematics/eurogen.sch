@@ -648,10 +648,8 @@ Wire Wire Line
 	9650 4600 9950 4600
 Wire Wire Line
 	9950 4700 9650 4700
-Text Label 10550 2750 0    50   ~ 0
+Text Label 10550 2350 0    50   ~ 0
 adc_cs
-Wire Wire Line
-	10550 2750 9550 2750
 Wire Wire Line
 	9550 1550 9950 1550
 Wire Wire Line
@@ -774,4 +772,48 @@ Text Label 9900 2250 0    50   ~ 0
 oled_cs
 Wire Wire Line
 	9900 2250 9550 2250
+$Comp
+L Device:Rotary_Encoder SW1
+U 1 1 5E5B9F74
+P 2150 5300
+F 0 "SW1" H 2380 5346 50  0000 L CNN
+F 1 "Rotary_Encoder" H 2380 5255 50  0000 L CNN
+F 2 "" H 2000 5460 50  0001 C CNN
+F 3 "~" H 2150 5560 50  0001 C CNN
+	1    2150 5300
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR022
+U 1 1 5E5BCC80
+P 1050 5400
+F 0 "#PWR022" H 1050 5150 50  0001 C CNN
+F 1 "GND" H 1055 5227 50  0000 C CNN
+F 2 "" H 1050 5400 50  0001 C CNN
+F 3 "" H 1050 5400 50  0001 C CNN
+	1    1050 5400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1850 5300 1050 5300
+Wire Wire Line
+	1050 5300 1050 5400
+Text Label 1600 5200 2    50   ~ 0
+rot1_a
+Text Label 1600 5400 2    50   ~ 0
+rot1_b
+Wire Wire Line
+	1600 5400 1850 5400
+Wire Wire Line
+	1850 5200 1600 5200
+Wire Wire Line
+	9550 2350 10550 2350
+Text Label 9900 2750 0    50   ~ 0
+rot1_a
+Wire Wire Line
+	9900 2750 9550 2750
+Text Label 10550 2550 0    50   ~ 0
+rot1_b
+Wire Wire Line
+	10550 2550 9550 2550
 $EndSCHEMATC
