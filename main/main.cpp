@@ -22,13 +22,13 @@ u8g2_t u8g2; // a structure which will contain all the data for one display
 
 #include "rotary_encoder.h"
 #define ROT_ENC_A_GPIO 2
-#define ROT_ENC_B_GPIO 4
+#define ROT_ENC_B_GPIO 22
 #define ENABLE_HALF_STEPS false  // Set to true to enable tracking of rotary encoder at half step resolution
 #define RESET_AT          0      // Set to a positive non-zero number to reset the position if this value is exceeded
 #define FLIP_DIRECTION    true  // Set to true to reverse the clockwise/counterclockwise sense
 
 #define MULT_S32 2147483647
-#define ADC_CS 17 // chip 10
+#define ADC_CS 15 // chip 10
 
 float *inBuffers;
 float *outBuffers;
@@ -42,8 +42,8 @@ static int io_state = 0;
 uint16_t teller = 0;
 
 //RX TX Buffers
-uint16_t tx_data[10];
-uint16_t rx_data[10];
+uint8_t tx_data[10];
+uint8_t rx_data[10];
 
 // global spi handle
 spi_device_handle_t spi;
@@ -63,7 +63,7 @@ void task_test_SSD1306() {
 	u8g2_esp32_hal.clk   = (gpio_num_t)14;
 	u8g2_esp32_hal.mosi  = (gpio_num_t)13;
 	u8g2_esp32_hal.cs    = (gpio_num_t)5;
-	u8g2_esp32_hal.dc    = (gpio_num_t)15; // *23
+	u8g2_esp32_hal.dc    = (gpio_num_t)4; // *23
 	u8g2_esp32_hal.reset = (gpio_num_t)12;
 	u8g2_esp32_hal_init(u8g2_esp32_hal);
 
@@ -198,6 +198,11 @@ void hello_task(void *pvParameter)
 {
   while(true) {
     printf("ticks: %d\n",teller);
+    ESP_LOG_BUFFER_HEX(tag,rx_data,20);
+    uint8_t msb = rx_data[1] & 0xf;
+    uint8_t lsb = rx_data[2];
+    uint16_t res = 256U*msb+lsb;
+    printf("val: %d\n",res);
     vTaskDelay(1000 / portTICK_RATE_MS);
   }
 }
@@ -240,6 +245,13 @@ void app_main()
     // ret=spi_bus_add_device(VSPI_HOST, &devcfg, &spi);
     // assert(ret==ESP_OK);
 
+    // gpio_pad_select_gpio((gpio_num_t)27);
+    // gpio_set_direction((gpio_num_t)27, GPIO_MODE_OUTPUT);
+    //gpio_set_level((gpio_num_t)27, 0);
+    //gpio_matrix_out(GPIO_NUM_27, SIG_GPIO_OUT_IDX, false, false);
+    //gpio_reset_pin(GPIO_NUM_27);
+
+    //vTaskDelay(1000 / portTICK_PERIOD_MS);
 
     WM8978 wm8978;
     wm8978.init();
@@ -320,7 +332,7 @@ void app_main()
     timer_tg0_initialise(80);
     printf("ADC callback started \n");
 
-    // start encoder service
+    //start encoder service
     xTaskCreate(&encoderHandler, "encoderHandler", 2048, NULL, 5, NULL);
 
     // start main task

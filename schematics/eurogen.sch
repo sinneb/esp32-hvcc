@@ -648,7 +648,7 @@ Wire Wire Line
 	9650 4600 9950 4600
 Wire Wire Line
 	9950 4700 9650 4700
-Text Label 10550 2350 0    50   ~ 0
+Text Label 7700 1950 2    50   ~ 0
 adc_cs
 Wire Wire Line
 	9550 1550 9950 1550
@@ -806,8 +806,6 @@ Wire Wire Line
 	1600 5400 1850 5400
 Wire Wire Line
 	1850 5200 1600 5200
-Wire Wire Line
-	9550 2350 10550 2350
 Text Label 9900 2750 0    50   ~ 0
 rot1_a
 Wire Wire Line
@@ -816,4 +814,6 @@ Text Label 10550 2550 0    50   ~ 0
 rot1_b
 Wire Wire Line
 	10550 2550 9550 2550
+Wire Wire Line
+	7700 1950 7950 1950
 $EndSCHEMATC

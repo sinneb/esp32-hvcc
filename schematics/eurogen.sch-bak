@@ -812,4 +812,8 @@ Text Label 9900 2750 0    50   ~ 0
 rot1_a
 Wire Wire Line
 	9900 2750 9550 2750
+Text Label 10550 2550 0    50   ~ 0
+rot1_b
+Wire Wire Line
+	10550 2550 9550 2550
 $EndSCHEMATC
