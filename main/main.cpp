@@ -39,11 +39,13 @@ static intr_handle_t s_timer_handle;
 
 static int io_state = 0;
 
-uint16_t teller = 0;
+uint32_t teller = 0;
 
 //RX TX Buffers
 uint8_t tx_data[10];
 uint8_t rx_data[10];
+
+uint16_t dmabuf[2500];
 
 // global spi handle
 spi_device_handle_t spi;
@@ -154,12 +156,22 @@ static void timer_tg0_isr(void* arg)
     //t.base.rx_buffer = &rx_data;
     // get spi transaction result, dont wait
     spi_device_get_trans_result(spi, (spi_transaction_t**)&t_res, 0);
+    // set ADC port
+    uint8_t pin = 0;
+    tx_data[0] = 0b01100000 | ((pin & 0b111) << 2);
+    //tx_data[0] = 19;
     // place next transaction in queue, dont wait
     spi_device_queue_trans(spi, (spi_transaction_t*)&t, 0);
 
+    teller++;
+
+    // work with the DMA result
+    if(teller>=20000 && teller<22500) {
+      dmabuf[teller-20000] = (rx_data[1] << 4) | (rx_data[2] >> 4);
+    }
 
     //----- HERE EVERY #uS -----
-    teller++;
+
 	//Toggle a pin so we can verify the timer is working using an oscilloscope
 	// io_state ^= 1;									//Toggle the pins state
 	// gpio_set_direction((gpio_num_t)4, GPIO_MODE_OUTPUT);
@@ -197,12 +209,20 @@ esp_err_t write_cmd(spi_device_handle_t spi, uint8_t cmd)
 void hello_task(void *pvParameter)
 {
   while(true) {
+    // die println'ing when teller > 25000
+    if(teller>25000) {
+      for(int i=0;i<2500;i++) {
+        printf("%d, ",dmabuf[i]);
+      }
+      while(true) {};
+    }
     printf("ticks: %d\n",teller);
     ESP_LOG_BUFFER_HEX(tag,rx_data,20);
     uint8_t msb = rx_data[1] & 0xf;
     uint8_t lsb = rx_data[2];
     uint16_t res = 256U*msb+lsb;
     printf("val: %d\n",res);
+    printf("res2: %d\n",(rx_data[1] << 4) | (rx_data[2] >> 4));
     vTaskDelay(1000 / portTICK_RATE_MS);
   }
 }
@@ -218,7 +238,10 @@ void app_main()
     t.base.tx_buffer = &tx_data;
     t.base.rxlength = 24;
     t.base.rx_buffer = &rx_data;
-    tx_data[0] = 6;
+    // 24 = channel 0, single ended
+    // 25 = channel 1
+    // 26, 27 = channel 2, 3
+    tx_data[0] = 24;
     tx_data[1] = 0;
 
     esp_err_t ret;
@@ -329,7 +352,7 @@ void app_main()
 
     // Start ADC callback
     printf("start ADC callback \n");
-    timer_tg0_initialise(80);
+    timer_tg0_initialise(400);
     printf("ADC callback started \n");
 
     //start encoder service
