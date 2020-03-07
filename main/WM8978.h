@@ -13,7 +13,7 @@
 #define I2C_MASTER_TX_BUF_DISABLE 0
 #define I2C_MASTER_RX_BUF_DISABLE 0
 
-#define WM8978_ADDR 0X1A	//WM8978
+#define WM8978_ADDR 0X1A	//WM8978 0X1B -> WM8978.2
 
 #define WRITE_BIT I2C_MASTER_WRITE              /*!< I2C master write */
 #define ACK_CHECK_EN 0x1
@@ -46,7 +46,7 @@
 class WM8978
 {
   public:
-    uint8_t init(void);
+    uint8_t init(uint8_t id);
     void initI2C(void);
     void addaCfg(uint8_t dacen,uint8_t adcen);
     void inputCfg(uint8_t micen,uint8_t lineinen,uint8_t auxen);

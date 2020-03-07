@@ -27,6 +27,7 @@ u8g2_t u8g2; // a structure which will contain all the data for one display
 #define RESET_AT          0      // Set to a positive non-zero number to reset the position if this value is exceeded
 #define FLIP_DIRECTION    true  // Set to true to reverse the clockwise/counterclockwise sense
 
+//#define MULT_S32 2147483647
 #define MULT_S32 2147483647
 #define ADC_CS 15 // chip 10
 
@@ -45,7 +46,13 @@ uint32_t teller = 0;
 uint8_t tx_data[10];
 uint8_t rx_data[10];
 
-uint16_t dmabuf[2500];
+//uint16_t dmabuf[2500];
+uint8_t displaybuffer1refresh = 1;
+uint16_t displaybuffer1[128];
+uint16_t displaybuffer1zoom = 8;
+uint16_t displaybuffer1counter = 0;
+uint16_t displaybuffer1subcounter = 0;
+uint32_t displaybuffer1temp = 0;
 
 // global spi handle
 spi_device_handle_t spi;
@@ -63,7 +70,7 @@ extern "C" {
 void task_test_SSD1306() {
 	u8g2_esp32_hal_t u8g2_esp32_hal = U8G2_ESP32_HAL_DEFAULT;
 	u8g2_esp32_hal.clk   = (gpio_num_t)14;
-	u8g2_esp32_hal.mosi  = (gpio_num_t)13;
+	u8g2_esp32_hal.mosi  = (gpio_num_t)33;
 	u8g2_esp32_hal.cs    = (gpio_num_t)5;
 	u8g2_esp32_hal.dc    = (gpio_num_t)4; // *23
 	u8g2_esp32_hal.reset = (gpio_num_t)12;
@@ -119,6 +126,9 @@ void encoderHandler (void *pvParameter) {
             //hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_CHANNELA, event.state.position/100.0);
             //printDemo("channel A",event.state.position);
             printf("Channel A: %d\n",event.state.position);
+            //displaybuffer1counter = 0;
+            //displaybuffer1subcounter = 0;
+            // displaybuffer1zoom+=event.state.position;
         }
         // else
         // {
@@ -163,12 +173,42 @@ static void timer_tg0_isr(void* arg)
     // place next transaction in queue, dont wait
     spi_device_queue_trans(spi, (spi_transaction_t*)&t, 0);
 
-    teller++;
+    // for(int p=0;p<128;p++){
+    //   for(int r=0;r<displaybuffer1zoom;r++) {
+    //
+    //   }
+    // }
+
+    // display calculations are done here to distribute the calculation-load more evenly
+    if(displaybuffer1refresh==1) {
+      if(displaybuffer1subcounter < displaybuffer1zoom) {
+        displaybuffer1temp+=(rx_data[1] << 4) | (rx_data[2] >> 4);
+        displaybuffer1subcounter++;
+      } else {
+        displaybuffer1[displaybuffer1counter]=displaybuffer1temp/displaybuffer1zoom;
+        displaybuffer1temp=0;
+        displaybuffer1subcounter=0;
+        displaybuffer1counter++;
+        if(displaybuffer1counter==128){displaybuffer1counter=0;displaybuffer1refresh=0;}
+      }
+    }
+
+    // if(displaybuffer1counter==1024) {displaybuffer1counter=0;}
+    // displaybuffer1[displaybuffer1counter]=(rx_data[1] << 4) | (rx_data[2] >> 4);
 
     // work with the DMA result
-    if(teller>=20000 && teller<22500) {
-      dmabuf[teller-20000] = (rx_data[1] << 4) | (rx_data[2] >> 4);
-    }
+    // if(teller>=20000 && teller<22500) {
+    //   dmabuf[teller-20000] = (rx_data[1] << 4) | (rx_data[2] >> 4);
+    // }
+    //if(displaybuffer1counter>=20000 && displaybuffer1counter<21024) {
+
+      // displaybuffer1counter++;
+      //
+    //}
+
+    //
+
+
 
     //----- HERE EVERY #uS -----
 
@@ -208,21 +248,41 @@ esp_err_t write_cmd(spi_device_handle_t spi, uint8_t cmd)
 
 void hello_task(void *pvParameter)
 {
+  uint8_t xpos = 10;
   while(true) {
     // die println'ing when teller > 25000
-    if(teller>25000) {
-      for(int i=0;i<2500;i++) {
-        printf("%d, ",dmabuf[i]);
-      }
-      while(true) {};
-    }
-    printf("ticks: %d\n",teller);
-    ESP_LOG_BUFFER_HEX(tag,rx_data,20);
-    uint8_t msb = rx_data[1] & 0xf;
-    uint8_t lsb = rx_data[2];
-    uint16_t res = 256U*msb+lsb;
-    printf("val: %d\n",res);
-    printf("res2: %d\n",(rx_data[1] << 4) | (rx_data[2] >> 4));
+    // if(teller>25000) {
+    //   for(int i=0;i<2500;i++) {
+    //     printf("%d, ",dmabuf[i]);
+    //   }
+    //   while(true) {};
+    // }
+    //printf("ticks: %d\n",teller);
+    // ESP_LOG_BUFFER_HEX(tag,rx_data,20);
+    // uint8_t msb = rx_data[1] & 0xf;
+    // uint8_t lsb = rx_data[2];
+    // uint16_t res = 256U*msb+lsb;
+    // printf("val: %d\n",res);
+    //printf("res2: %d\n",(rx_data[1] << 4) | (rx_data[2] >> 4));
+
+    //printf("\n");
+    //u8g2_DrawBox(&u8g2, 10,20, 20, 30);
+    //u8g2_SetFont(&u8g2, u8g2_font_t0_13_me);
+    //u8g2_DrawStr(&u8g2, 0,15,"H2ello World!");
+    //u8g2_DrawBox(&u8g2, xpos, 10, 10, 10);
+
+    // u8g2_ClearBuffer(&u8g2);
+    // for(int dis=0;dis<127;dis++) {
+    //   u8g2_DrawPixel(&u8g2,dis,displaybuffer1[dis]/64);
+    //   //printf("%d ",displaybuffer1[dis]/64);
+    // }
+    //
+    // u8g2_SendBuffer(&u8g2); // takes 30us @ 4Mhz
+    // displaybuffer1refresh=1;
+
+    xpos+=10;
+    if(xpos>100)xpos=10;
+
     vTaskDelay(1000 / portTICK_RATE_MS);
   }
 }
@@ -277,11 +337,19 @@ void app_main()
     //vTaskDelay(1000 / portTICK_PERIOD_MS);
 
     WM8978 wm8978;
-    wm8978.init();
+    wm8978.init(0);
 
-    task_test_SSD1306();
-    printDemo();
-    printf("done display test\n");
+    //vTaskDelay(1000 / portTICK_PERIOD_MS);
+    printf("starting wm8731.2\n");
+
+    WM8978 wm8978_2;
+    wm8978_2.init(1);
+
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
+
+    // task_test_SSD1306();
+    // printDemo();
+    // printf("done display test\n");
 
     // setup and start heavy compiler
     double sampleRate = 48000.0;
@@ -318,11 +386,18 @@ void app_main()
 
     // start ESP32-Audio-Kit I2S
     i2s_pin_config_t pin_config;
+    i2s_pin_config_t pin_config2;
     pin_config = {                  // 0 -> 25 MCLK
         .bck_io_num = 27,           // 3 SCK
         .ws_io_num = 26,            // 5 7 LRCLK
         .data_out_num = 25,         // 4 DACDAT
         .data_in_num = 35           // 6 ADCDAT
+    };
+    pin_config2 = {                  // 0 -> 25 MCLK
+        .bck_io_num = 27,           // 3 SCK
+        .ws_io_num = 26,            // 5 7 LRCLK
+        .data_out_num = 4,         // 4 DACDAT
+        .data_in_num = 35          // 6 ADCDAT
     };
     i2s_config_t i2s_config = {
         .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_TX | I2S_MODE_RX),
@@ -339,6 +414,9 @@ void app_main()
     i2s_set_pin((i2s_port_t)0, &pin_config);
     PIN_FUNC_SELECT(PERIPHS_IO_MUX_GPIO0_U, FUNC_GPIO0_CLK_OUT1);
     REG_WRITE(PIN_CTRL, 0xFFFFFFF0);
+
+    i2s_driver_install((i2s_port_t)1, &i2s_config, 0, NULL);
+    i2s_set_pin((i2s_port_t)1, &pin_config2);
 
     // VSPI DMA Channel 2
     ret=spi_bus_initialize(VSPI_HOST, &buscfg, 2);
@@ -364,12 +442,14 @@ void app_main()
     int32_t samples_data_out[blockSize*2];
 
     while(1) {
+      // runs @ 48000 / 16 = 3000hz
+      hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_FREQ, 300);
       hv_process(context, NULL, outBuffers, blockSize);
       for (int i = 0; i < blockSize; i++) {
         samples_data_out[i*2] = (int32_t)(outBuffers[0][i] * MULT_S32);
         samples_data_out[i*2+1] = (int32_t)(outBuffers[1][i] * MULT_S32);
       }
       size_t bytes_written = 0;
-      i2s_write((i2s_port_t)0, &samples_data_out, blockSize*2*sizeof(int32_t), &bytes_written, portMAX_DELAY);
+      i2s_write((i2s_port_t)1, &samples_data_out, blockSize*2*sizeof(int32_t), &bytes_written, portMAX_DELAY);
     }
 }

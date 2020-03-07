@@ -13,6 +13,7 @@
 #include "math.h"
 
 static const char* TAG = "driver";
+uint8_t wm8731device = 27;
 
 //WM8731 register addresses as defined in the datasheet
 #define LEFT_LINE_INPUT_CHANNEL_VOLUME_CONTROL  (0x00 << 1)
@@ -40,10 +41,16 @@ static uint16_t WM8978_REGVAL_TBL[58]=
 };
 
 // WM8978 init
-uint8_t WM8978::init(void)
+uint8_t WM8978::init(uint8_t id)
 {
+  if(id==0) {
+    wm8731device = 26;
     initI2C();
-    vTaskDelay(1000 / portTICK_RATE_MS);
+  } else {
+    wm8731device = 27;
+  }
+
+    //vTaskDelay(1000 / portTICK_RATE_MS);
     //uint8_t res;
     // RESET
     writeRegwithError(0,0);// WM8978
@@ -65,7 +72,7 @@ uint8_t WM8978::init(void)
     setDigitalAudioPathControl(0,0,0,1);
 
     //setPowerDownControl(int32_t POWEROFF, int32_t CLKOUTPD, int32_t OSCPD, int32_t OUTPD, int32_t DACPD, int32_t ADCPD, int32_t MICPD, int32_t LINEINPD)
-    setPowerDownControl(0,1,1,0,0,0,0,0);
+    setPowerDownControl(0,0,1,0,0,0,0,0);
 
     //setDigitalAudioInterfaceFormat(int32_t BCLKINV, int32_t MS, int32_t LRSWAP, int32_t LRP, int32_t IWL, int32_t FORMAT)
     //no bit clocl invert, slave, no DAC Left Right Clock Swap, Right Channel DAC data when DACLRC low, 16bit, I2S Format MSB left justfied
@@ -121,7 +128,7 @@ uint8_t WM8978::writeReg(uint8_t reg,uint16_t val)
 
     i2c_cmd_handle_t cmd = i2c_cmd_link_create();
     i2c_master_start(cmd);
-    i2c_master_write_byte(cmd, (WM8978_ADDR << 1) | WRITE_BIT, ACK_CHECK_EN);
+    i2c_master_write_byte(cmd, (wm8731device << 1) | WRITE_BIT, ACK_CHECK_EN);
     i2c_master_write(cmd, buf, 2, ACK_CHECK_EN);
     i2c_master_stop(cmd);
     i2c_master_cmd_begin((i2c_port_t) 1, cmd, 1000 / portTICK_RATE_MS);
@@ -143,7 +150,7 @@ esp_err_t WM8978::writeRegwithError(uint8_t reg,uint8_t val)
 
     i2c_cmd_handle_t cmd = i2c_cmd_link_create();
     errret |= i2c_master_start(cmd);
-    errret |= i2c_master_write_byte(cmd, (WM8978_ADDR << 1) | WRITE_BIT, ACK_CHECK_EN);
+    errret |= i2c_master_write_byte(cmd, (wm8731device << 1) | WRITE_BIT, ACK_CHECK_EN);
     errret |= i2c_master_write(cmd, buf, 2, ACK_CHECK_EN);
     errret |= i2c_master_stop(cmd);
     errret |= i2c_master_cmd_begin((i2c_port_t) 1, cmd, 1000 / portTICK_RATE_MS);
