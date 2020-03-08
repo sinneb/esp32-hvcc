@@ -48,7 +48,7 @@ class Heavy_heavy : public HeavyContext {
 
   const char *getName() override { return "heavy"; }
   int getNumInputChannels() override { return 0; }
-  int getNumOutputChannels() override { return 2; }
+  int getNumOutputChannels() override { return 4; }
 
   int process(float **inputBuffers, float **outputBuffer, int n) override;
   int processInline(float *inputBuffers, float *outputBuffer, int n) override;
@@ -68,14 +68,17 @@ class Heavy_heavy : public HeavyContext {
   void scheduleMessageForReceiver(hv_uint32_t receiverHash, HvMessage *m) override;
 
   // static sendMessage functions
-  static void cReceive_iiO2y17K_sendMessage(HeavyContextInterface *, int, const HvMessage *);
-  static void cVar_NXAFtdta_sendMessage(HeavyContextInterface *, int, const HvMessage *);
-  static void cMsg_KrNTJvcC_sendMessage(HeavyContextInterface *, int, const HvMessage *);
-  static void cReceive_bzDwDP45_sendMessage(HeavyContextInterface *, int, const HvMessage *);
+  static void cVar_TGxrexzF_sendMessage(HeavyContextInterface *, int, const HvMessage *);
+  static void cReceive_dCKQXBXG_sendMessage(HeavyContextInterface *, int, const HvMessage *);
+  static void cReceive_KC7Pa1dD_sendMessage(HeavyContextInterface *, int, const HvMessage *);
+  static void cMsg_IJDJnbmI_sendMessage(HeavyContextInterface *, int, const HvMessage *);
 
   // objects
-  SignalPhasor sPhasor_5LA5CWg5;
-  ControlVar cVar_NXAFtdta;
+  SignalPhasor sPhasor_jT7u8RjI;
+  SignalPhasor sPhasor_USlFsb3X;
+  SignalPhasor sPhasor_l78WGk6D;
+  SignalPhasor sPhasor_EHEASPM8;
+  ControlVar cVar_TGxrexzF;
 };
 
 #endif // _HEAVY_CONTEXT_HEAVY_HPP_

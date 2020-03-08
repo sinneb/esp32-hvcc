@@ -334,18 +334,57 @@ void app_main()
     //gpio_matrix_out(GPIO_NUM_27, SIG_GPIO_OUT_IDX, false, false);
     //gpio_reset_pin(GPIO_NUM_27);
 
-    //vTaskDelay(1000 / portTICK_PERIOD_MS);
+    //gpio_reset_pin
+    printf("setting pins\n");
+    // gpio_pad_select_gpio((gpio_num_t)25);
+    // gpio_set_direction((gpio_num_t)25, GPIO_MODE_INPUT);
+    // gpio_set_level((gpio_num_t)25, 0);
+    //
+    // gpio_set_direction(GPIO_NUM_26, GPIO_MODE_INPUT);
+    // gpio_set_level(GPIO_NUM_26, 0);
+    // gpio_set_direction(GPIO_NUM_27, GPIO_MODE_INPUT);
+    // gpio_set_level(GPIO_NUM_27, 0);
+    // gpio_set_direction(GPIO_NUM_0, GPIO_MODE_INPUT);
+    // gpio_set_level(GPIO_NUM_0, 0);
 
+    gpio_config_t io_conf;
+    //disable interrupt
+    io_conf.intr_type = gpio_int_type_t(0);
+    //set as output mode
+    io_conf.mode = GPIO_MODE_INPUT;
+    //bit mask of the pins that you want to set,e.g.GPIO18/19
+    io_conf.pin_bit_mask = ((1ULL<<25) | (1ULL<<26) | (1ULL<<27));
+    //disable pull-down mode
+    io_conf.pull_down_en = (gpio_pulldown_t)0;
+    //disable pull-up mode
+    io_conf.pull_up_en = (gpio_pullup_t)1;
+    //configure GPIO with the given settings
+    gpio_config(&io_conf);
+
+    // PIN_FUNC_SELECT(GPIO_PIN_MUX_REG[27], 1);
+    // REG_WRITE(PIN_CTRL, 0xFFFFFFF0);
+    //gpio_matrix_in(12, 224, 1);
+    //gpio_matrix_out(27, 224, 1, 1);
+
+    //gpio_set_pull_mode(GPIO_NUM_27, GPIO_FLOATING);
+
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
+
+    printf("starting wm8731.1\n");
     WM8978 wm8978;
     wm8978.init(0);
 
-    //vTaskDelay(1000 / portTICK_PERIOD_MS);
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
     printf("starting wm8731.2\n");
 
     WM8978 wm8978_2;
     wm8978_2.init(1);
+    //
+    // printf("restarting wm8731.1\n");
+    //
+    // wm8978.init(2);
 
-    vTaskDelay(1000 / portTICK_PERIOD_MS);
+    //vTaskDelay(1000 / portTICK_PERIOD_MS);
 
     // task_test_SSD1306();
     // printDemo();
@@ -394,13 +433,13 @@ void app_main()
         .data_in_num = 35           // 6 ADCDAT
     };
     pin_config2 = {                  // 0 -> 25 MCLK
-        .bck_io_num = 27,           // 3 SCK
-        .ws_io_num = 26,            // 5 7 LRCLK
+        // .bck_io_num = 27,           // 3 SCK
+        // .ws_io_num = 26,            // 5 7 LRCLK
         .data_out_num = 4,         // 4 DACDAT
-        .data_in_num = 35          // 6 ADCDAT
+        .data_in_num = 33          // 6 ADCDAT
     };
     i2s_config_t i2s_config = {
-        .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_TX | I2S_MODE_RX),
+        .mode = (i2s_mode_t)(I2S_MODE_SLAVE | I2S_MODE_TX | I2S_MODE_RX),
         .sample_rate = 48000,
         .bits_per_sample = I2S_BITS_PER_SAMPLE_32BIT,
         .channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT,
@@ -412,8 +451,8 @@ void app_main()
     };
     i2s_driver_install((i2s_port_t)0, &i2s_config, 0, NULL);
     i2s_set_pin((i2s_port_t)0, &pin_config);
-    PIN_FUNC_SELECT(PERIPHS_IO_MUX_GPIO0_U, FUNC_GPIO0_CLK_OUT1);
-    REG_WRITE(PIN_CTRL, 0xFFFFFFF0);
+    // PIN_FUNC_SELECT(PERIPHS_IO_MUX_GPIO0_U, FUNC_GPIO0_CLK_OUT1);
+    // REG_WRITE(PIN_CTRL, 0xFFFFFFF0);
 
     i2s_driver_install((i2s_port_t)1, &i2s_config, 0, NULL);
     i2s_set_pin((i2s_port_t)1, &pin_config2);
@@ -440,6 +479,7 @@ void app_main()
     xTaskCreate(&hello_task, "hello_task", 2048, NULL, 5, NULL);
 
     int32_t samples_data_out[blockSize*2];
+    int32_t samples_data_out2[blockSize*2];
 
     while(1) {
       // runs @ 48000 / 16 = 3000hz
@@ -448,8 +488,11 @@ void app_main()
       for (int i = 0; i < blockSize; i++) {
         samples_data_out[i*2] = (int32_t)(outBuffers[0][i] * MULT_S32);
         samples_data_out[i*2+1] = (int32_t)(outBuffers[1][i] * MULT_S32);
+        samples_data_out2[i*2] = (int32_t)(outBuffers[2][i] * MULT_S32);
+        samples_data_out2[i*2+1] = (int32_t)(outBuffers[3][i] * MULT_S32);
       }
       size_t bytes_written = 0;
-      i2s_write((i2s_port_t)1, &samples_data_out, blockSize*2*sizeof(int32_t), &bytes_written, portMAX_DELAY);
+      i2s_write((i2s_port_t)0, &samples_data_out, blockSize*2*sizeof(int32_t), &bytes_written, portMAX_DELAY);
+      //i2s_write((i2s_port_t)1, &samples_data_out2, blockSize*2*sizeof(int32_t), &bytes_written, portMAX_DELAY);
     }
 }

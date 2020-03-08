@@ -46,8 +46,11 @@ uint8_t WM8978::init(uint8_t id)
   if(id==0) {
     wm8731device = 26;
     initI2C();
-  } else {
+    vTaskDelay(1000 / portTICK_RATE_MS);
+  } else if(id==1) {
     wm8731device = 27;
+  } else if(id==2) {
+    wm8731device = 26;
   }
 
     //vTaskDelay(1000 / portTICK_RATE_MS);
@@ -72,11 +75,11 @@ uint8_t WM8978::init(uint8_t id)
     setDigitalAudioPathControl(0,0,0,1);
 
     //setPowerDownControl(int32_t POWEROFF, int32_t CLKOUTPD, int32_t OSCPD, int32_t OUTPD, int32_t DACPD, int32_t ADCPD, int32_t MICPD, int32_t LINEINPD)
-    setPowerDownControl(0,0,1,0,0,0,0,0);
+    setPowerDownControl(0,0,0,0,0,0,0,0);
 
     //setDigitalAudioInterfaceFormat(int32_t BCLKINV, int32_t MS, int32_t LRSWAP, int32_t LRP, int32_t IWL, int32_t FORMAT)
     //no bit clocl invert, slave, no DAC Left Right Clock Swap, Right Channel DAC data when DACLRC low, 16bit, I2S Format MSB left justfied
-    setDigitalAudioInterfaceFormat(0,0,0,0,1,0x2);
+    setDigitalAudioInterfaceFormat(0,1,0,0,1,0x2);
 
     //setSamplingControl(int32_t CLKODIV2, int32_t CLKIDIV2, int32_t SR, int32_t BOSR, int32_t USBNORM)
     setSamplingControl(0, 0, 0, 0, 0);//48kHz
@@ -105,9 +108,9 @@ void WM8978::initI2C(void)
     i2c_config_t conf;
     conf.mode = I2C_MODE_MASTER;
     conf.sda_io_num = (gpio_num_t) I2C_MASTER_SDA_IO;
-    conf.sda_pullup_en = GPIO_PULLUP_DISABLE;
+    conf.sda_pullup_en = GPIO_PULLUP_ENABLE;
     conf.scl_io_num = (gpio_num_t) I2C_MASTER_SCL_IO;
-    conf.scl_pullup_en = GPIO_PULLUP_DISABLE;
+    conf.scl_pullup_en = GPIO_PULLUP_ENABLE;
     conf.master.clk_speed = I2C_MASTER_FREQ_HZ;
     i2c_param_config(i2c_master_port, &conf);
     ESP_ERROR_CHECK(
