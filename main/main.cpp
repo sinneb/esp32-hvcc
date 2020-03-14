@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include "freertos/queue.h"
 #include "esp_system.h"
 #include "esp_spi_flash.h"
 #include "esp_log.h"
@@ -21,15 +22,19 @@
 u8g2_t u8g2; // a structure which will contain all the data for one display
 
 #include "rotary_encoder.h"
-#define ROT_ENC_A_GPIO 2
-#define ROT_ENC_B_GPIO 22
+#define ROT_ENC_A_GPIO 14
+#define ROT_ENC_B_GPIO 27
 #define ENABLE_HALF_STEPS false  // Set to true to enable tracking of rotary encoder at half step resolution
 #define RESET_AT          0      // Set to a positive non-zero number to reset the position if this value is exceeded
 #define FLIP_DIRECTION    true  // Set to true to reverse the clockwise/counterclockwise sense
 
+#define ESP_INTR_FLAG_DEFAULT 0
+
 //#define MULT_S32 2147483647
 #define MULT_S32 2147483647
 #define ADC_CS 15 // chip 10
+
+static xQueueHandle gpio_evt_queue = NULL;
 
 float *inBuffers;
 float *outBuffers;
@@ -74,11 +79,11 @@ extern "C" {
 
 void task_test_SSD1306() {
 	u8g2_esp32_hal_t u8g2_esp32_hal = U8G2_ESP32_HAL_DEFAULT;
-	u8g2_esp32_hal.clk   = (gpio_num_t)14;
-	u8g2_esp32_hal.mosi  = (gpio_num_t)33;
-	u8g2_esp32_hal.cs    = (gpio_num_t)5;
-	u8g2_esp32_hal.dc    = (gpio_num_t)4; // *23
-	u8g2_esp32_hal.reset = (gpio_num_t)12;
+	u8g2_esp32_hal.clk   = (gpio_num_t)0;  //d0
+	u8g2_esp32_hal.mosi  = (gpio_num_t)2;  //d1
+	u8g2_esp32_hal.cs    = (gpio_num_t)16; // not used
+	u8g2_esp32_hal.dc    = (gpio_num_t)5; // *23
+	u8g2_esp32_hal.reset = (gpio_num_t)13;
 	u8g2_esp32_hal_init(u8g2_esp32_hal);
 
 	u8g2_Setup_ssd1306_128x64_noname_f(
@@ -86,9 +91,9 @@ void task_test_SSD1306() {
 		U8G2_R0,
 		u8g2_esp32_spi_byte_cb,
 		u8g2_esp32_gpio_and_delay_cb);  // init u8g2 structure
-	u8g2_InitDisplay(&u8g2); // send init sequence to the display, display is in sleep mode after this,
-	u8g2_SetPowerSave(&u8g2, 0); // wake up display
-	ESP_LOGI(tag, "All done!");
+	  u8g2_InitDisplay(&u8g2); // send init sequence to the display, display is in sleep mode after this,
+	  u8g2_SetPowerSave(&u8g2, 0); // wake up display
+	  ESP_LOGI(tag, "All done!");
 }
 
 void printDemo() {
@@ -101,7 +106,7 @@ void printDemo() {
 
 void encoderHandler (void *pvParameter) {
   // Start encoder reader
-  ESP_ERROR_CHECK(gpio_install_isr_service(0));
+
   // Initialise the rotary encoder device with the GPIOs for A and B signals
   rotary_encoder_info_t info;
   ESP_ERROR_CHECK(rotary_encoder_init(&info, (gpio_num_t)ROT_ENC_A_GPIO, (gpio_num_t)ROT_ENC_B_GPIO));
@@ -296,7 +301,7 @@ void hello_task(void *pvParameter)
     // uint8_t lsb = rx_data[2];
     // uint16_t res = 256U*msb+lsb;
     // printf("val: %d\n",res);
-    //printf("res2: %d\n",(rx_data[1] << 4) | (rx_data[2] >> 4));
+    printf("res2: %d\n",(rx_data[1] << 4) | (rx_data[2] >> 4));
 
     //printf("\n");
     //u8g2_DrawBox(&u8g2, 10,20, 20, 30);
@@ -332,6 +337,26 @@ void i2s_task1(void *pvParameter)
     }
     //printf("Hier4!\n");
   }
+}
+
+void gpioCallback(void* arg) {
+  printf("ola\n");
+}
+
+static void IRAM_ATTR gpio_isr_handler(void* arg)
+{
+    uint32_t gpio_num = (uint32_t) arg;
+    xQueueSendFromISR(gpio_evt_queue, &gpio_num, NULL);
+}
+
+static void gpio_task_example(void* arg)
+{
+    uint32_t io_num;
+    for(;;) {
+        if(xQueueReceive(gpio_evt_queue, &io_num, portMAX_DELAY)) {
+            printf("GPIO[%d] intr, val: %d\n", io_num, gpio_get_level((gpio_num_t)io_num));
+        }
+    }
 }
 
 void app_main()
@@ -394,19 +419,26 @@ void app_main()
     // gpio_set_direction(GPIO_NUM_0, GPIO_MODE_INPUT);
     // gpio_set_level(GPIO_NUM_0, 0);
 
-    gpio_config_t io_conf;
-    //disable interrupt
-    io_conf.intr_type = gpio_int_type_t(0);
-    //set as output mode
-    io_conf.mode = GPIO_MODE_INPUT;
-    //bit mask of the pins that you want to set,e.g.GPIO18/19
-    io_conf.pin_bit_mask = ((1ULL<<25) | (1ULL<<26) | (1ULL<<27));
-    //disable pull-down mode
-    io_conf.pull_down_en = (gpio_pulldown_t)0;
-    //disable pull-up mode
-    io_conf.pull_up_en = (gpio_pullup_t)1;
-    //configure GPIO with the given settings
-    gpio_config(&io_conf);
+    // gpio_config_t io_conf;
+    // //disable interrupt
+    // io_conf.intr_type = gpio_int_type_t(0);
+    // //set as output mode
+    // io_conf.mode = GPIO_MODE_INPUT;
+    // //bit mask of the pins that you want to set,e.g.GPIO18/19
+    // io_conf.pin_bit_mask = ((1ULL<<25) | (1ULL<<26) | (1ULL<<27));
+    // //disable pull-down mode
+    // io_conf.pull_down_en = (gpio_pulldown_t)0;
+    // //disable pull-up mode
+    // io_conf.pull_up_en = (gpio_pullup_t)1;
+    // //configure GPIO with the given settings
+    // gpio_config(&io_conf);
+    //gpio_install_isr_service(3);
+
+    //gpio_intr_enable(GPIO_NUM_32);
+//gpio_isr_handle_t s_int_handle;
+// Intterrupt number see below
+//gpio_isr_register(gpioCallback, NULL, ESP_INTR_FLAG_LEVEL1, &s_int_handle);
+//gpio_isr_register(GPIO_NUM_32, gpioCallback, (void *)tag); // 17
 
     // PIN_FUNC_SELECT(GPIO_PIN_MUX_REG[27], 1);
     // REG_WRITE(PIN_CTRL, 0xFFFFFFF0);
@@ -415,7 +447,7 @@ void app_main()
 
     //gpio_set_pull_mode(GPIO_NUM_27, GPIO_FLOATING);
 
-    vTaskDelay(1000 / portTICK_PERIOD_MS);
+    //vTaskDelay(1000 / portTICK_PERIOD_MS);
 
     printf("starting wm8731.1\n");
     WM8978 wm8978;
@@ -433,9 +465,10 @@ void app_main()
 
     //vTaskDelay(1000 / portTICK_PERIOD_MS);
 
-    // task_test_SSD1306();
-    // printDemo();
-    // printf("done display test\n");
+    task_test_SSD1306();
+    printDemo();
+    printf("done display test\n");
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
 
     // setup and start heavy compiler
     double sampleRate = 48000.0;
@@ -474,16 +507,16 @@ void app_main()
     i2s_pin_config_t pin_config;
     i2s_pin_config_t pin_config2;
     pin_config = {                  // 0 -> 25 MCLK
-        .bck_io_num = 27,           // 3 SCK
-        .ws_io_num = 26,            // 5 7 LRCLK
+        .bck_io_num = 36,           // 3 SCK
+        .ws_io_num = 34,            // 5 7 LRCLK
         .data_out_num = 25,         // 4 DACDAT
-        .data_in_num = 35           // 6 ADCDAT
+        //.data_in_num = 35           // 6 ADCDAT
     };
     pin_config2 = {                  // 0 -> 25 MCLK
-        .bck_io_num = 14,           // 3 SCK
+        .bck_io_num = 35,           // 3 SCK
         .ws_io_num = 12,            // 5 7 LRCLK
         .data_out_num = 4,         // 4 DACDAT
-        .data_in_num = 33          // 6 ADCDAT
+        //.data_in_num = 33          // 6 ADCDAT
     };
     i2s_config_t i2s_config = {
         .mode = (i2s_mode_t)(I2S_MODE_SLAVE | I2S_MODE_TX | I2S_MODE_RX),
@@ -491,7 +524,7 @@ void app_main()
         .bits_per_sample = I2S_BITS_PER_SAMPLE_32BIT,
         .channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT,
         .communication_format = (i2s_comm_format_t)(I2S_COMM_FORMAT_I2S | I2S_COMM_FORMAT_I2S_MSB),
-        .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1, // high interrupt priority
+        .intr_alloc_flags = ESP_INTR_FLAG_LEVEL2, // high interrupt priority, level 2 because of HSPI conflict @ level 1
         .dma_buf_count = 8,
         .dma_buf_len = 128,
         .use_apll = true,
@@ -530,14 +563,36 @@ void app_main()
 
     // Start ADC callback
     printf("start ADC callback \n");
-    timer_tg0_initialise(400);
-        timer_tg1_initialise(4000);
+    timer_tg0_initialise(100);
+        //timer_tg1_initialise(4000);
     printf("ADC callback started \n");
 
 
+    gpio_config_t io_conf;
+    //interrupt of rising edge
+    io_conf.intr_type = (gpio_int_type_t)GPIO_PIN_INTR_DISABLE;
+
+    //bit mask of the pins, use GPIO4/5 here
+io_conf.pin_bit_mask = ((1ULL<<26)); //| (1ULL<<26) | (1ULL<<27));
+//set as input mode
+io_conf.mode = GPIO_MODE_INPUT;
+//enable pull-up mode
+io_conf.pull_down_en = (gpio_pulldown_t)0;
+io_conf.pull_up_en = (gpio_pullup_t)1;
+gpio_config(&io_conf);
+
+gpio_set_intr_type((gpio_num_t)26, GPIO_INTR_ANYEDGE);
+
+
+    ESP_ERROR_CHECK(gpio_install_isr_service(0));
+    gpio_isr_handler_add(GPIO_NUM_26, gpio_isr_handler, (void*) GPIO_NUM_26);
+
+gpio_evt_queue = xQueueCreate(10, sizeof(uint32_t));
 
     //start encoder service
     xTaskCreate(&encoderHandler, "encoderHandler", 2048, NULL, 5, NULL);
+
+xTaskCreate(gpio_task_example, "gpio_task_example", 2048, NULL, 10, NULL);
 
     // start main task
     xTaskCreate(&hello_task, "hello_task", 2048, NULL, 5, NULL);
@@ -546,11 +601,7 @@ void app_main()
     //xTaskCreate(&i2s_task1, "i2s_task1", 2048, NULL, 5, NULL);
 
     while(1) {
-      //printf("Hier5!\n");
       // runs @ 48000 / 16 = 3000hz
-      //if(i2s_ready==1) {
-        //calc_busy=1;
-        //printf("Hier!\n");
         hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_FREQ, 300);
         hv_process(context, NULL, outBuffers, blockSize);
         for (int i = 0; i < blockSize; i++) {
@@ -559,19 +610,9 @@ void app_main()
           samples_data_out2[i*2] = (int32_t)(outBuffers[2][i] * MULT_S32);
           samples_data_out2[i*2+1] = (int32_t)(outBuffers[3][i] * MULT_S32);
         }
-        //printf("Hier2!\n");
-        //calc_busy=0;
-        //i2s_ready=0;
-      //}
       size_t bytes_written = 0;
       size_t bytes_written2 = 0;
-      // //while(bytes_written<(blockSize*2*sizeof(int32_t))){
-      // //}
-      // //printf("b:%d\n",bytes_written);
       i2s_write((i2s_port_t)1, &samples_data_out2, blockSize*2*sizeof(int32_t), &bytes_written2, portMAX_DELAY);
-      // if(bytes_written2!=(blockSize*2*sizeof(int32_t))) {
-      //   printf("onglijk2!\n");
-      // }
       i2s_write((i2s_port_t)0, &samples_data_out, blockSize*2*sizeof(int32_t), &bytes_written, portMAX_DELAY);
     }
 }
