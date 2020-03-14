@@ -35,8 +35,13 @@ float *inBuffers;
 float *outBuffers;
 HeavyContextInterface *context;
 int blockSize = 16;
+uint8_t i2s_ready=1;
+uint8_t calc_busy = 0;
+int32_t samples_data_out[32];
+int32_t samples_data_out2[32];
 
 static intr_handle_t s_timer_handle;
+static intr_handle_t s_timer_handle2;
 
 static int io_state = 0;
 
@@ -218,6 +223,14 @@ static void timer_tg0_isr(void* arg)
 	// gpio_set_level((gpio_num_t)4, io_state);
 }
 
+static void timer_tg1_isr(void* arg)
+{
+	//Reset irq and set for next time
+    TIMERG1.int_clr_timers.t0 = 1;
+    TIMERG1.hw_timer[0].config.alarm_en = 1;
+    teller++;
+  }
+
 void timer_tg0_initialise (int timer_period_us)
 {
     timer_config_t config = {
@@ -236,6 +249,26 @@ void timer_tg0_initialise (int timer_period_us)
     timer_isr_register(TIMER_GROUP_0, TIMER_0, &timer_tg0_isr, NULL, 0, &s_timer_handle);
 
     timer_start(TIMER_GROUP_0, TIMER_0);
+}
+
+void timer_tg1_initialise (int timer_period_us)
+{
+    timer_config_t config = {
+            .alarm_en = (timer_alarm_t)true,				  //Alarm Enable
+            .counter_en = (timer_start_t)false,			  //If the counter is enabled it will start incrementing / decrementing immediately after calling timer_init()
+            .intr_type = TIMER_INTR_LEVEL,	          //Is interrupt is triggered on timer’s alarm (timer_intr_mode_t)
+            .counter_dir = TIMER_COUNT_UP,	          //Does counter increment or decrement (timer_count_dir_t)
+            .auto_reload = (timer_autoreload_t)true,	//If counter should auto_reload a specific initial value on the timer’s alarm, or continue incrementing or decrementing.
+            .divider = 80   				                  //Divisor of the incoming 80 MHz (12.5nS) APB_CLK clock. E.g. 80 = 1uS per timer tick
+    };
+
+    timer_init(TIMER_GROUP_1, TIMER_0, &config);
+    timer_set_counter_value(TIMER_GROUP_1, TIMER_0, 0);
+    timer_set_alarm_value(TIMER_GROUP_1, TIMER_0, timer_period_us);
+    timer_enable_intr(TIMER_GROUP_1, TIMER_0);
+    timer_isr_register(TIMER_GROUP_1, TIMER_0, &timer_tg1_isr, NULL, 0, &s_timer_handle2);
+
+    timer_start(TIMER_GROUP_1, TIMER_0);
 }
 
 esp_err_t write_cmd(spi_device_handle_t spi, uint8_t cmd)
@@ -257,7 +290,7 @@ void hello_task(void *pvParameter)
     //   }
     //   while(true) {};
     // }
-    //printf("ticks: %d\n",teller);
+    printf("ticks: %d\n",teller);
     // ESP_LOG_BUFFER_HEX(tag,rx_data,20);
     // uint8_t msb = rx_data[1] & 0xf;
     // uint8_t lsb = rx_data[2];
@@ -284,6 +317,20 @@ void hello_task(void *pvParameter)
     if(xpos>100)xpos=10;
 
     vTaskDelay(1000 / portTICK_RATE_MS);
+  }
+}
+
+void i2s_task1(void *pvParameter)
+{
+  size_t bytes_written = 0;
+  //printf("Hier3!\n");
+  while(true) {
+    //i2s_ready=0;
+    if(calc_busy==0){
+      i2s_write((i2s_port_t)0, &samples_data_out, blockSize*2*sizeof(int32_t), &bytes_written, portMAX_DELAY);
+      i2s_ready=1;
+    }
+    //printf("Hier4!\n");
   }
 }
 
@@ -433,8 +480,8 @@ void app_main()
         .data_in_num = 35           // 6 ADCDAT
     };
     pin_config2 = {                  // 0 -> 25 MCLK
-        // .bck_io_num = 27,           // 3 SCK
-        // .ws_io_num = 26,            // 5 7 LRCLK
+        .bck_io_num = 14,           // 3 SCK
+        .ws_io_num = 12,            // 5 7 LRCLK
         .data_out_num = 4,         // 4 DACDAT
         .data_in_num = 33          // 6 ADCDAT
     };
@@ -445,16 +492,30 @@ void app_main()
         .channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT,
         .communication_format = (i2s_comm_format_t)(I2S_COMM_FORMAT_I2S | I2S_COMM_FORMAT_I2S_MSB),
         .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1, // high interrupt priority
-        .dma_buf_count = 3,
-        .dma_buf_len = 1024,
-        .use_apll = true
+        .dma_buf_count = 8,
+        .dma_buf_len = 128,
+        .use_apll = true,
+        //.tx_desc_auto_clear = true
+    };
+
+    i2s_config_t i2s_config2 = {
+        .mode = (i2s_mode_t)(I2S_MODE_SLAVE | I2S_MODE_TX | I2S_MODE_RX),
+        .sample_rate = 48000,
+        .bits_per_sample = I2S_BITS_PER_SAMPLE_32BIT,
+        .channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT,
+        .communication_format = (i2s_comm_format_t)(I2S_COMM_FORMAT_I2S | I2S_COMM_FORMAT_I2S_MSB),
+        .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1, // high interrupt priority
+        .dma_buf_count = 8,
+        .dma_buf_len = 128,
+        .use_apll = true,
+        //.tx_desc_auto_clear = true
     };
     i2s_driver_install((i2s_port_t)0, &i2s_config, 0, NULL);
     i2s_set_pin((i2s_port_t)0, &pin_config);
     // PIN_FUNC_SELECT(PERIPHS_IO_MUX_GPIO0_U, FUNC_GPIO0_CLK_OUT1);
     // REG_WRITE(PIN_CTRL, 0xFFFFFFF0);
 
-    i2s_driver_install((i2s_port_t)1, &i2s_config, 0, NULL);
+    i2s_driver_install((i2s_port_t)1, &i2s_config2, 0, NULL);
     i2s_set_pin((i2s_port_t)1, &pin_config2);
 
     // VSPI DMA Channel 2
@@ -470,7 +531,10 @@ void app_main()
     // Start ADC callback
     printf("start ADC callback \n");
     timer_tg0_initialise(400);
+        timer_tg1_initialise(4000);
     printf("ADC callback started \n");
+
+
 
     //start encoder service
     xTaskCreate(&encoderHandler, "encoderHandler", 2048, NULL, 5, NULL);
@@ -478,21 +542,36 @@ void app_main()
     // start main task
     xTaskCreate(&hello_task, "hello_task", 2048, NULL, 5, NULL);
 
-    int32_t samples_data_out[blockSize*2];
-    int32_t samples_data_out2[blockSize*2];
+    // start i2s task 1
+    //xTaskCreate(&i2s_task1, "i2s_task1", 2048, NULL, 5, NULL);
 
     while(1) {
+      //printf("Hier5!\n");
       // runs @ 48000 / 16 = 3000hz
-      hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_FREQ, 300);
-      hv_process(context, NULL, outBuffers, blockSize);
-      for (int i = 0; i < blockSize; i++) {
-        samples_data_out[i*2] = (int32_t)(outBuffers[0][i] * MULT_S32);
-        samples_data_out[i*2+1] = (int32_t)(outBuffers[1][i] * MULT_S32);
-        samples_data_out2[i*2] = (int32_t)(outBuffers[2][i] * MULT_S32);
-        samples_data_out2[i*2+1] = (int32_t)(outBuffers[3][i] * MULT_S32);
-      }
+      //if(i2s_ready==1) {
+        //calc_busy=1;
+        //printf("Hier!\n");
+        hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_FREQ, 300);
+        hv_process(context, NULL, outBuffers, blockSize);
+        for (int i = 0; i < blockSize; i++) {
+          samples_data_out[i*2] = (int32_t)(outBuffers[0][i] * MULT_S32);
+          samples_data_out[i*2+1] = (int32_t)(outBuffers[1][i] * MULT_S32);
+          samples_data_out2[i*2] = (int32_t)(outBuffers[2][i] * MULT_S32);
+          samples_data_out2[i*2+1] = (int32_t)(outBuffers[3][i] * MULT_S32);
+        }
+        //printf("Hier2!\n");
+        //calc_busy=0;
+        //i2s_ready=0;
+      //}
       size_t bytes_written = 0;
+      size_t bytes_written2 = 0;
+      // //while(bytes_written<(blockSize*2*sizeof(int32_t))){
+      // //}
+      // //printf("b:%d\n",bytes_written);
+      i2s_write((i2s_port_t)1, &samples_data_out2, blockSize*2*sizeof(int32_t), &bytes_written2, portMAX_DELAY);
+      // if(bytes_written2!=(blockSize*2*sizeof(int32_t))) {
+      //   printf("onglijk2!\n");
+      // }
       i2s_write((i2s_port_t)0, &samples_data_out, blockSize*2*sizeof(int32_t), &bytes_written, portMAX_DELAY);
-      //i2s_write((i2s_port_t)1, &samples_data_out2, blockSize*2*sizeof(int32_t), &bytes_written, portMAX_DELAY);
     }
 }

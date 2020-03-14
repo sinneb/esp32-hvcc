@@ -162,7 +162,9 @@ esp_err_t WM8978::writeRegwithError(uint8_t reg,uint8_t val)
     WM8978_REGVAL_TBL[reg] = val;
 
     if(errret!=ESP_OK) {
-      ESP_LOGE(TAG, "i2c communication error");
+      ESP_LOGE(TAG, "i2c communication error, retry");
+      writeRegwithError(reg,val);
+      vTaskDelay(100 / portTICK_RATE_MS);
     } else {
       ESP_LOGI(TAG, "i2c communication ok");
     }
