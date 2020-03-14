@@ -79,9 +79,9 @@ extern "C" {
 
 void task_test_SSD1306() {
 	u8g2_esp32_hal_t u8g2_esp32_hal = U8G2_ESP32_HAL_DEFAULT;
-	u8g2_esp32_hal.clk   = (gpio_num_t)0;  //d0
+	u8g2_esp32_hal.clk   = (gpio_num_t)12;  //d0
 	u8g2_esp32_hal.mosi  = (gpio_num_t)2;  //d1
-	u8g2_esp32_hal.cs    = (gpio_num_t)16; // not used
+	u8g2_esp32_hal.cs    = (gpio_num_t)0; // not used
 	u8g2_esp32_hal.dc    = (gpio_num_t)5; // *23
 	u8g2_esp32_hal.reset = (gpio_num_t)13;
 	u8g2_esp32_hal_init(u8g2_esp32_hal);
@@ -100,7 +100,7 @@ void printDemo() {
   u8g2_ClearBuffer(&u8g2);
   //u8g2_DrawBox(&u8g2, 10,20, 20, 30);
   u8g2_SetFont(&u8g2, u8g2_font_t0_13_me);
-  u8g2_DrawStr(&u8g2, 0,15,"H2ello World!");
+  u8g2_DrawStr(&u8g2, 0,15,"H4ello World!");
   u8g2_SendBuffer(&u8g2); // takes 30us @ 4Mhz
 }
 
@@ -295,33 +295,38 @@ void hello_task(void *pvParameter)
     //   }
     //   while(true) {};
     // }
-    printf("ticks: %d\n",teller);
+    //printf("ticks: %d\n",teller);
     // ESP_LOG_BUFFER_HEX(tag,rx_data,20);
     // uint8_t msb = rx_data[1] & 0xf;
     // uint8_t lsb = rx_data[2];
     // uint16_t res = 256U*msb+lsb;
     // printf("val: %d\n",res);
-    printf("res2: %d\n",(rx_data[1] << 4) | (rx_data[2] >> 4));
+    //printf("res2: %d\n",(rx_data[1] << 4) | (rx_data[2] >> 4));
 
     //printf("\n");
     //u8g2_DrawBox(&u8g2, 10,20, 20, 30);
     //u8g2_SetFont(&u8g2, u8g2_font_t0_13_me);
     //u8g2_DrawStr(&u8g2, 0,15,"H2ello World!");
     //u8g2_DrawBox(&u8g2, xpos, 10, 10, 10);
-
     // u8g2_ClearBuffer(&u8g2);
-    // for(int dis=0;dis<127;dis++) {
-    //   u8g2_DrawPixel(&u8g2,dis,displaybuffer1[dis]/64);
-    //   //printf("%d ",displaybuffer1[dis]/64);
-    // }
-    //
+    // //u8g2_DrawBox(&u8g2, 10,20, 20, 30);
+    // u8g2_SetFont(&u8g2, u8g2_font_t0_13_me);
+    // u8g2_DrawStr(&u8g2, 0,15,"H3ello World!");
     // u8g2_SendBuffer(&u8g2); // takes 30us @ 4Mhz
-    // displaybuffer1refresh=1;
+
+    u8g2_ClearBuffer(&u8g2);
+    for(int dis=0;dis<127;dis++) {
+      u8g2_DrawPixel(&u8g2,dis,displaybuffer1[dis]/64);
+      //printf("%d ",displaybuffer1[dis]/64);
+    }
+
+    u8g2_SendBuffer(&u8g2); // takes 30us @ 4Mhz
+    displaybuffer1refresh=1;
 
     xpos+=10;
     if(xpos>100)xpos=10;
 
-    vTaskDelay(1000 / portTICK_RATE_MS);
+    vTaskDelay(100 / portTICK_RATE_MS);
   }
 }
 
@@ -514,7 +519,7 @@ void app_main()
     };
     pin_config2 = {                  // 0 -> 25 MCLK
         .bck_io_num = 35,           // 3 SCK
-        .ws_io_num = 12,            // 5 7 LRCLK
+        .ws_io_num = 39,            // 5 7 LRCLK
         .data_out_num = 4,         // 4 DACDAT
         //.data_in_num = 33          // 6 ADCDAT
     };
@@ -602,7 +607,7 @@ xTaskCreate(gpio_task_example, "gpio_task_example", 2048, NULL, 10, NULL);
 
     while(1) {
       // runs @ 48000 / 16 = 3000hz
-        hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_FREQ, 300);
+        hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_FREQ, (4095 - ((rx_data[1] << 4) | (rx_data[2] >> 4))));
         hv_process(context, NULL, outBuffers, blockSize);
         for (int i = 0; i < blockSize; i++) {
           samples_data_out[i*2] = (int32_t)(outBuffers[0][i] * MULT_S32);
