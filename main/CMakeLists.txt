@@ -1,6 +1,6 @@
 idf_component_register(
   SRCS  "main.cpp"
-        "AC101.cpp"
+        "WM8978.cpp"
         "u8g2_esp32_hal.cpp"
         "rotary_encoder.cpp"
         "heavy/Heavy_heavy.cpp"
@@ -41,6 +41,11 @@ set_source_files_properties("heavy/HvHeavy.cpp"
       PROPERTIES COMPILE_FLAGS
       -Wno-unknown-pragmas
   )
+
+  set(CMAKE_C_FLAGS "-Werror=all -Werror=extra \
+    -fPIE -fstack-check -fstack-protector-all -ftrapv -D_FORTIFY_SOURCE=2 \
+    -Wno-error=undef -Wno-error=implicit-fallthrough -Wunsuffixed-float-constants\
+    -Werror=unused -Werror=stringop-overflow=4")
 
 add_definitions("-ffast-math -DHV_SIMD_NONE")
 #add_definitions("-ffast-math -DNDEBUG -DHV_SIMD_NONE")

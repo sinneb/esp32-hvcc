@@ -1,6 +1,24 @@
-# ESP32-Audio-Kit & hvcc
+# ESP32-DevKitC & hvcc
 
-This repo demonstrates a single file solution for running [hvcc](https://github.com/enzienaudio/hvcc) sources on the [ESP32-Audio-Kit](https://nl.aliexpress.com/af/ESP32%25252dAudio%25252dKit.html), inspired by the [Faust ESP32 architecture example](https://faust.grame.fr/doc/tutorials/#dsp-on-the-esp32-with-faust). The hvcc compiler leverages the use of (a subset of) puredata operators on the cheap and fast esp32 uprocessor. The ESP32-Audio-Kit provides a complete audio development platform with a very reasonable pricetag.
+This repo demonstrates a single file solution for running [hvcc](https://github.com/enzienaudio/hvcc) sources on the [ESP32-devkitc](https://docs.espressif.com/projects/esp-idf/en/latest/hw-reference/get-started-devkitc.html), inspired by the [Faust ESP32 architecture example](https://faust.grame.fr/doc/tutorials/#dsp-on-the-esp32-with-faust). The hvcc compiler leverages the use of (a subset of) puredata operators on the cheap and fast esp32 uprocessor. The ESP32-devkitc combined with dual WM8731 CODECs and an 8 port MCP3208 ADC provides a complete and available audio development platform with a very reasonable pricetag. UI provided via a SSD1306 display, some buttons and a rotary encoder.
+
+# Goal
+
+The goal of this development is to realise a generic eurorack module, based on the ESP32 and programmable via puredata. Each cheap module consists of four control voltage inputs, four audio inputs, and four audio / cv outputs (all io -5v -> +5v and fully eurorack compatible). An OLED-display, some buttons and a rotaty encoder enable user interaction.
+
+Total cost breakdown
+
+Hardware | cost
+--- | ---
+ESP32 devkitc | &euro; 9
+WM8731 | &euro; 3 (>10)
+MCP3204 | &euro; 2,85
+SSD1306 | &euro; 1,79
+Encoder | &euro; 1,00
+pcb | &euro; 3,00
+power / opamps / various | &euro; 6,00
+
+total ~ &euro; 25,00
 
 # Installation
 
