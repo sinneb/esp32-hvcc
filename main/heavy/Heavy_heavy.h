@@ -43,9 +43,6 @@ extern "C" {
 #pragma mark - Heavy Context
 #endif
 
-typedef enum {
-  HV_HEAVY_PARAM_IN_FREQ = 0x345FC008, // freq
-} Hv_heavy_ParameterIn;
 
 
 /**

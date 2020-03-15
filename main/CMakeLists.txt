@@ -42,5 +42,10 @@ set_source_files_properties("heavy/HvHeavy.cpp"
       -Wno-unknown-pragmas
   )
 
+  set(CMAKE_C_FLAGS "-Werror=all -Werror=extra \
+    -fPIE -fstack-check -fstack-protector-all -ftrapv -D_FORTIFY_SOURCE=2 \
+    -Wno-error=undef -Wno-error=implicit-fallthrough -Wunsuffixed-float-constants\
+    -Werror=unused -Werror=stringop-overflow=4")
+
 add_definitions("-ffast-math -DHV_SIMD_NONE")
 #add_definitions("-ffast-math -DNDEBUG -DHV_SIMD_NONE")

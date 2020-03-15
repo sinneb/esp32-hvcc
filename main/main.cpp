@@ -607,13 +607,13 @@ xTaskCreate(gpio_task_example, "gpio_task_example", 2048, NULL, 10, NULL);
 
     while(1) {
       // runs @ 48000 / 16 = 3000hz
-        hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_FREQ, (4095 - ((rx_data[1] << 4) | (rx_data[2] >> 4))));
+        //hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_FREQ, (4095 - ((rx_data[1] << 4) | (rx_data[2] >> 4))));
         hv_process(context, NULL, outBuffers, blockSize);
         for (int i = 0; i < blockSize; i++) {
           samples_data_out[i*2] = (int32_t)(outBuffers[0][i] * MULT_S32);
           samples_data_out[i*2+1] = (int32_t)(outBuffers[1][i] * MULT_S32);
-          samples_data_out2[i*2] = (int32_t)(outBuffers[2][i] * MULT_S32);
-          samples_data_out2[i*2+1] = (int32_t)(outBuffers[3][i] * MULT_S32);
+          samples_data_out2[i*2] = (int32_t)0;//(outBuffers[2][i] * MULT_S32);
+          samples_data_out2[i*2+1] = (int32_t)0;//(outBuffers[3][i] * MULT_S32);
         }
       size_t bytes_written = 0;
       size_t bytes_written2 = 0;
