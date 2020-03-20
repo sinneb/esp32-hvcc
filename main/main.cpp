@@ -578,7 +578,7 @@ void app_main()
     io_conf.intr_type = (gpio_int_type_t)GPIO_PIN_INTR_DISABLE;
 
     //bit mask of the pins, use GPIO4/5 here
-io_conf.pin_bit_mask = ((1ULL<<26)); //| (1ULL<<26) | (1ULL<<27));
+io_conf.pin_bit_mask = ((1ULL<<26) | (1ULL<<0) | (1ULL<<32));
 //set as input mode
 io_conf.mode = GPIO_MODE_INPUT;
 //enable pull-up mode
@@ -587,10 +587,14 @@ io_conf.pull_up_en = (gpio_pullup_t)1;
 gpio_config(&io_conf);
 
 gpio_set_intr_type((gpio_num_t)26, GPIO_INTR_ANYEDGE);
+gpio_set_intr_type((gpio_num_t)0, GPIO_INTR_ANYEDGE);
+gpio_set_intr_type((gpio_num_t)32, GPIO_INTR_ANYEDGE);
 
 
     ESP_ERROR_CHECK(gpio_install_isr_service(0));
     gpio_isr_handler_add(GPIO_NUM_26, gpio_isr_handler, (void*) GPIO_NUM_26);
+    gpio_isr_handler_add(GPIO_NUM_0, gpio_isr_handler, (void*) GPIO_NUM_0);
+    gpio_isr_handler_add(GPIO_NUM_32, gpio_isr_handler, (void*) GPIO_NUM_32);
 
 gpio_evt_queue = xQueueCreate(10, sizeof(uint32_t));
 
