@@ -31,7 +31,7 @@ u8g2_t u8g2; // a structure which will contain all the data for one display
 #define ESP_INTR_FLAG_DEFAULT 0
 
 //#define MULT_S32 2147483647
-#define MULT_S32 2147483647
+#define MULT_S32 1373741823
 #define ADC_CS 15 // chip 10
 
 static xQueueHandle gpio_evt_queue = NULL;
@@ -515,7 +515,7 @@ void app_main()
         .bck_io_num = 36,           // 3 SCK
         .ws_io_num = 34,            // 5 7 LRCLK
         .data_out_num = 25,         // 4 DACDAT
-        //.data_in_num = 35           // 6 ADCDAT
+        //.data_in_num = 32           // 6 ADCDAT
     };
     pin_config2 = {                  // 0 -> 25 MCLK
         .bck_io_num = 35,           // 3 SCK
@@ -578,7 +578,7 @@ void app_main()
     io_conf.intr_type = (gpio_int_type_t)GPIO_PIN_INTR_DISABLE;
 
     //bit mask of the pins, use GPIO4/5 here
-io_conf.pin_bit_mask = ((1ULL<<26) | (1ULL<<0) | (1ULL<<32));
+io_conf.pin_bit_mask = ((1ULL<<26) | (1ULL<<0));
 //set as input mode
 io_conf.mode = GPIO_MODE_INPUT;
 //enable pull-up mode
@@ -588,13 +588,13 @@ gpio_config(&io_conf);
 
 gpio_set_intr_type((gpio_num_t)26, GPIO_INTR_ANYEDGE);
 gpio_set_intr_type((gpio_num_t)0, GPIO_INTR_ANYEDGE);
-gpio_set_intr_type((gpio_num_t)32, GPIO_INTR_ANYEDGE);
+//gpio_set_intr_type((gpio_num_t)32, GPIO_INTR_ANYEDGE);
 
 
     ESP_ERROR_CHECK(gpio_install_isr_service(0));
     gpio_isr_handler_add(GPIO_NUM_26, gpio_isr_handler, (void*) GPIO_NUM_26);
     gpio_isr_handler_add(GPIO_NUM_0, gpio_isr_handler, (void*) GPIO_NUM_0);
-    gpio_isr_handler_add(GPIO_NUM_32, gpio_isr_handler, (void*) GPIO_NUM_32);
+    //gpio_isr_handler_add(GPIO_NUM_32, gpio_isr_handler, (void*) GPIO_NUM_32);
 
 gpio_evt_queue = xQueueCreate(10, sizeof(uint32_t));
 
@@ -616,8 +616,8 @@ xTaskCreate(gpio_task_example, "gpio_task_example", 2048, NULL, 10, NULL);
         for (int i = 0; i < blockSize; i++) {
           samples_data_out[i*2] = (int32_t)(outBuffers[0][i] * MULT_S32);
           samples_data_out[i*2+1] = (int32_t)(outBuffers[1][i] * MULT_S32);
-          samples_data_out2[i*2] = (int32_t)0;//(outBuffers[2][i] * MULT_S32);
-          samples_data_out2[i*2+1] = (int32_t)0;//(outBuffers[3][i] * MULT_S32);
+          samples_data_out2[i*2] = (int32_t)(outBuffers[2][i] * MULT_S32);
+          samples_data_out2[i*2+1] = (int32_t)(outBuffers[3][i] * MULT_S32);
         }
       size_t bytes_written = 0;
       size_t bytes_written2 = 0;
