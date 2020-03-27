@@ -81,7 +81,7 @@ void task_test_SSD1306() {
 	u8g2_esp32_hal_t u8g2_esp32_hal = U8G2_ESP32_HAL_DEFAULT;
 	u8g2_esp32_hal.clk   = (gpio_num_t)12;  //d0
 	u8g2_esp32_hal.mosi  = (gpio_num_t)2;  //d1
-	u8g2_esp32_hal.cs    = (gpio_num_t)0; // not used
+	u8g2_esp32_hal.cs    = (gpio_num_t)16; // not used
 	u8g2_esp32_hal.dc    = (gpio_num_t)5; // *23
 	u8g2_esp32_hal.reset = (gpio_num_t)13;
 	u8g2_esp32_hal_init(u8g2_esp32_hal);
@@ -189,19 +189,21 @@ static void timer_tg0_isr(void* arg)
     //   }
     // }
 
-    // display calculations are done here to distribute the calculation-load more evenly
-    if(displaybuffer1refresh==1) {
-      if(displaybuffer1subcounter < displaybuffer1zoom) {
-        displaybuffer1temp+=(rx_data[1] << 4) | (rx_data[2] >> 4);
-        displaybuffer1subcounter++;
-      } else {
-        displaybuffer1[displaybuffer1counter]=displaybuffer1temp/displaybuffer1zoom;
-        displaybuffer1temp=0;
-        displaybuffer1subcounter=0;
-        displaybuffer1counter++;
-        if(displaybuffer1counter==128){displaybuffer1counter=0;displaybuffer1refresh=0;}
-      }
-    }
+    // ---- CALCULATE OSCILLOSCOPE
+    // // display calculations are done here to distribute the calculation-load more evenly
+    // if(displaybuffer1refresh==1) {
+    //   if(displaybuffer1subcounter < displaybuffer1zoom) {
+    //     displaybuffer1temp+=(rx_data[1] << 4) | (rx_data[2] >> 4);
+    //     displaybuffer1subcounter++;
+    //   } else {
+    //     displaybuffer1[displaybuffer1counter]=displaybuffer1temp/displaybuffer1zoom;
+    //     displaybuffer1temp=0;
+    //     displaybuffer1subcounter=0;
+    //     displaybuffer1counter++;
+    //     if(displaybuffer1counter==128){displaybuffer1counter=0;displaybuffer1refresh=0;}
+    //   }
+    // }
+    // /-- CALCULATE
 
     // if(displaybuffer1counter==1024) {displaybuffer1counter=0;}
     // displaybuffer1[displaybuffer1counter]=(rx_data[1] << 4) | (rx_data[2] >> 4);
@@ -573,6 +575,8 @@ void app_main()
     printf("ADC callback started \n");
 
 
+
+
     gpio_config_t io_conf;
     //interrupt of rising edge
     io_conf.intr_type = (gpio_int_type_t)GPIO_PIN_INTR_DISABLE;
@@ -594,6 +598,12 @@ gpio_set_intr_type((gpio_num_t)0, GPIO_INTR_ANYEDGE);
     ESP_ERROR_CHECK(gpio_install_isr_service(0));
     gpio_isr_handler_add(GPIO_NUM_26, gpio_isr_handler, (void*) GPIO_NUM_26);
     gpio_isr_handler_add(GPIO_NUM_0, gpio_isr_handler, (void*) GPIO_NUM_0);
+
+
+
+
+
+
     //gpio_isr_handler_add(GPIO_NUM_32, gpio_isr_handler, (void*) GPIO_NUM_32);
 
 gpio_evt_queue = xQueueCreate(10, sizeof(uint32_t));

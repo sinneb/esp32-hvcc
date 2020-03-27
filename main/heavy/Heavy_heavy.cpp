@@ -63,11 +63,11 @@ extern "C" {
 
 Heavy_heavy::Heavy_heavy(double sampleRate, int poolKb, int inQueueKb, int outQueueKb)
     : HeavyContext(sampleRate, poolKb, inQueueKb, outQueueKb) {
-  numBytes += sPhasor_k_init(&sPhasor_FXsqvBTu, 440.0f, sampleRate);
-  numBytes += sPhasor_k_init(&sPhasor_aaxT0qKo, 0.1f, sampleRate);
-  numBytes += sPhasor_k_init(&sPhasor_x4ZuPnsw, 220.0f, sampleRate);
-  numBytes += sPhasor_k_init(&sPhasor_uMC11CIS, 110.0f, sampleRate);
-  numBytes += sVarf_init(&sVarf_EghgwXfJ, 0.0f, 0.0f, false);
+  numBytes += sPhasor_k_init(&sPhasor_FbXZfcoU, 330.0f, sampleRate);
+  numBytes += sPhasor_k_init(&sPhasor_U9L612cs, 110.0f, sampleRate);
+  numBytes += sPhasor_k_init(&sPhasor_iKnE0nCW, 440.0f, sampleRate);
+  numBytes += sPhasor_k_init(&sPhasor_OtocmQBA, 220.0f, sampleRate);
+  numBytes += cVar_init_f(&cVar_wr0thwmH, 0.0f);
   
   // schedule a message to trigger all loadbangs via the __hv_init receiver
   scheduleMessageForReceiver(0xCE5CC65B, msg_initWithBang(HV_MESSAGE_ON_STACK(1), 0));
@@ -84,7 +84,7 @@ HvTable *Heavy_heavy::getTableForHash(hv_uint32_t tableHash) {
 void Heavy_heavy::scheduleMessageForReceiver(hv_uint32_t receiverHash, HvMessage *m) {
   switch (receiverHash) {
     case 0xCE5CC65B: { // __hv_init
-      mq_addMessageByTimestamp(&mq, m, 0, &cReceive_77NnFGcU_sendMessage);
+      mq_addMessageByTimestamp(&mq, m, 0, &cReceive_t3s4LUhp_sendMessage);
       break;
     }
     default: return;
@@ -115,16 +115,19 @@ int Heavy_heavy::getParameterInfo(int index, HvParameterInfo *info) {
  */
 
 
-void Heavy_heavy::cMsg_oFC7QZiO_sendMessage(HeavyContextInterface *_c, int letIn, const HvMessage *const n) {
+void Heavy_heavy::cVar_wr0thwmH_sendMessage(HeavyContextInterface *_c, int letIn, const HvMessage *m) {
+}
+
+void Heavy_heavy::cReceive_t3s4LUhp_sendMessage(HeavyContextInterface *_c, int letIn, const HvMessage *m) {
+  cMsg_IbJH9plV_sendMessage(_c, 0, m);
+}
+
+void Heavy_heavy::cMsg_IbJH9plV_sendMessage(HeavyContextInterface *_c, int letIn, const HvMessage *const n) {
   HvMessage *m = nullptr;
   m = HV_MESSAGE_ON_STACK(1);
   msg_init(m, 1, msg_getTimestamp(n));
   msg_setFloat(m, 0, -1.0f);
-  sVarf_onMessage(_c, &Context(_c)->sVarf_EghgwXfJ, m);
-}
-
-void Heavy_heavy::cReceive_77NnFGcU_sendMessage(HeavyContextInterface *_c, int letIn, const HvMessage *m) {
-  cMsg_oFC7QZiO_sendMessage(_c, 0, m);
+  cVar_onMessage(_c, &Context(_c)->cVar_wr0thwmH, 0, m, &cVar_wr0thwmH_sendMessage);
 }
 
 
@@ -173,7 +176,7 @@ int Heavy_heavy::process(float **inputBuffers, float **outputBuffers, int n) {
     __hv_zero_f(VOf(O3));
 
     // process all signal functions
-    __hv_phasor_k_f(&sPhasor_FXsqvBTu, VOf(Bf0));
+    __hv_phasor_k_f(&sPhasor_FbXZfcoU, VOf(Bf0));
     __hv_var_k_f(VOf(Bf1), 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f);
     __hv_sub_f(VIf(Bf0), VIf(Bf1), VOf(Bf1));
     __hv_abs_f(VIf(Bf1), VOf(Bf1));
@@ -188,8 +191,8 @@ int Heavy_heavy::process(float **inputBuffers, float **outputBuffers, int n) {
     __hv_var_k_f(VOf(Bf4), -0.166666666667f, -0.166666666667f, -0.166666666667f, -0.166666666667f, -0.166666666667f, -0.166666666667f, -0.166666666667f, -0.166666666667f);
     __hv_fma_f(VIf(Bf2), VIf(Bf4), VIf(Bf1), VOf(Bf1));
     __hv_fma_f(VIf(Bf0), VIf(Bf3), VIf(Bf1), VOf(Bf1));
-    __hv_add_f(VIf(Bf1), VIf(O1), VOf(O1));
-    __hv_phasor_k_f(&sPhasor_aaxT0qKo, VOf(Bf1));
+    __hv_add_f(VIf(Bf1), VIf(O0), VOf(O0));
+    __hv_phasor_k_f(&sPhasor_U9L612cs, VOf(Bf1));
     __hv_var_k_f(VOf(Bf3), 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f);
     __hv_sub_f(VIf(Bf1), VIf(Bf3), VOf(Bf3));
     __hv_abs_f(VIf(Bf3), VOf(Bf3));
@@ -204,8 +207,8 @@ int Heavy_heavy::process(float **inputBuffers, float **outputBuffers, int n) {
     __hv_var_k_f(VOf(Bf2), -0.166666666667f, -0.166666666667f, -0.166666666667f, -0.166666666667f, -0.166666666667f, -0.166666666667f, -0.166666666667f, -0.166666666667f);
     __hv_fma_f(VIf(Bf0), VIf(Bf2), VIf(Bf3), VOf(Bf3));
     __hv_fma_f(VIf(Bf1), VIf(Bf4), VIf(Bf3), VOf(Bf3));
-    __hv_add_f(VIf(Bf3), VIf(O0), VOf(O0));
-    __hv_phasor_k_f(&sPhasor_x4ZuPnsw, VOf(Bf3));
+    __hv_add_f(VIf(Bf3), VIf(O3), VOf(O3));
+    __hv_phasor_k_f(&sPhasor_iKnE0nCW, VOf(Bf3));
     __hv_var_k_f(VOf(Bf4), 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f);
     __hv_sub_f(VIf(Bf3), VIf(Bf4), VOf(Bf4));
     __hv_abs_f(VIf(Bf4), VOf(Bf4));
@@ -220,9 +223,8 @@ int Heavy_heavy::process(float **inputBuffers, float **outputBuffers, int n) {
     __hv_var_k_f(VOf(Bf0), -0.166666666667f, -0.166666666667f, -0.166666666667f, -0.166666666667f, -0.166666666667f, -0.166666666667f, -0.166666666667f, -0.166666666667f);
     __hv_fma_f(VIf(Bf1), VIf(Bf0), VIf(Bf4), VOf(Bf4));
     __hv_fma_f(VIf(Bf3), VIf(Bf2), VIf(Bf4), VOf(Bf4));
-    __hv_add_f(VIf(Bf4), VIf(O2), VOf(O2));
-    __hv_varread_f(&sVarf_EghgwXfJ, VOf(Bf4));
-    __hv_phasor_k_f(&sPhasor_uMC11CIS, VOf(Bf4));
+    __hv_add_f(VIf(Bf4), VIf(O1), VOf(O1));
+    __hv_phasor_k_f(&sPhasor_OtocmQBA, VOf(Bf4));
     __hv_var_k_f(VOf(Bf2), 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f);
     __hv_sub_f(VIf(Bf4), VIf(Bf2), VOf(Bf2));
     __hv_abs_f(VIf(Bf2), VOf(Bf2));
@@ -237,7 +239,7 @@ int Heavy_heavy::process(float **inputBuffers, float **outputBuffers, int n) {
     __hv_var_k_f(VOf(Bf1), -0.166666666667f, -0.166666666667f, -0.166666666667f, -0.166666666667f, -0.166666666667f, -0.166666666667f, -0.166666666667f, -0.166666666667f);
     __hv_fma_f(VIf(Bf3), VIf(Bf1), VIf(Bf2), VOf(Bf2));
     __hv_fma_f(VIf(Bf4), VIf(Bf0), VIf(Bf2), VOf(Bf2));
-    __hv_add_f(VIf(Bf2), VIf(O3), VOf(O3));
+    __hv_add_f(VIf(Bf2), VIf(O2), VOf(O2));
 
     // save output vars to output buffer
     __hv_store_f(outputBuffers[0]+n, VIf(O0));

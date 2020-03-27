@@ -35,6 +35,7 @@
 
 // object includes
 #include "HeavyContext.hpp"
+#include "HvControlVar.h"
 #include "HvMath.h"
 #include "HvSignalVar.h"
 #include "HvSignalPhasor.h"
@@ -60,15 +61,16 @@ class Heavy_heavy : public HeavyContext {
   void scheduleMessageForReceiver(hv_uint32_t receiverHash, HvMessage *m) override;
 
   // static sendMessage functions
-  static void cMsg_oFC7QZiO_sendMessage(HeavyContextInterface *, int, const HvMessage *);
-  static void cReceive_77NnFGcU_sendMessage(HeavyContextInterface *, int, const HvMessage *);
+  static void cVar_wr0thwmH_sendMessage(HeavyContextInterface *, int, const HvMessage *);
+  static void cReceive_t3s4LUhp_sendMessage(HeavyContextInterface *, int, const HvMessage *);
+  static void cMsg_IbJH9plV_sendMessage(HeavyContextInterface *, int, const HvMessage *);
 
   // objects
-  SignalPhasor sPhasor_FXsqvBTu;
-  SignalPhasor sPhasor_aaxT0qKo;
-  SignalPhasor sPhasor_x4ZuPnsw;
-  SignalPhasor sPhasor_uMC11CIS;
-  SignalVarf sVarf_EghgwXfJ;
+  SignalPhasor sPhasor_FbXZfcoU;
+  SignalPhasor sPhasor_U9L612cs;
+  SignalPhasor sPhasor_iKnE0nCW;
+  SignalPhasor sPhasor_OtocmQBA;
+  ControlVar cVar_wr0thwmH;
 };
 
 #endif // _HEAVY_CONTEXT_HEAVY_HPP_

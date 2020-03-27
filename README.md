@@ -12,7 +12,7 @@ Hardware | cost
 --- | ---
 ESP32 devkitc | &euro; 9
 WM8731 | &euro; 3 (>10)
-MCP3204 | &euro; 2,85
+MCP3208 | &euro; 3,13
 SSD1306 | &euro; 1,79
 Encoder | &euro; 1,00
 pcb | &euro; 3,00
