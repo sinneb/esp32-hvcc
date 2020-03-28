@@ -51,6 +51,7 @@ static intr_handle_t s_timer_handle2;
 static int io_state = 0;
 
 uint32_t teller = 0;
+uint32_t teller2 = 0;
 
 //RX TX Buffers
 uint8_t tx_data[10];
@@ -63,6 +64,11 @@ uint16_t displaybuffer1zoom = 8;
 uint16_t displaybuffer1counter = 0;
 uint16_t displaybuffer1subcounter = 0;
 uint32_t displaybuffer1temp = 0;
+
+uint16_t adcvalues[8][10];
+uint8_t adccounter = 0;
+uint8_t adcmax = 4;
+uint8_t potentiometercounter=0;
 
 // global spi handle
 spi_device_handle_t spi;
@@ -127,14 +133,37 @@ static void timeval_subtract(struct timeval *result, struct timeval *end, struct
 
 static void timer_tg0_isr(void* arg)
 {
+  teller++;
 	//Reset irq and set for next time
   TIMERG0.int_clr_timers.t0 = 1;
   TIMERG0.hw_timer[0].config.alarm_en = 1;
   // get spi transaction result, dont wait
   spi_device_get_trans_result(spi, (spi_transaction_t**)&t_res, 0);
+  // store result in adc array
+  // adc[0] -> adc[3] : incoming CV values, no running average
+  // adc[4] -> adc[7] : potentiometers, running averages
+  adcvalues[adccounter][0] = (rx_data[1] << 4) | (rx_data[2] >> 4);
+
   // set ADC port
-  uint8_t pin = 0;
+  adccounter++;
+  // reset ADC count
+  // scan adc0 - adc3 (CV inputs) 10x more often,
+  if(adccounter==adcmax) {
+    adccounter = 0;
+    potentiometercounter++;
+    if(potentiometercounter==8) {
+      adcmax=8;
+    }
+    if(potentiometercounter==9) {
+      adcmax=4;
+      potentiometercounter = 0;
+    }
+  }
+  uint8_t pin = adccounter;
   tx_data[0] = 0b01100000 | ((pin & 0b111) << 2);
+
+  if(adccounter==4) teller2++;
+
   // place next transaction in queue, dont wait
   spi_device_queue_trans(spi, (spi_transaction_t*)&t, 0);
 
@@ -182,14 +211,25 @@ void displayHandler(void *pvParameter)
   while(true) {
     u8g2_ClearBuffer(&u8g2);
     u8g2_SetFont(&u8g2, u8g2_font_t0_13_me);
-    u8g2_DrawStr(&u8g2, xpos,15,"H4ello World!");
+    u8g2_DrawStr(&u8g2, 0,55,"func1");
+    u8g2_DrawStr(&u8g2, 85,55,"func2");
+    u8g2_DrawStr(&u8g2, 20,40,"func3");
+    u8g2_DrawStr(&u8g2, 65,40,"func4");
     u8g2_SendBuffer(&u8g2); // takes 30us @ 4Mhz
     displaybuffer1refresh=1;
 
     xpos+=10;
     if(xpos>100)xpos=10;
 
-    vTaskDelay(100 / portTICK_RATE_MS);
+    printf("teller: %d\n", teller);
+    printf("teller2: %d\n", teller2);
+    printf("ADC4: %d\n", adcvalues[4][0]);
+    printf("ADC5: %d\n", adcvalues[5][0]);
+    printf("ADC6: %d\n", adcvalues[6][0]);
+    printf("ADC7: %d\n", adcvalues[7][0]);
+    printf("\n");
+
+    vTaskDelay(1000 / portTICK_RATE_MS);
   }
 }
 
@@ -331,16 +371,16 @@ void app_main()
     // Start button interrupts & queue
     gpio_config_t io_conf;
     io_conf.intr_type = (gpio_int_type_t)GPIO_PIN_INTR_DISABLE;
-    io_conf.pin_bit_mask = ((1ULL<<26) | (1ULL<<0));
+    io_conf.pin_bit_mask = ((1ULL<<26) | (1ULL<<329));
     io_conf.mode = GPIO_MODE_INPUT;
     io_conf.pull_down_en = (gpio_pulldown_t)0;
     io_conf.pull_up_en = (gpio_pullup_t)1;
     gpio_config(&io_conf);
     gpio_set_intr_type((gpio_num_t)26, GPIO_INTR_ANYEDGE);
-    gpio_set_intr_type((gpio_num_t)0, GPIO_INTR_ANYEDGE);
+    gpio_set_intr_type((gpio_num_t)32, GPIO_INTR_ANYEDGE);
     ESP_ERROR_CHECK(gpio_install_isr_service(0));
     gpio_isr_handler_add(GPIO_NUM_26, gpio_isr_handler, (void*) GPIO_NUM_26);
-    gpio_isr_handler_add(GPIO_NUM_0, gpio_isr_handler, (void*) GPIO_NUM_0);
+    gpio_isr_handler_add(GPIO_NUM_32, gpio_isr_handler, (void*) GPIO_NUM_32);
     gpio_evt_queue = xQueueCreate(10, sizeof(uint32_t));
 
     // Start encoder service
@@ -354,7 +394,11 @@ void app_main()
 
     // I2S loop -> runs @ 48000
     while(1) {
-        //hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_FREQ, (4095 - ((rx_data[1] << 4) | (rx_data[2] >> 4))));
+        // send to context every blocksize (16 samples)
+        hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT1, (float)adcvalues[4][0]);
+        // hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT2, 200.0f);
+        // hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT3, 200.0f);
+        // hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT4, 200.0f);
         hv_process(context, NULL, outBuffers, blockSize);
         for (int i = 0; i < blockSize; i++) {
           samples_data_out[i*2] = (int32_t)(outBuffers[0][i] * MULT_S32);

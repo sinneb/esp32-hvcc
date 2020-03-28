@@ -35,7 +35,6 @@
 
 // object includes
 #include "HeavyContext.hpp"
-#include "HvControlVar.h"
 #include "HvMath.h"
 #include "HvSignalVar.h"
 #include "HvSignalPhasor.h"
@@ -55,22 +54,31 @@ class Heavy_heavy : public HeavyContext {
   int processInlineInterleaved(float *inputBuffers, float *outputBuffer, int n) override;
 
   int getParameterInfo(int index, HvParameterInfo *info) override;
+  struct Parameter {
+    struct In {
+      enum ParameterIn : hv_uint32_t {
+        POT1 = 0x3AE704A5, // pot1
+      };
+    };
+  };
 
  private:
   HvTable *getTableForHash(hv_uint32_t tableHash) override;
   void scheduleMessageForReceiver(hv_uint32_t receiverHash, HvMessage *m) override;
 
   // static sendMessage functions
-  static void cVar_wr0thwmH_sendMessage(HeavyContextInterface *, int, const HvMessage *);
-  static void cReceive_t3s4LUhp_sendMessage(HeavyContextInterface *, int, const HvMessage *);
-  static void cMsg_IbJH9plV_sendMessage(HeavyContextInterface *, int, const HvMessage *);
+  static void cReceive_wcFJIxf6_sendMessage(HeavyContextInterface *, int, const HvMessage *);
+  static void cReceive_qJcYtZz9_sendMessage(HeavyContextInterface *, int, const HvMessage *);
+  static void cSend_8LqI64Lz_sendMessage(HeavyContextInterface *, int, const HvMessage *);
+  static void cMsg_cO7wguFH_sendMessage(HeavyContextInterface *, int, const HvMessage *);
+  static void cReceive_GxEaM8i7_sendMessage(HeavyContextInterface *, int, const HvMessage *);
 
   // objects
-  SignalPhasor sPhasor_FbXZfcoU;
-  SignalPhasor sPhasor_U9L612cs;
-  SignalPhasor sPhasor_iKnE0nCW;
-  SignalPhasor sPhasor_OtocmQBA;
-  ControlVar cVar_wr0thwmH;
+  SignalPhasor sPhasor_l8JuvyXp;
+  SignalPhasor sPhasor_NTb84ntb;
+  SignalPhasor sPhasor_reqWSsz8;
+  SignalPhasor sPhasor_b5lTW2wY;
+  SignalVarf sVarf_nVPeKSpe;
 };
 
 #endif // _HEAVY_CONTEXT_HEAVY_HPP_

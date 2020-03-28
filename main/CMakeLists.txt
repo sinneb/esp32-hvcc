@@ -32,7 +32,7 @@ idf_component_register(
         "heavy/HvControlPack.c"
         "heavy/HvControlRandom.c"
         "heavy/HvControlTabread.c"
-        #"heavy/HvControlPrint.c"
+        "heavy/HvControlPrint.c"
         "heavy/HvControlSlice.c"
         "heavy/HvControlUnop.c"
   INCLUDE_DIRS "heavy/")

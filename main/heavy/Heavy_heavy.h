@@ -43,6 +43,9 @@ extern "C" {
 #pragma mark - Heavy Context
 #endif
 
+typedef enum {
+  HV_HEAVY_PARAM_IN_POT1 = 0x3AE704A5, // pot1
+} Hv_heavy_ParameterIn;
 
 
 /**
