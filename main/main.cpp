@@ -371,7 +371,7 @@ void app_main()
     // Start button interrupts & queue
     gpio_config_t io_conf;
     io_conf.intr_type = (gpio_int_type_t)GPIO_PIN_INTR_DISABLE;
-    io_conf.pin_bit_mask = ((1ULL<<26) | (1ULL<<329));
+    io_conf.pin_bit_mask = ((1ULL<<26) | (1ULL<<32));
     io_conf.mode = GPIO_MODE_INPUT;
     io_conf.pull_down_en = (gpio_pulldown_t)0;
     io_conf.pull_up_en = (gpio_pullup_t)1;
@@ -396,6 +396,7 @@ void app_main()
     while(1) {
         // send to context every blocksize (16 samples)
         hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT1, (float)adcvalues[4][0]);
+        hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT2, (float)adcvalues[5][0]);
         // hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT2, 200.0f);
         // hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT3, 200.0f);
         // hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT4, 200.0f);

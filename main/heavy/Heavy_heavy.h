@@ -45,6 +45,7 @@ extern "C" {
 
 typedef enum {
   HV_HEAVY_PARAM_IN_POT1 = 0x3AE704A5, // pot1
+  HV_HEAVY_PARAM_IN_POT2 = 0xDDC4EBDB, // pot2
 } Hv_heavy_ParameterIn;
 
 
