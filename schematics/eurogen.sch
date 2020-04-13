@@ -595,63 +595,6 @@ Text Label 10800 2150 0    50   ~ 0
 adc_clk
 Wire Wire Line
 	10800 2150 9550 2150
-$Comp
-L oled:OLED OLED1
-U 1 1 5E5B24AA
-P 5900 2000
-F 0 "OLED1" V 5858 2528 45  0000 L CNN
-F 1 "OLED" V 5942 2528 45  0000 L CNN
-F 2 "oled_OLED_STANDARD" H 5930 2150 20  0001 C CNN
-F 3 "" H 5900 2000 50  0001 C CNN
-	1    5900 2000
-	0    1    1    0   
-$EndComp
-$Comp
-L power:+3V3 #PWR018
-U 1 1 5E5B7FC9
-P 5100 1600
-F 0 "#PWR018" H 5100 1450 50  0001 C CNN
-F 1 "+3V3" H 5115 1773 50  0000 C CNN
-F 2 "" H 5100 1600 50  0001 C CNN
-F 3 "" H 5100 1600 50  0001 C CNN
-	1    5100 1600
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	5100 1800 5100 1600
-$Comp
-L power:GND #PWR019
-U 1 1 5E5BBFD5
-P 5200 1850
-F 0 "#PWR019" H 5200 1600 50  0001 C CNN
-F 1 "GND" H 5205 1677 50  0000 C CNN
-F 2 "" H 5200 1850 50  0001 C CNN
-F 3 "" H 5200 1850 50  0001 C CNN
-	1    5200 1850
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	5200 1850 5200 1700
-Wire Wire Line
-	5200 1700 5800 1700
-Wire Wire Line
-	5100 1800 5800 1800
-Text Label 5650 1900 2    50   ~ 0
-oled_clk
-Text Label 5650 2000 2    50   ~ 0
-oled_mosi
-Text Label 5650 2100 2    50   ~ 0
-oled_res
-Text Label 5650 2200 2    50   ~ 0
-oled_dc
-Wire Wire Line
-	5650 1900 5800 1900
-Wire Wire Line
-	5650 2000 5800 2000
-Wire Wire Line
-	5650 2100 5800 2100
-Wire Wire Line
-	5650 2200 5800 2200
 Wire Wire Line
 	7700 2550 7950 2550
 Wire Wire Line
@@ -763,35 +706,12 @@ Wire Wire Line
 	9350 4600 9350 4450
 Text Label 10800 2850 0    50   ~ 0
 adc_cs
-$Comp
-L power:GND #PWR024
-U 1 1 5E6F5531
-P 5550 2350
-F 0 "#PWR024" H 5550 2100 50  0001 C CNN
-F 1 "GND" H 5555 2177 50  0000 C CNN
-F 2 "" H 5550 2350 50  0001 C CNN
-F 3 "" H 5550 2350 50  0001 C CNN
-	1    5550 2350
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	5550 2350 5550 2300
-Wire Wire Line
-	5550 2300 5800 2300
 Wire Wire Line
 	7700 2450 7950 2450
 Wire Wire Line
 	9550 2850 10800 2850
-Text Label 7700 2550 2    50   ~ 0
-oled_clk
-Text Label 10800 2750 0    50   ~ 0
-oled_mosi
 Wire Wire Line
 	9550 2750 10800 2750
-Text Label 7700 2750 2    50   ~ 0
-oled_res
-Text Label 10800 2250 0    50   ~ 0
-oled_dc
 Wire Wire Line
 	9550 2250 10800 2250
 Text Label 7700 2450 2    50   ~ 0
@@ -3133,10 +3053,8 @@ Wire Wire Line
 Connection ~ 13250 1600
 Text Label 7700 2250 2    50   ~ 0
 button1
-Text Label 9900 2650 0    50   ~ 0
+Text Label 11700 2050 0    50   ~ 0
 button2
-Wire Wire Line
-	9900 2650 9550 2650
 Text Label 12050 1600 2    50   ~ 0
 button1
 Text Label 12050 2200 2    50   ~ 0
@@ -3433,4 +3351,82 @@ Text Label 13150 5200 0    50   ~ 0
 audio_in3
 Text Label 13150 5300 0    50   ~ 0
 audio_in4
+$Comp
+L Device:LED D?
+U 1 1 5E97629B
+P 5900 1550
+F 0 "D?" H 5893 1766 50  0000 C CNN
+F 1 "LED" H 5893 1675 50  0000 C CNN
+F 2 "" H 5900 1550 50  0001 C CNN
+F 3 "~" H 5900 1550 50  0001 C CNN
+	1    5900 1550
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:LED D?
+U 1 1 5E97741F
+P 5900 1900
+F 0 "D?" H 5893 2116 50  0000 C CNN
+F 1 "LED" H 5893 2025 50  0000 C CNN
+F 2 "" H 5900 1900 50  0001 C CNN
+F 3 "~" H 5900 1900 50  0001 C CNN
+	1    5900 1900
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:LED D?
+U 1 1 5E978540
+P 5900 2250
+F 0 "D?" H 5893 2466 50  0000 C CNN
+F 1 "LED" H 5893 2375 50  0000 C CNN
+F 2 "" H 5900 2250 50  0001 C CNN
+F 3 "~" H 5900 2250 50  0001 C CNN
+	1    5900 2250
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5E978B47
+P 5450 2400
+F 0 "#PWR?" H 5450 2150 50  0001 C CNN
+F 1 "GND" H 5455 2227 50  0000 C CNN
+F 2 "" H 5450 2400 50  0001 C CNN
+F 3 "" H 5450 2400 50  0001 C CNN
+	1    5450 2400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5750 1550 5450 1550
+Wire Wire Line
+	5450 1550 5450 1900
+Wire Wire Line
+	5750 1900 5450 1900
+Connection ~ 5450 1900
+Wire Wire Line
+	5450 1900 5450 2250
+Wire Wire Line
+	5750 2250 5450 2250
+Connection ~ 5450 2250
+Wire Wire Line
+	5450 2250 5450 2400
+Text Label 6300 1550 0    50   ~ 0
+led1
+Text Label 6300 1900 0    50   ~ 0
+led2
+Text Label 6300 2250 0    50   ~ 0
+led3
+Wire Wire Line
+	6050 1550 6300 1550
+Wire Wire Line
+	6050 1900 6300 1900
+Wire Wire Line
+	6050 2250 6300 2250
+Text Label 10800 2650 0    50   ~ 0
+led1
+Wire Wire Line
+	9550 2650 10800 2650
+Text Label 10800 2750 0    50   ~ 0
+led2
+Text Label 10800 2250 0    50   ~ 0
+led3
 $EndSCHEMATC

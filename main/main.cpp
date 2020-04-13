@@ -15,20 +15,30 @@
 #include "esp_attr.h"
 #include "driver/timer.h"
 #include "driver/gpio.h"
+#include "driver/ledc.h"
 
-// OLED display drivers & settings
+// // OLED display drivers & settings
 #include <driver/spi_master.h>
-#include "u8g2_esp32_hal.h"
-u8g2_t u8g2; // a structure which will contain all the data for one display
+// #include "u8g2_esp32_hal.h"
+// u8g2_t u8g2; // a structure which will contain all the data for one display
 
-#include "rotary_encoder.h"
-#define ROT_ENC_A_GPIO 14
-#define ROT_ENC_B_GPIO 27
-#define ENABLE_HALF_STEPS false  // Set to true to enable tracking of rotary encoder at half step resolution
-#define RESET_AT          0      // Set to a positive non-zero number to reset the position if this value is exceeded
-#define FLIP_DIRECTION    true  // Set to true to reverse the clockwise/counterclockwise sense
+// #include "rotary_encoder.h"
+// #define ROT_ENC_A_GPIO 14
+// #define ROT_ENC_B_GPIO 27
+// #define ENABLE_HALF_STEPS false  // Set to true to enable tracking of rotary encoder at half step resolution
+// #define RESET_AT          0      // Set to a positive non-zero number to reset the position if this value is exceeded
+// #define FLIP_DIRECTION    true  // Set to true to reverse the clockwise/counterclockwise sense
+
+#define LEDC_IO_0    (5)
 
 #define ESP_INTR_FLAG_DEFAULT 0
+
+#define LEDC_HS_TIMER          LEDC_TIMER_0
+#define LEDC_HS_MODE           LEDC_HIGH_SPEED_MODE
+#define LEDC_HS_CH0_GPIO       (12)
+#define LEDC_HS_CH0_CHANNEL    LEDC_CHANNEL_0
+
+int fadelevel = 0;
 
 //#define MULT_S32 2147483647
 #define MULT_S32 1373741823
@@ -83,43 +93,43 @@ extern "C" {
     void app_main(void);
 }
 
-void init_SSD1306() {
-	u8g2_esp32_hal_t u8g2_esp32_hal = U8G2_ESP32_HAL_DEFAULT;
-	u8g2_esp32_hal.clk   = (gpio_num_t)12;  //d0
-	u8g2_esp32_hal.mosi  = (gpio_num_t)2;  //d1
-	u8g2_esp32_hal.cs    = (gpio_num_t)16; // not used
-	u8g2_esp32_hal.dc    = (gpio_num_t)5; // *23
-	u8g2_esp32_hal.reset = (gpio_num_t)13;
-	u8g2_esp32_hal_init(u8g2_esp32_hal);
+// void init_SSD1306() {
+// 	u8g2_esp32_hal_t u8g2_esp32_hal = U8G2_ESP32_HAL_DEFAULT;
+// 	u8g2_esp32_hal.clk   = (gpio_num_t)12;  //d0
+// 	u8g2_esp32_hal.mosi  = (gpio_num_t)2;  //d1
+// 	u8g2_esp32_hal.cs    = (gpio_num_t)16; // not used
+// 	u8g2_esp32_hal.dc    = (gpio_num_t)5; // *23
+// 	u8g2_esp32_hal.reset = (gpio_num_t)13;
+// 	u8g2_esp32_hal_init(u8g2_esp32_hal);
+//
+// 	u8g2_Setup_ssd1306_128x64_noname_f(
+// 		&u8g2,
+// 		U8G2_R0,
+// 		u8g2_esp32_spi_byte_cb,
+// 		u8g2_esp32_gpio_and_delay_cb);  // init u8g2 structure
+// 	  u8g2_InitDisplay(&u8g2); // send init sequence to the display, display is in sleep mode after this,
+// 	  u8g2_SetPowerSave(&u8g2, 0); // wake up display
+// 	  ESP_LOGI(tag, "All done!");
+// }
 
-	u8g2_Setup_ssd1306_128x64_noname_f(
-		&u8g2,
-		U8G2_R0,
-		u8g2_esp32_spi_byte_cb,
-		u8g2_esp32_gpio_and_delay_cb);  // init u8g2 structure
-	  u8g2_InitDisplay(&u8g2); // send init sequence to the display, display is in sleep mode after this,
-	  u8g2_SetPowerSave(&u8g2, 0); // wake up display
-	  ESP_LOGI(tag, "All done!");
-}
-
-void encoderHandler (void *pvParameter) {
-  rotary_encoder_info_t info;
-
-  ESP_ERROR_CHECK(rotary_encoder_init(&info, (gpio_num_t)ROT_ENC_A_GPIO, (gpio_num_t)ROT_ENC_B_GPIO));
-  ESP_ERROR_CHECK(rotary_encoder_enable_half_steps(&info, ENABLE_HALF_STEPS));
-
-  QueueHandle_t event_queue = rotary_encoder_create_queue();
-  ESP_ERROR_CHECK(rotary_encoder_set_queue(&info, event_queue));
-  while(1) {
-    // Wait for incoming events on the event queue.
-        rotary_encoder_event_t event = { 0 };
-        if (xQueueReceive(event_queue, &event, portMAX_DELAY) == pdTRUE)
-        {
-            //hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_CHANNELA, event.state.position/100.0);
-            printf("Channel A: %d\n",event.state.position);
-        }
-  }
-}
+// void encoderHandler (void *pvParameter) {
+//   rotary_encoder_info_t info;
+//
+//   ESP_ERROR_CHECK(rotary_encoder_init(&info, (gpio_num_t)ROT_ENC_A_GPIO, (gpio_num_t)ROT_ENC_B_GPIO));
+//   ESP_ERROR_CHECK(rotary_encoder_enable_half_steps(&info, ENABLE_HALF_STEPS));
+//
+//   QueueHandle_t event_queue = rotary_encoder_create_queue();
+//   ESP_ERROR_CHECK(rotary_encoder_set_queue(&info, event_queue));
+//   while(1) {
+//     // Wait for incoming events on the event queue.
+//         rotary_encoder_event_t event = { 0 };
+//         if (xQueueReceive(event_queue, &event, portMAX_DELAY) == pdTRUE)
+//         {
+//             //hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_CHANNELA, event.state.position/100.0);
+//             printf("Channel A: %d\n",event.state.position);
+//         }
+//   }
+// }
 
 static void timeval_subtract(struct timeval *result, struct timeval *end, struct timeval *start) {
   if (end->tv_usec < start->tv_usec) {
@@ -209,17 +219,17 @@ void displayHandler(void *pvParameter)
   uint8_t xpos = 10;
 
   while(true) {
-    u8g2_ClearBuffer(&u8g2);
-    u8g2_SetFont(&u8g2, u8g2_font_t0_13_me);
-    u8g2_DrawStr(&u8g2, 0,55,"func1");
-    u8g2_DrawStr(&u8g2, 85,55,"func2");
-    u8g2_DrawStr(&u8g2, 20,40,"func3");
-    u8g2_DrawStr(&u8g2, 65,40,"func4");
-    u8g2_SendBuffer(&u8g2); // takes 30us @ 4Mhz
-    displaybuffer1refresh=1;
-
-    xpos+=10;
-    if(xpos>100)xpos=10;
+    // u8g2_ClearBuffer(&u8g2);
+    // u8g2_SetFont(&u8g2, u8g2_font_t0_13_me);
+    // u8g2_DrawStr(&u8g2, 0,55,"func1");
+    // u8g2_DrawStr(&u8g2, 85,55,"func2");
+    // u8g2_DrawStr(&u8g2, 20,40,"func3");
+    // u8g2_DrawStr(&u8g2, 65,40,"func4");
+    // u8g2_SendBuffer(&u8g2); // takes 30us @ 4Mhz
+    // displaybuffer1refresh=1;
+    //
+    // xpos+=10;
+    // if(xpos>100)xpos=10;
 
     printf("teller: %d\n", teller);
     printf("teller2: %d\n", teller2);
@@ -228,6 +238,18 @@ void displayHandler(void *pvParameter)
     printf("ADC6: %d\n", adcvalues[6][0]);
     printf("ADC7: %d\n", adcvalues[7][0]);
     printf("\n");
+
+    ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, fadelevel);
+    ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
+    //
+    ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_1, fadelevel);
+    ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_1);
+
+    ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_2, fadelevel);
+    ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_2);
+
+    fadelevel+=100;
+    if(fadelevel>1000)fadelevel=0;
 
     vTaskDelay(1000 / portTICK_RATE_MS);
   }
@@ -252,6 +274,8 @@ static void gpioHandler(void* arg)
 void app_main()
 {
     printf("app main\n");
+
+
 
     // setup global spi_transaction_t
     t_res = &t;
@@ -286,8 +310,8 @@ void app_main()
     WM8978 wm8978_2;
     wm8978_2.init(1);
 
-    printf("starting display\n");
-    init_SSD1306();
+    // printf("starting display\n");
+    // init_SSD1306();
 
     // setup and start heavy compiler
     double sampleRate = 48000.0;
@@ -383,8 +407,59 @@ void app_main()
     gpio_isr_handler_add(GPIO_NUM_32, gpio_isr_handler, (void*) GPIO_NUM_32);
     gpio_evt_queue = xQueueCreate(10, sizeof(uint32_t));
 
-    // Start encoder service
-    xTaskCreate(&encoderHandler, "encoderHandler", 2048, NULL, 5, NULL);
+    // // Start encoder service
+    // xTaskCreate(&encoderHandler, "encoderHandler", 2048, NULL, 5, NULL);
+
+gpio_config_t io_conf2;
+    io_conf2.intr_type = GPIO_INTR_DISABLE;
+io_conf2.mode = GPIO_MODE_OUTPUT;
+io_conf2.pin_bit_mask = ((1ULL<<5) | (1ULL<<0) | (1ULL<<2));
+io_conf2.pull_down_en = GPIO_PULLDOWN_DISABLE;
+io_conf2.pull_up_en = GPIO_PULLUP_DISABLE;
+gpio_config(&io_conf2);
+
+    ledc_timer_config_t ledc_timer2 = {
+      .speed_mode = LEDC_LOW_SPEED_MODE,           // timer mode
+      .duty_resolution = LEDC_TIMER_13_BIT, // resolution of PWM duty
+      .timer_num = LEDC_TIMER_2,            // timer index
+      .freq_hz = 5000,                      // frequency of PWM signal
+      .clk_cfg = LEDC_AUTO_CLK,              // Auto select the source clock
+        };
+    ledc_timer_config(&ledc_timer2);
+
+    static ledc_channel_config_t var_ledc_channel0 = {
+    .gpio_num   = 0,
+    .speed_mode = LEDC_LOW_SPEED_MODE,
+    .channel    = LEDC_CHANNEL_0,
+    .intr_type  = LEDC_INTR_DISABLE,
+    .timer_sel  = LEDC_TIMER_2,
+    .duty       = 100, // LEDC channel duty, the duty range is [0, (2**bit_num) - 1],
+    .hpoint = 0,
+    };
+    ledc_channel_config(&var_ledc_channel0);
+
+    static ledc_channel_config_t var_ledc_channel1 = {
+    .gpio_num   = 2,
+    .speed_mode = LEDC_LOW_SPEED_MODE,
+    .channel    = LEDC_CHANNEL_1,
+    .intr_type  = LEDC_INTR_DISABLE,
+    .timer_sel  = LEDC_TIMER_2,
+    .duty       = 100, // LEDC channel duty, the duty range is [0, (2**bit_num) - 1],
+    .hpoint = 0,
+    };
+    ledc_channel_config(&var_ledc_channel1);
+
+    static ledc_channel_config_t var_ledc_channel2 = {
+    .gpio_num   = 5,
+    .speed_mode = LEDC_LOW_SPEED_MODE,
+    .channel    = LEDC_CHANNEL_2,
+    .intr_type  = LEDC_INTR_DISABLE,
+    .timer_sel  = LEDC_TIMER_2,
+    .duty       = 100, // LEDC channel duty, the duty range is [0, (2**bit_num) - 1],
+    .hpoint = 0,
+    };
+    ledc_channel_config(&var_ledc_channel2);
+
 
     // Start button queue handler
     xTaskCreate(gpioHandler, "gpioHandler", 2048, NULL, 10, NULL);
