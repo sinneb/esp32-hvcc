@@ -245,8 +245,8 @@ void displayHandler(void *pvParameter)
     ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_1, fadelevel);
     ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_1);
 
-    ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_2, fadelevel);
-    ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_2);
+    // ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_2, fadelevel);
+    // ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_2);
 
     fadelevel+=100;
     if(fadelevel>1000)fadelevel=0;
@@ -269,6 +269,31 @@ static void gpioHandler(void* arg)
             printf("GPIO[%d] intr, val: %d\n", io_num, gpio_get_level((gpio_num_t)io_num));
         }
     }
+}
+
+// define the send hook as a function with the following signature
+static void sendHook(HeavyContextInterface *c,
+    const char *sendName, unsigned int sendHash, const HvMessage *m) {
+
+  // // only react to messages sent to receivers named "hello"
+  // if (!strcmp(sendName, "hello")) {
+  //   // do something with the message
+  //   printf("> received message from send \"%s\".", sendName);
+  // }
+
+  // or alternatively...
+  switch (sendHash) {
+    case 0xFB81D83A: {
+      // do something with the message
+      printf("> message for you sir \"%s\".\n", sendName);
+      uint16_t x = hv_msg_getFloat(m, 0);
+      //printf("floatval: %d \n",x);
+      ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_2, x);
+      ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_2);
+      break;
+    }
+    default: return;
+  }
 }
 
 void app_main()
@@ -321,6 +346,7 @@ void app_main()
     for (int i = 0; i < numOutputChannels; ++i) {
       outBuffers[i] = (float *) hv_malloc(blockSize * sizeof(float));
     }
+    hv_setSendHook(context, sendHook);
 
     printf("heavy # outputs: %d \n",numOutputChannels);
 

@@ -48,6 +48,10 @@ typedef enum {
   HV_HEAVY_PARAM_IN_POT2 = 0xDDC4EBDB, // pot2
 } Hv_heavy_ParameterIn;
 
+typedef enum {
+  HV_HEAVY_PARAM_OUT_METROBANG = 0xFB81D83A, // metrobang
+} Hv_heavy_ParameterOut;
+
 
 /**
  * Creates a new patch instance.

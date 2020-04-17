@@ -599,40 +599,6 @@ Wire Wire Line
 	7700 2550 7950 2550
 Wire Wire Line
 	7700 2750 7950 2750
-$Comp
-L Device:Rotary_Encoder SW1
-U 1 1 5E5B9F74
-P 15450 1600
-F 0 "SW1" H 15680 1646 50  0000 L CNN
-F 1 "Rotary_Encoder" H 15680 1555 50  0000 L CNN
-F 2 "" H 15300 1760 50  0001 C CNN
-F 3 "~" H 15450 1860 50  0001 C CNN
-	1    15450 1600
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR022
-U 1 1 5E5BCC80
-P 14350 1700
-F 0 "#PWR022" H 14350 1450 50  0001 C CNN
-F 1 "GND" H 14355 1527 50  0000 C CNN
-F 2 "" H 14350 1700 50  0001 C CNN
-F 3 "" H 14350 1700 50  0001 C CNN
-	1    14350 1700
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	15150 1600 14350 1600
-Wire Wire Line
-	14350 1600 14350 1700
-Text Label 14900 1500 2    50   ~ 0
-rot1_a
-Text Label 14900 1700 2    50   ~ 0
-rot1_b
-Wire Wire Line
-	14900 1700 15150 1700
-Wire Wire Line
-	15150 1500 14900 1500
 Wire Wire Line
 	7700 1950 7950 1950
 $Comp
@@ -3053,10 +3019,8 @@ Wire Wire Line
 Connection ~ 13250 1600
 Text Label 7700 2250 2    50   ~ 0
 button1
-Text Label 11700 2050 0    50   ~ 0
+Text Label 7700 2550 2    50   ~ 0
 button2
-Wire Wire Line
-	9900 2650 9550 2650
 Text Label 12050 1600 2    50   ~ 0
 button1
 Text Label 12050 2200 2    50   ~ 0
@@ -3354,10 +3318,10 @@ audio_in3
 Text Label 13150 5300 0    50   ~ 0
 audio_in4
 $Comp
-L Device:LED D?
+L Device:LED D1
 U 1 1 5E97629B
 P 5900 1550
-F 0 "D?" H 5893 1766 50  0000 C CNN
+F 0 "D1" H 5893 1766 50  0000 C CNN
 F 1 "LED" H 5893 1675 50  0000 C CNN
 F 2 "" H 5900 1550 50  0001 C CNN
 F 3 "~" H 5900 1550 50  0001 C CNN
@@ -3365,10 +3329,10 @@ F 3 "~" H 5900 1550 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Device:LED D?
+L Device:LED D2
 U 1 1 5E97741F
 P 5900 1900
-F 0 "D?" H 5893 2116 50  0000 C CNN
+F 0 "D2" H 5893 2116 50  0000 C CNN
 F 1 "LED" H 5893 2025 50  0000 C CNN
 F 2 "" H 5900 1900 50  0001 C CNN
 F 3 "~" H 5900 1900 50  0001 C CNN
@@ -3376,10 +3340,10 @@ F 3 "~" H 5900 1900 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Device:LED D?
+L Device:LED D3
 U 1 1 5E978540
 P 5900 2250
-F 0 "D?" H 5893 2466 50  0000 C CNN
+F 0 "D3" H 5893 2466 50  0000 C CNN
 F 1 "LED" H 5893 2375 50  0000 C CNN
 F 2 "" H 5900 2250 50  0001 C CNN
 F 3 "~" H 5900 2250 50  0001 C CNN
@@ -3387,10 +3351,10 @@ F 3 "~" H 5900 2250 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR?
+L power:GND #PWR018
 U 1 1 5E978B47
 P 5450 2400
-F 0 "#PWR?" H 5450 2150 50  0001 C CNN
+F 0 "#PWR018" H 5450 2150 50  0001 C CNN
 F 1 "GND" H 5455 2227 50  0000 C CNN
 F 2 "" H 5450 2400 50  0001 C CNN
 F 3 "" H 5450 2400 50  0001 C CNN
@@ -3411,16 +3375,63 @@ Wire Wire Line
 Connection ~ 5450 2250
 Wire Wire Line
 	5450 2250 5450 2400
-Text Label 6300 1550 0    50   ~ 0
+Text Label 6650 1550 0    50   ~ 0
 led1
-Text Label 6300 1900 0    50   ~ 0
+Text Label 6650 1900 0    50   ~ 0
 led2
-Text Label 6300 2250 0    50   ~ 0
+Text Label 6650 2250 0    50   ~ 0
 led3
+Text Label 10800 2650 0    50   ~ 0
+led1
 Wire Wire Line
-	6050 1550 6300 1550
+	9550 2650 10800 2650
+Text Label 10800 2750 0    50   ~ 0
+led2
+Text Label 10800 2250 0    50   ~ 0
+led3
+$Comp
+L Device:R R49
+U 1 1 5EAFC261
+P 6350 1550
+F 0 "R49" V 6557 1550 50  0000 C CNN
+F 1 "220r" V 6466 1550 50  0000 C CNN
+F 2 "" V 6280 1550 50  0001 C CNN
+F 3 "~" H 6350 1550 50  0001 C CNN
+	1    6350 1550
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R50
+U 1 1 5EAFD1AE
+P 6350 1900
+F 0 "R50" V 6557 1900 50  0000 C CNN
+F 1 "220r" V 6466 1900 50  0000 C CNN
+F 2 "" V 6280 1900 50  0001 C CNN
+F 3 "~" H 6350 1900 50  0001 C CNN
+	1    6350 1900
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R51
+U 1 1 5EAFD53B
+P 6350 2250
+F 0 "R51" V 6557 2250 50  0000 C CNN
+F 1 "220r" V 6466 2250 50  0000 C CNN
+F 2 "" V 6280 2250 50  0001 C CNN
+F 3 "~" H 6350 2250 50  0001 C CNN
+	1    6350 2250
+	0    -1   -1   0   
+$EndComp
 Wire Wire Line
-	6050 1900 6300 1900
+	6050 1550 6200 1550
 Wire Wire Line
-	6050 2250 6300 2250
+	6050 1900 6200 1900
+Wire Wire Line
+	6050 2250 6200 2250
+Wire Wire Line
+	6500 1550 6650 1550
+Wire Wire Line
+	6500 1900 6650 1900
+Wire Wire Line
+	6500 2250 6650 2250
 $EndSCHEMATC
