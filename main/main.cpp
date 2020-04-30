@@ -239,11 +239,11 @@ void displayHandler(void *pvParameter)
     printf("ADC7: %d\n", adcvalues[7][0]);
     printf("\n");
 
-    ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, fadelevel);
-    ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
-    //
-    ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_1, fadelevel);
-    ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_1);
+    // ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, fadelevel);
+    // ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
+    // //
+    // ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_1, fadelevel);
+    // ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_1);
 
     // ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_2, fadelevel);
     // ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_2);
@@ -283,15 +283,33 @@ static void sendHook(HeavyContextInterface *c,
 
   // or alternatively...
   switch (sendHash) {
-    case 0xFB81D83A: {
-      // do something with the message
-      printf("> message for you sir \"%s\".\n", sendName);
+    case HV_HEAVY_PARAM_OUT_LED1: {
+      printf("led1\n");
       uint16_t x = hv_msg_getFloat(m, 0);
-      //printf("floatval: %d \n",x);
-      ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_2, x);
-      ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_2);
-      break;
+      ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, x);
+      ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
     }
+    case HV_HEAVY_PARAM_OUT_LED2: {
+      //printf("led2\n");
+      uint16_t x = hv_msg_getFloat(m, 0);
+      ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_1, x);
+      ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_1);
+    }
+    // case HV_HEAVY_PARAM_OUT_LED3: {
+    //   printf("led3\n");
+    //   uint16_t x = hv_msg_getFloat(m, 0);
+    //   ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_2, x);
+    //   ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_2);
+    // }
+    // case 0xFB81D83A: {
+    //   // do something with the message
+    //   printf("> message for you sir \"%s\".\n", sendName);
+    //   uint16_t x = hv_msg_getFloat(m, 0);
+    //   //printf("floatval: %d \n",x);
+    //   ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_2, x);
+    //   ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_2);
+    //   break;
+    // }
     default: return;
   }
 }
@@ -337,31 +355,6 @@ void app_main()
 
     // printf("starting display\n");
     // init_SSD1306();
-
-    // setup and start heavy compiler
-    double sampleRate = 48000.0;
-    context = hv_heavy_new(sampleRate);
-    int numOutputChannels = hv_getNumOutputChannels(context);
-    float **outBuffers = (float **) hv_malloc(numOutputChannels * sizeof(float *));
-    for (int i = 0; i < numOutputChannels; ++i) {
-      outBuffers[i] = (float *) hv_malloc(blockSize * sizeof(float));
-    }
-    hv_setSendHook(context, sendHook);
-
-    printf("heavy # outputs: %d \n",numOutputChannels);
-
-    // measure load
-    int numIterations = 5000;
-    struct timeval elapsed, start, end;
-    gettimeofday(&start, NULL);
-    for (int i = 0; i < numIterations; ++i) {
-      hv_process(context, NULL, outBuffers, blockSize);
-    }
-    gettimeofday(&end, NULL);
-    timeval_subtract(&elapsed, &end, &start);
-    uint64_t elapsedTimeUs = (elapsed.tv_sec * 1000000L) + elapsed.tv_usec;
-    // return the us per block
-    printf("%f \n", elapsedTimeUs/((double) numIterations));
 
     // start I2S
     i2s_pin_config_t pin_config;
@@ -492,6 +485,31 @@ gpio_config(&io_conf2);
 
     // Start display task
     xTaskCreate(&displayHandler, "displayHandler", 2048, NULL, 5, NULL);
+
+    // setup and start heavy compiler
+    double sampleRate = 48000.0;
+    context = hv_heavy_new(sampleRate);
+    int numOutputChannels = hv_getNumOutputChannels(context);
+    float **outBuffers = (float **) hv_malloc(numOutputChannels * sizeof(float *));
+    for (int i = 0; i < numOutputChannels; ++i) {
+      outBuffers[i] = (float *) hv_malloc(blockSize * sizeof(float));
+    }
+    hv_setSendHook(context, sendHook);
+
+    printf("heavy # outputs: %d \n",numOutputChannels);
+
+    // measure load
+    int numIterations = 5000;
+    struct timeval elapsed, start, end;
+    gettimeofday(&start, NULL);
+    for (int i = 0; i < numIterations; ++i) {
+      hv_process(context, NULL, outBuffers, blockSize);
+    }
+    gettimeofday(&end, NULL);
+    timeval_subtract(&elapsed, &end, &start);
+    uint64_t elapsedTimeUs = (elapsed.tv_sec * 1000000L) + elapsed.tv_usec;
+    // return the us per block
+    printf("%f \n", elapsedTimeUs/((double) numIterations));
 
     // I2S loop -> runs @ 48000
     while(1) {
