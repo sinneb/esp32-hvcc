@@ -55,6 +55,7 @@ The jumpers on the ESP32-Audio-kit should be arranged like OFF-OFF-OFF-ON-ON to 
 
 - Create your puredata patch, using the [supported objects](supportedobjects.md) only.
 - Issue a Issue a `python2.7 hvcc.py input.pd -o ./heavy/` to generate the source files, where input.pd is your puredata patch
+- NEW: compile using hvcc and libs and copy to project subdir: `python2.7 hvcc.py esp32_2.pd -p ./Hoclib/ ./Josephlarralde/ ./ParkinsonHashizume/ ./MikeMorenoAudio/ ./Heavylib -o ./heavy/ ; cp ./heavy/c/Heavy_heavy.* ~/Documents/GitHub/esp32-hvcc/main/heavy/`
 - Copy this folder to the main/heavy folder of the esp32-hvcc repo.
 - Add all heavy c and cpp sources to /main/CMakeLists.txt
 - Run `idf.py -p /dev/tty.SLAB_USBtoUART flash monitor` to compile, upload and monitor the esp32 binary
