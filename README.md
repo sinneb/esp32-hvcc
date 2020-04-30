@@ -59,6 +59,7 @@ The jumpers on the ESP32-Audio-kit should be arranged like OFF-OFF-OFF-ON-ON to 
 - Copy this folder to the main/heavy folder of the esp32-hvcc repo.
 - Add all heavy c and cpp sources to /main/CMakeLists.txt
 - Run `idf.py -p /dev/tty.SLAB_USBtoUART flash monitor` to compile, upload and monitor the esp32 binary
+- NEW: `idf.py -p /dev/cu.usbserial-1A14301 -b 921600 flash monitor`
 - Enjoy your pd patch running on the ESP32-Audio-Kit
 
 # Performance
