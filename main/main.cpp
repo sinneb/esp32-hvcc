@@ -291,7 +291,10 @@ static void sendHook(HeavyContextInterface *c,
     }
     case HV_HEAVY_PARAM_OUT_LED2: {
       //printf("led2\n");
+      uint16_t y = hv_msg_getNumElements(m);
       uint16_t x = hv_msg_getFloat(m, 0);
+      printf("val %d\n",x);
+      printf("numele: %d\n",y);
       ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_1, x);
       ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_1);
     }
