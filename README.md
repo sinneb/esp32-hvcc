@@ -18,7 +18,7 @@ Check the Kicad schematics in the schematics folder
 
 # Usage
 
-- Create your puredata patch, using the [supported objects](supportedobjects.md) only.
+- Create your puredata patch, using the [supported objects](supportedobjects.md) only. Use `tabread` with a $0-array instead of the `table` object, seems to work better.
 - Issue a Issue a `python2.7 hvcc.py input.pd -o ./heavy/` to generate the source files, where input.pd is your puredata patch
 - MAC: compile using hvcc and libs and copy to project subdir: `python2.7 hvcc.py esp32_2.pd -p ./Hoclib/ ./Josephlarralde/ ./ParkinsonHashizume/ ./MikeMorenoAudio/ ./Heavylib -o ./heavy/ ; cp ./heavy/c/Heavy_heavy.* ~/Documents/GitHub/esp32-hvcc/main/heavy/`
 - WIN: compile and copy: `c:\Python27\python.exe` rest as above, then a `copy /Y heavy\c\Heavy_* c:\Users\Arthur\Github\esp32-hvcc\main\heavy`
