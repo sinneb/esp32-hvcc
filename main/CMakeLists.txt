@@ -1,7 +1,6 @@
 idf_component_register(
   SRCS  "main.cpp"
         "WM8978.cpp"
-        "u8g2_esp32_hal.cpp"
         "rotary_encoder.cpp"
         "heavy/Heavy_heavy.cpp"
         "heavy/HeavyContext.cpp"
