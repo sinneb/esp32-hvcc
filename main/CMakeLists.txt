@@ -34,6 +34,8 @@ idf_component_register(
         "heavy/HvControlPrint.c"
         "heavy/HvControlSlice.c"
         "heavy/HvControlUnop.c"
+        "heavy/HvSignalCPole.c"
+        "heavy/HvSignalEnvelope.c"
   INCLUDE_DIRS "heavy/")
 
 set_source_files_properties("heavy/HvHeavy.cpp"

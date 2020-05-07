@@ -93,44 +93,6 @@ extern "C" {
     void app_main(void);
 }
 
-// void init_SSD1306() {
-// 	u8g2_esp32_hal_t u8g2_esp32_hal = U8G2_ESP32_HAL_DEFAULT;
-// 	u8g2_esp32_hal.clk   = (gpio_num_t)12;  //d0
-// 	u8g2_esp32_hal.mosi  = (gpio_num_t)2;  //d1
-// 	u8g2_esp32_hal.cs    = (gpio_num_t)16; // not used
-// 	u8g2_esp32_hal.dc    = (gpio_num_t)5; // *23
-// 	u8g2_esp32_hal.reset = (gpio_num_t)13;
-// 	u8g2_esp32_hal_init(u8g2_esp32_hal);
-//
-// 	u8g2_Setup_ssd1306_128x64_noname_f(
-// 		&u8g2,
-// 		U8G2_R0,
-// 		u8g2_esp32_spi_byte_cb,
-// 		u8g2_esp32_gpio_and_delay_cb);  // init u8g2 structure
-// 	  u8g2_InitDisplay(&u8g2); // send init sequence to the display, display is in sleep mode after this,
-// 	  u8g2_SetPowerSave(&u8g2, 0); // wake up display
-// 	  ESP_LOGI(tag, "All done!");
-// }
-
-// void encoderHandler (void *pvParameter) {
-//   rotary_encoder_info_t info;
-//
-//   ESP_ERROR_CHECK(rotary_encoder_init(&info, (gpio_num_t)ROT_ENC_A_GPIO, (gpio_num_t)ROT_ENC_B_GPIO));
-//   ESP_ERROR_CHECK(rotary_encoder_enable_half_steps(&info, ENABLE_HALF_STEPS));
-//
-//   QueueHandle_t event_queue = rotary_encoder_create_queue();
-//   ESP_ERROR_CHECK(rotary_encoder_set_queue(&info, event_queue));
-//   while(1) {
-//     // Wait for incoming events on the event queue.
-//         rotary_encoder_event_t event = { 0 };
-//         if (xQueueReceive(event_queue, &event, portMAX_DELAY) == pdTRUE)
-//         {
-//             //hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_CHANNELA, event.state.position/100.0);
-//             printf("Channel A: %d\n",event.state.position);
-//         }
-//   }
-// }
-
 static void timeval_subtract(struct timeval *result, struct timeval *end, struct timeval *start) {
   if (end->tv_usec < start->tv_usec) {
     result->tv_sec = end->tv_sec - start->tv_sec - 1;
@@ -219,17 +181,6 @@ void displayHandler(void *pvParameter)
   uint8_t xpos = 10;
 
   while(true) {
-    // u8g2_ClearBuffer(&u8g2);
-    // u8g2_SetFont(&u8g2, u8g2_font_t0_13_me);
-    // u8g2_DrawStr(&u8g2, 0,55,"func1");
-    // u8g2_DrawStr(&u8g2, 85,55,"func2");
-    // u8g2_DrawStr(&u8g2, 20,40,"func3");
-    // u8g2_DrawStr(&u8g2, 65,40,"func4");
-    // u8g2_SendBuffer(&u8g2); // takes 30us @ 4Mhz
-    // displaybuffer1refresh=1;
-    //
-    // xpos+=10;
-    // if(xpos>100)xpos=10;
 
     printf("teller: %d\n", teller);
     printf("teller2: %d\n", teller2);
@@ -269,6 +220,11 @@ static void gpioHandler(void* arg)
             printf("GPIO[%d] intr, val: %d\n", io_num, gpio_get_level((gpio_num_t)io_num));
         }
     }
+}
+
+void printHook(HeavyContextInterface *c, const char *printName, const char *str, const HvMessage *m) {
+  double timestampMs = 1000.0 * ((double) hv_msg_getTimestamp(m)) / hv_getSampleRate(c);
+  printf("[@ %.3fms] %s: %s\n", timestampMs, printName, str);
 }
 
 // define the send hook as a function with the following signature
@@ -317,11 +273,45 @@ static void sendHook(HeavyContextInterface *c,
   }
 }
 
+void audioHandler(void *pvParameter)
+{
+      // setup and start heavy compiler
+    double sampleRate = 48000.0;
+    context = hv_heavy_new(sampleRate);
+    int numOutputChannels = hv_getNumOutputChannels(context);
+    float **outBuffers = (float **) hv_malloc(numOutputChannels * sizeof(float *));
+    for (int i = 0; i < numOutputChannels; ++i) {
+      outBuffers[i] = (float *) hv_malloc(blockSize * sizeof(float));
+    }
+    hv_setSendHook(context, sendHook);
+    hv_setPrintHook(context, &printHook);
+
+    printf("heavy # outputs: %d \n",numOutputChannels);
+
+  while(true) {
+        // send to context every blocksize (16 samples)
+        hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT1, (float)adcvalues[4][0]);
+        hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT2, (float)adcvalues[5][0]);
+        // hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT2, 200.0f);
+        // hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT3, 200.0f);
+        // hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT4, 200.0f);
+        hv_process(context, NULL, outBuffers, blockSize);
+        for (int i = 0; i < blockSize; i++) {
+          samples_data_out[i*2] = (int32_t)(outBuffers[0][i] * MULT_S32);
+          samples_data_out[i*2+1] = (int32_t)(outBuffers[1][i] * MULT_S32);
+          samples_data_out2[i*2] = (int32_t)(outBuffers[2][i] * MULT_S32);
+          samples_data_out2[i*2+1] = (int32_t)(outBuffers[3][i] * MULT_S32);
+        }
+      size_t bytes_written = 0;
+      size_t bytes_written2 = 0;
+      i2s_write((i2s_port_t)1, &samples_data_out2, blockSize*2*sizeof(int32_t), &bytes_written2, portMAX_DELAY);
+      i2s_write((i2s_port_t)0, &samples_data_out, blockSize*2*sizeof(int32_t), &bytes_written, portMAX_DELAY);
+  }
+}
+
 void app_main()
 {
     printf("app main\n");
-
-
 
     // setup global spi_transaction_t
     t_res = &t;
@@ -432,13 +422,13 @@ void app_main()
     // // Start encoder service
     // xTaskCreate(&encoderHandler, "encoderHandler", 2048, NULL, 5, NULL);
 
-gpio_config_t io_conf2;
+    gpio_config_t io_conf2;
     io_conf2.intr_type = GPIO_INTR_DISABLE;
-io_conf2.mode = GPIO_MODE_OUTPUT;
-io_conf2.pin_bit_mask = ((1ULL<<5) | (1ULL<<0) | (1ULL<<2));
-io_conf2.pull_down_en = GPIO_PULLDOWN_DISABLE;
-io_conf2.pull_up_en = GPIO_PULLUP_DISABLE;
-gpio_config(&io_conf2);
+    io_conf2.mode = GPIO_MODE_OUTPUT;
+    io_conf2.pin_bit_mask = ((1ULL<<5) | (1ULL<<0) | (1ULL<<2));
+    io_conf2.pull_down_en = GPIO_PULLDOWN_DISABLE;
+    io_conf2.pull_up_en = GPIO_PULLUP_DISABLE;
+    gpio_config(&io_conf2);
 
     ledc_timer_config_t ledc_timer2 = {
       .speed_mode = LEDC_LOW_SPEED_MODE,           // timer mode
@@ -489,49 +479,26 @@ gpio_config(&io_conf2);
     // Start display task
     xTaskCreate(&displayHandler, "displayHandler", 2048, NULL, 5, NULL);
 
-    // setup and start heavy compiler
-    double sampleRate = 48000.0;
-    context = hv_heavy_new(sampleRate);
-    int numOutputChannels = hv_getNumOutputChannels(context);
-    float **outBuffers = (float **) hv_malloc(numOutputChannels * sizeof(float *));
-    for (int i = 0; i < numOutputChannels; ++i) {
-      outBuffers[i] = (float *) hv_malloc(blockSize * sizeof(float));
-    }
-    hv_setSendHook(context, sendHook);
 
-    printf("heavy # outputs: %d \n",numOutputChannels);
 
     // measure load
-    int numIterations = 5000;
-    struct timeval elapsed, start, end;
-    gettimeofday(&start, NULL);
-    for (int i = 0; i < numIterations; ++i) {
-      hv_process(context, NULL, outBuffers, blockSize);
-    }
-    gettimeofday(&end, NULL);
-    timeval_subtract(&elapsed, &end, &start);
-    uint64_t elapsedTimeUs = (elapsed.tv_sec * 1000000L) + elapsed.tv_usec;
-    // return the us per block
-    printf("%f \n", elapsedTimeUs/((double) numIterations));
+    // int numIterations = 5000;
+    // struct timeval elapsed, start, end;
+    // gettimeofday(&start, NULL);
+    // for (int i = 0; i < numIterations; ++i) {
+    //   hv_process(context, NULL, outBuffers, blockSize);
+    // }
+    // gettimeofday(&end, NULL);
+    // timeval_subtract(&elapsed, &end, &start);
+    // uint64_t elapsedTimeUs = (elapsed.tv_sec * 1000000L) + elapsed.tv_usec;
+    // // return the us per block
+    // printf("%f \n", elapsedTimeUs/((double) numIterations));
 
     // I2S loop -> runs @ 48000
-    while(1) {
-        // send to context every blocksize (16 samples)
-        hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT1, (float)adcvalues[4][0]);
-        hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT2, (float)adcvalues[5][0]);
-        // hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT2, 200.0f);
-        // hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT3, 200.0f);
-        // hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT4, 200.0f);
-        hv_process(context, NULL, outBuffers, blockSize);
-        for (int i = 0; i < blockSize; i++) {
-          samples_data_out[i*2] = (int32_t)(outBuffers[0][i] * MULT_S32);
-          samples_data_out[i*2+1] = (int32_t)(outBuffers[1][i] * MULT_S32);
-          samples_data_out2[i*2] = (int32_t)(outBuffers[2][i] * MULT_S32);
-          samples_data_out2[i*2+1] = (int32_t)(outBuffers[3][i] * MULT_S32);
-        }
-      size_t bytes_written = 0;
-      size_t bytes_written2 = 0;
-      i2s_write((i2s_port_t)1, &samples_data_out2, blockSize*2*sizeof(int32_t), &bytes_written2, portMAX_DELAY);
-      i2s_write((i2s_port_t)0, &samples_data_out, blockSize*2*sizeof(int32_t), &bytes_written, portMAX_DELAY);
-    }
+
+    xTaskCreatePinnedToCore(&audioHandler, "audioHandler", 50000, NULL, 5, NULL,1);
+    
+    // while(1) {
+
+    // }
 }
