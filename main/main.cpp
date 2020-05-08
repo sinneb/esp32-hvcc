@@ -184,6 +184,7 @@ void displayHandler(void *pvParameter)
 
     printf("teller: %d\n", teller);
     printf("teller2: %d\n", teller2);
+    printf("ADC0: %d\n", adcvalues[0][0]);
     printf("ADC4: %d\n", adcvalues[4][0]);
     printf("ADC5: %d\n", adcvalues[5][0]);
     printf("ADC6: %d\n", adcvalues[6][0]);
@@ -237,23 +238,33 @@ static void sendHook(HeavyContextInterface *c,
   //   printf("> received message from send \"%s\".", sendName);
   // }
 
-  // or alternatively...
-  switch (sendHash) {
-    case HV_HEAVY_PARAM_OUT_LED1: {
-      printf("led1\n");
+  if (!strcmp(sendName, "led1")) {
       uint16_t x = hv_msg_getFloat(m, 0);
       ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, x);
       ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
     }
-    case HV_HEAVY_PARAM_OUT_LED2: {
-      //printf("led2\n");
-      uint16_t y = hv_msg_getNumElements(m);
-      uint16_t x = hv_msg_getFloat(m, 0);
-      printf("val %d\n",x);
-      printf("numele: %d\n",y);
-      ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_1, x);
-      ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_1);
-    }
+
+
+  // // or alternatively...
+  // printf("hash: %d\n", sendHash);
+  // printf(sendName);
+  // printf("\n");
+  // switch (sendHash) {
+  //   case HV_HEAVY_PARAM_OUT_LED1: {
+  //     printf("led1\n");
+  //     uint16_t x = hv_msg_getFloat(m, 0);
+  //     ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, x);
+  //     ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
+  //   }
+  //   case HV_HEAVY_PARAM_OUT_LED2: {
+  //     //printf("led2\n");
+  //     uint16_t y = hv_msg_getNumElements(m);
+  //     uint16_t x = hv_msg_getFloat(m, 0);
+  //     printf("val %d\n",x);
+  //     printf("numele: %d\n",y);
+  //     ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_1, x);
+  //     ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_1);
+  //   }
     // case HV_HEAVY_PARAM_OUT_LED3: {
     //   printf("led3\n");
     //   uint16_t x = hv_msg_getFloat(m, 0);
@@ -269,8 +280,8 @@ static void sendHook(HeavyContextInterface *c,
     //   ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_2);
     //   break;
     // }
-    default: return;
-  }
+    //default: return;
+  //}
 }
 
 void audioHandler(void *pvParameter)
@@ -290,8 +301,15 @@ void audioHandler(void *pvParameter)
 
   while(true) {
         // send to context every blocksize (16 samples)
-        hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT1, (float)adcvalues[4][0]);
-        hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT2, (float)adcvalues[5][0]);
+        hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT1, (float)(adcvalues[4][0]>>3));
+        hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT2, (float)(adcvalues[5][0]>>3));
+        hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT3, (float)(adcvalues[6][0]>>3));
+        hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT4, (float)(adcvalues[7][0]>>3));
+        hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT5, (float)(adcvalues[0][0]));
+        //hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT3, (float)(adcvalues[6][0]>>3));
+        //hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT4, (float)(adcvalues[7][0]));
+        //hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_CONTROLV1, (float)(adcvalues[7][0]));
+        //hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_CV1, (float)0);
         // hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT2, 200.0f);
         // hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT3, 200.0f);
         // hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT4, 200.0f);
@@ -401,8 +419,11 @@ void app_main()
 
     // Start ADC callback
     printf("start ADC callback \n");
-    timer_tg0_initialise(100);
+    timer_tg0_initialise(50);
     printf("ADC callback started \n");
+
+    // let the ADC flow
+    vTaskDelay(1000 / portTICK_RATE_MS);
 
     // Start button interrupts & queue
     gpio_config_t io_conf;
@@ -496,7 +517,7 @@ void app_main()
 
     // I2S loop -> runs @ 48000
 
-    xTaskCreatePinnedToCore(&audioHandler, "audioHandler", 50000, NULL, 5, NULL,1);
+    xTaskCreatePinnedToCore(&audioHandler, "audioHandler", 8192, NULL, 4, NULL,1);
     
     // while(1) {
 

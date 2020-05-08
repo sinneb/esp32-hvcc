@@ -48,6 +48,7 @@ typedef enum {
   HV_HEAVY_PARAM_IN_POT2 = 0xDDC4EBDB, // pot2
   HV_HEAVY_PARAM_IN_POT3 = 0x125109EA, // pot3
   HV_HEAVY_PARAM_IN_POT4 = 0x73BEE661, // pot4
+  HV_HEAVY_PARAM_IN_POT5 = 0xF2BC7D02, // pot5
 } Hv_heavy_ParameterIn;
 
 typedef enum {
