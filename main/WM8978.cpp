@@ -60,8 +60,8 @@ uint8_t WM8978::init(uint8_t id)
 
     //setLeftLineIn(int32_t LRINBOTH, int32_t LINMUTE, float LINVOL)
     // no simultaneous load, no mute, 0dB gain
-    setLeftLineIn(1, 0, 0);//0dB
-    setRightLineIn(1, 0, 0);//0dB
+    setLeftLineIn(0, 0, 0);//0dB
+    setRightLineIn(0, 0, 0);//0dB
 
     // Headphone out (0dB)
     setLeftHeadphoneOut(1, 1, 0);//-24dB
@@ -81,7 +81,7 @@ uint8_t WM8978::init(uint8_t id)
     //no bit clocl invert, slave, no DAC Left Right Clock Swap, Right Channel DAC data when DACLRC low, 16bit, I2S Format MSB left justfied
     setDigitalAudioInterfaceFormat(0,1,0,0,1,0x2);
 
-    //setSamplingControl(int32_t CLKODIV2, int32_t CLKIDIV2, int32_t SR, int32_t BOSR, int32_t USBNORM)
+    //setSamplingControl(int32 _t CLKODIV2, int32_t CLKIDIV2, int32_t SR, int32_t BOSR, int32_t USBNORM)
     setSamplingControl(0, 0, 0, 0, 0);//48kHz
 
 
@@ -470,14 +470,14 @@ void WM8978::setAnalogueAudioPathControl(int32_t SIDEATT, int32_t SIDETONE, int3
 {
     // Insert description
     int32_t val = ((SIDEATT & 0x03) << 6) | ((SIDETONE & 0x01) << 5) | ((DACSEL & 0x01) << 4) | ((BYPASS & 0x01) << 3) | ((INSEL & 0x01) << 2) | ((MUTEMIC & 0x01) << 1) | ((MICBOOST & 0x01) << 0);
-    writeRegwithError(ANALOG_AUDIO_PATH_CONTROL, val);
+    writeRegwithError(ANALOG_AUDIO_PATH_CONTROL, 0XD2); // No mic boost, Mute mic, Line input select, Disable bypass, Select DAC, Disable side tone
 }
 
 void WM8978::setDigitalAudioPathControl(int32_t HPOR, int32_t DACMU, int32_t DEEMP, int32_t ADCHPD)
 {
     // Description
     int32_t val =  ((HPOR & 0x01) << 4)  | ((DACMU & 0x01) << 3) | ((DEEMP & 0x03) << 1) | ((ADCHPD & 0x01) << 0);
-    writeRegwithError(DIGITAL_AUDIO_PATH_CONTROL, val);
+    writeRegwithError(DIGITAL_AUDIO_PATH_CONTROL, 0X04); // Enable ADC high pass, disable DAC de-emphasis, enable soft mute, clear DC offset when high pass filter disabled
 }
 
 void WM8978::setPowerDownControl(int32_t POWEROFF, int32_t CLKOUTPD, int32_t OSCPD, int32_t OUTPD, int32_t DACPD, int32_t ADCPD, int32_t MICPD, int32_t LINEINPD)

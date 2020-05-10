@@ -14,7 +14,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L ESP32-DEVKITC-32D:ESP32-DEVKITC-32D U1
+L eurogen-rescue:ESP32-DEVKITC-32D-ESP32-DEVKITC-32D U1
 U 1 1 5E52B8F6
 P 8750 2250
 F 0 "U1" H 8750 3417 50  0000 C CNN
@@ -26,7 +26,7 @@ F 4 "Espressif Systems" H 8750 2250 50  0001 L BNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L CODECODER-WM8731SEDS_V_SSOP28_:CODECODER-WM8731SEDS_V(SSOP28) U2
+L eurogen-rescue:CODECODER-WM8731SEDS_V(SSOP28)-CODECODER-WM8731SEDS_V_SSOP28_ U2
 U 1 1 5E52D4BC
 P 7100 5000
 F 0 "U2" H 7050 5917 50  0000 C CNN
@@ -64,7 +64,7 @@ F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/21298c.pdf" H 17900 6250 50
 	1    0    0    -1  
 $EndComp
 $Comp
-L eurocad:PJ301M-12 J3
+L eurogen-rescue:PJ301M-12-eurocad J3
 U 1 1 5E53783B
 P 1250 1250
 F 0 "J3" H 1258 1625 50  0000 C CNN
@@ -178,7 +178,7 @@ audio_in1
 Wire Wire Line
 	3650 1100 3900 1100
 $Comp
-L eurocad:PJ301M-12 J1
+L eurogen-rescue:PJ301M-12-eurocad J1
 U 1 1 5E576246
 P 1250 2400
 F 0 "J1" H 1258 2775 50  0000 C CNN
@@ -681,7 +681,7 @@ Wire Wire Line
 Wire Wire Line
 	9550 2250 10800 2250
 $Comp
-L CODECODER-WM8731SEDS_V_SSOP28_:CODECODER-WM8731SEDS_V(SSOP28) U4
+L eurogen-rescue:CODECODER-WM8731SEDS_V(SSOP28)-CODECODER-WM8731SEDS_V_SSOP28_ U4
 U 1 1 5E790E42
 P 12400 5050
 F 0 "U4" H 12350 5967 50  0000 C CNN
@@ -1025,7 +1025,7 @@ Wire Wire Line
 Wire Wire Line
 	2900 8200 3050 8200
 $Comp
-L eurocad:EURO_PWR_2x5 J2
+L eurogen-rescue:EURO_PWR_2x5-eurocad J2
 U 1 1 5E797AD5
 P 20450 1650
 F 0 "J2" H 20450 2097 60  0000 C CNN
@@ -1388,7 +1388,7 @@ aref_-10v
 Wire Wire Line
 	2200 7350 2450 7350
 $Comp
-L eurocad:PJ301M-12 J5
+L eurogen-rescue:PJ301M-12-eurocad J5
 U 1 1 5E7A9D33
 P 5150 8250
 F 0 "J5" H 5158 8625 50  0000 C CNN
@@ -1508,7 +1508,7 @@ aref_-10v
 Wire Wire Line
 	2200 8950 2450 8950
 $Comp
-L eurocad:PJ301M-12 J6
+L eurogen-rescue:PJ301M-12-eurocad J6
 U 1 1 5E809BFE
 P 5150 9850
 F 0 "J6" H 5158 10225 50  0000 C CNN
@@ -1612,7 +1612,7 @@ L Device:R R22
 U 1 1 5E88AFD3
 P 7400 7400
 F 0 "R22" V 7607 7400 50  0000 C CNN
-F 1 "27k" V 7516 7400 50  0000 C CNN
+F 1 "28k" V 7516 7400 50  0000 C CNN
 F 2 "" V 7330 7400 50  0001 C CNN
 F 3 "~" H 7400 7400 50  0001 C CNN
 	1    7400 7400
@@ -1628,7 +1628,7 @@ aref_-10v
 Wire Wire Line
 	7000 7400 7250 7400
 $Comp
-L eurocad:PJ301M-12 J7
+L eurogen-rescue:PJ301M-12-eurocad J7
 U 1 1 5E88AFDE
 P 9950 8300
 F 0 "J7" H 9958 8675 50  0000 C CNN
@@ -1748,7 +1748,7 @@ aref_-10v
 Wire Wire Line
 	7000 9000 7250 9000
 $Comp
-L eurocad:PJ301M-12 J8
+L eurogen-rescue:PJ301M-12-eurocad J8
 U 1 1 5E88B025
 P 9950 9900
 F 0 "J8" H 9958 10275 50  0000 C CNN
@@ -1928,7 +1928,7 @@ F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 8200 9950 50  0001 C CNN
 	1    0    0    1   
 $EndComp
 $Comp
-L eurocad:PJ301M-12 J9
+L eurogen-rescue:PJ301M-12-eurocad J9
 U 1 1 5ECC9FEC
 P 13600 10900
 F 0 "J9" H 13608 11275 50  0000 C CNN
@@ -2091,7 +2091,7 @@ Wire Wire Line
 Text Notes 15950 10350 0    50   ~ 10
 CV in -> 0/3V3\n
 $Comp
-L eurocad:PJ301M-12 J10
+L eurogen-rescue:PJ301M-12-eurocad J10
 U 1 1 5EE79B53
 P 13550 12700
 F 0 "J10" H 13558 13075 50  0000 C CNN
@@ -2183,7 +2183,7 @@ Wire Wire Line
 Text Notes 15900 12150 0    50   ~ 10
 CV in -> 0/3V3\n
 $Comp
-L eurocad:PJ301M-12 J12
+L eurogen-rescue:PJ301M-12-eurocad J12
 U 1 1 5EEA65DB
 P 18150 10900
 F 0 "J12" H 18158 11275 50  0000 C CNN
@@ -2275,7 +2275,7 @@ Wire Wire Line
 Text Notes 20500 10350 0    50   ~ 10
 CV in -> 0/3V3\n
 $Comp
-L eurocad:PJ301M-12 J11
+L eurogen-rescue:PJ301M-12-eurocad J11
 U 1 1 5EEA6613
 P 18100 12700
 F 0 "J11" H 18108 13075 50  0000 C CNN
@@ -3059,7 +3059,7 @@ Connection ~ 12350 3300
 Wire Wire Line
 	12350 3300 12350 3400
 $Comp
-L eurocad:PJ301M-12 J13
+L eurogen-rescue:PJ301M-12-eurocad J13
 U 1 1 5FD14493
 P 1250 3600
 F 0 "J13" H 1258 3975 50  0000 C CNN
@@ -3171,7 +3171,7 @@ Wire Wire Line
 Wire Wire Line
 	3650 3450 3900 3450
 $Comp
-L eurocad:PJ301M-12 J14
+L eurogen-rescue:PJ301M-12-eurocad J14
 U 1 1 5FD144D1
 P 1250 4750
 F 0 "J14" H 1258 5125 50  0000 C CNN

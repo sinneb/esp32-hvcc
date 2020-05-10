@@ -55,6 +55,9 @@ uint8_t calc_busy = 0;
 int32_t samples_data_out[32];
 int32_t samples_data_out2[32];
 
+int32_t samples_data_in[32];
+int32_t samples_data_in2[32];
+
 static intr_handle_t s_timer_handle;
 static intr_handle_t s_timer_handle2;
 
@@ -290,16 +293,34 @@ void audioHandler(void *pvParameter)
     double sampleRate = 48000.0;
     context = hv_heavy_new(sampleRate);
     int numOutputChannels = hv_getNumOutputChannels(context);
+    int numInputChannels = hv_getNumInputChannels(context);
+
+    float **inBuffers = (float **) hv_malloc(numInputChannels * sizeof(float *));
+    for (int i = 0; i < numInputChannels; ++i) {
+      inBuffers[i] = (float *) hv_malloc(blockSize * sizeof(float));
+    }
+
     float **outBuffers = (float **) hv_malloc(numOutputChannels * sizeof(float *));
     for (int i = 0; i < numOutputChannels; ++i) {
       outBuffers[i] = (float *) hv_malloc(blockSize * sizeof(float));
     }
+    
     hv_setSendHook(context, sendHook);
     hv_setPrintHook(context, &printHook);
 
     printf("heavy # outputs: %d \n",numOutputChannels);
+    printf("heavy # inputs: %d \n",numInputChannels);
 
   while(true) {
+        size_t bytes_read = 0;
+        i2s_read((i2s_port_t)0, &samples_data_in, blockSize*2*sizeof(int32_t), &bytes_read, portMAX_DELAY);
+
+        for (int i = 0; i < blockSize; i++) {
+          inBuffers[0][i] = (float)(samples_data_in[i*2] / 1.0f / MULT_S32);
+          inBuffers[1][i] = (float)(samples_data_in[i*2+1] / 1.0f / MULT_S32);
+        }
+
+        //ESP_LOG_BUFFER_HEX(tag,samples_data_in,16);
         // send to context every blocksize (16 samples)
         hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT1, (float)(adcvalues[4][0]>>3));
         hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT2, (float)(adcvalues[5][0]>>3));
@@ -313,7 +334,7 @@ void audioHandler(void *pvParameter)
         // hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT2, 200.0f);
         // hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT3, 200.0f);
         // hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT4, 200.0f);
-        hv_process(context, NULL, outBuffers, blockSize);
+        hv_process(context, inBuffers, outBuffers, blockSize);
         for (int i = 0; i < blockSize; i++) {
           samples_data_out[i*2] = (int32_t)(outBuffers[0][i] * MULT_S32);
           samples_data_out[i*2+1] = (int32_t)(outBuffers[1][i] * MULT_S32);
@@ -374,7 +395,7 @@ void app_main()
         .bck_io_num = 36,           // 3 SCK
         .ws_io_num = 34,            // 5 7 LRCLK
         .data_out_num = 25,         // 4 DACDAT
-        //.data_in_num = 32           // 6 ADCDAT
+        .data_in_num = 33           // 6 ADCDAT
     };
     pin_config2 = {                  // 0 -> 25 MCLK
         .bck_io_num = 35,           // 3 SCK
