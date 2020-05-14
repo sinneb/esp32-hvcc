@@ -2957,7 +2957,7 @@ Text Label 6050 4850 2    50   ~ 0
 c1_adc
 Wire Wire Line
 	6050 4850 6450 4850
-Text Label 7700 1950 2    50   ~ 0
+Text Label 7700 2050 2    50   ~ 0
 c1_adc
 Text Label 11350 5000 2    50   ~ 0
 c2_lrclk
@@ -2967,8 +2967,6 @@ Text Label 11350 4900 2    50   ~ 0
 c2_adc
 Wire Wire Line
 	11350 4900 11750 4900
-Text Label 7700 2050 2    50   ~ 0
-c2_adc
 Wire Wire Line
 	7700 2050 7950 2050
 $Comp
@@ -3010,7 +3008,7 @@ Wire Wire Line
 	13250 1600 12950 1600
 Text Label 7700 2250 2    50   ~ 0
 button1
-Text Label 7700 2550 2    50   ~ 0
+Text Label 7700 2750 2    50   ~ 0
 button2
 Text Label 12050 1600 2    50   ~ 0
 button1
@@ -3409,10 +3407,10 @@ Wire Wire Line
 Wire Wire Line
 	6500 2250 6650 2250
 $Comp
-L Device:LED D?
+L Device:LED D4
 U 1 1 5EA8E0BE
 P 5900 2600
-F 0 "D?" H 5893 2816 50  0000 C CNN
+F 0 "D4" H 5893 2816 50  0000 C CNN
 F 1 "LED" H 5893 2725 50  0000 C CNN
 F 2 "" H 5900 2600 50  0001 C CNN
 F 3 "~" H 5900 2600 50  0001 C CNN
@@ -3422,10 +3420,10 @@ $EndComp
 Wire Wire Line
 	5750 2600 5450 2600
 $Comp
-L Device:R R?
+L Device:R R52
 U 1 1 5EA8E0C7
 P 6350 2600
-F 0 "R?" V 6557 2600 50  0000 C CNN
+F 0 "R52" V 6557 2600 50  0000 C CNN
 F 1 "220r" V 6466 2600 50  0000 C CNN
 F 2 "" V 6280 2600 50  0001 C CNN
 F 3 "~" H 6350 2600 50  0001 C CNN
@@ -3451,10 +3449,10 @@ Wire Wire Line
 Wire Wire Line
 	12050 1600 12200 1600
 $Comp
-L Switch:SW_Push SW?
+L Switch:SW_Push SW1
 U 1 1 5EBAF086
 P 12750 2400
-F 0 "SW?" H 12750 2685 50  0000 C CNN
+F 0 "SW1" H 12750 2685 50  0000 C CNN
 F 1 "SW_Push" H 12750 2594 50  0000 C CNN
 F 2 "" H 12750 2600 50  0001 C CNN
 F 3 "~" H 12750 2600 50  0001 C CNN
@@ -3474,10 +3472,10 @@ Wire Wire Line
 	13250 2000 13250 2400
 Connection ~ 13250 2000
 $Comp
-L Device:R R?
+L Device:R R53
 U 1 1 5EDE36DC
 P 12650 3000
-F 0 "R?" H 12580 2954 50  0000 R CNN
+F 0 "R53" H 12580 2954 50  0000 R CNN
 F 1 "10k" H 12580 3045 50  0000 R CNN
 F 2 "" V 12580 3000 50  0001 C CNN
 F 3 "~" H 12650 3000 50  0001 C CNN

@@ -449,16 +449,22 @@ void app_main()
     // Start button interrupts & queue
     gpio_config_t io_conf;
     io_conf.intr_type = (gpio_int_type_t)GPIO_PIN_INTR_DISABLE;
-    io_conf.pin_bit_mask = ((1ULL<<26) | (1ULL<<32));
+    io_conf.pin_bit_mask = ((1ULL<<26) | (1ULL<<32) | (1ULL<<12) | (1ULL<<13) | (1ULL<<27));
     io_conf.mode = GPIO_MODE_INPUT;
     io_conf.pull_down_en = (gpio_pulldown_t)0;
     io_conf.pull_up_en = (gpio_pullup_t)1;
     gpio_config(&io_conf);
     gpio_set_intr_type((gpio_num_t)26, GPIO_INTR_ANYEDGE);
     gpio_set_intr_type((gpio_num_t)32, GPIO_INTR_ANYEDGE);
+    gpio_set_intr_type((gpio_num_t)12, GPIO_INTR_ANYEDGE);
+    gpio_set_intr_type((gpio_num_t)13, GPIO_INTR_ANYEDGE);  
+    gpio_set_intr_type((gpio_num_t)27, GPIO_INTR_ANYEDGE);    
     ESP_ERROR_CHECK(gpio_install_isr_service(0));
     gpio_isr_handler_add(GPIO_NUM_26, gpio_isr_handler, (void*) GPIO_NUM_26);
     gpio_isr_handler_add(GPIO_NUM_32, gpio_isr_handler, (void*) GPIO_NUM_32);
+    gpio_isr_handler_add(GPIO_NUM_12, gpio_isr_handler, (void*) GPIO_NUM_12);
+    gpio_isr_handler_add(GPIO_NUM_13, gpio_isr_handler, (void*) GPIO_NUM_13);
+    gpio_isr_handler_add(GPIO_NUM_27, gpio_isr_handler, (void*) GPIO_NUM_27);
     gpio_evt_queue = xQueueCreate(10, sizeof(uint32_t));
 
     // // Start encoder service

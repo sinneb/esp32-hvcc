@@ -1587,7 +1587,7 @@ L Device:R R26
 U 1 1 5E88AFC5
 P 8150 7650
 F 0 "R26" V 8357 7650 50  0000 C CNN
-F 1 "25k7" V 8266 7650 50  0000 C CNN
+F 1 "26k9" V 8266 7650 50  0000 C CNN
 F 2 "" V 8080 7650 50  0001 C CNN
 F 3 "~" H 8150 7650 50  0001 C CNN
 	1    8150 7650
@@ -1612,7 +1612,7 @@ L Device:R R22
 U 1 1 5E88AFD3
 P 7400 7400
 F 0 "R22" V 7607 7400 50  0000 C CNN
-F 1 "28k" V 7516 7400 50  0000 C CNN
+F 1 "29k5" V 7516 7400 50  0000 C CNN
 F 2 "" V 7330 7400 50  0001 C CNN
 F 3 "~" H 7400 7400 50  0001 C CNN
 	1    7400 7400
@@ -2957,7 +2957,7 @@ Text Label 6050 4850 2    50   ~ 0
 c1_adc
 Wire Wire Line
 	6050 4850 6450 4850
-Text Label 7700 1950 2    50   ~ 0
+Text Label 7700 2050 2    50   ~ 0
 c1_adc
 Text Label 11350 5000 2    50   ~ 0
 c2_lrclk
@@ -2967,8 +2967,6 @@ Text Label 11350 4900 2    50   ~ 0
 c2_adc
 Wire Wire Line
 	11350 4900 11750 4900
-Text Label 7700 2050 2    50   ~ 0
-c2_adc
 Wire Wire Line
 	7700 2050 7950 2050
 $Comp
@@ -3010,7 +3008,7 @@ Wire Wire Line
 	13250 1600 12950 1600
 Text Label 7700 2250 2    50   ~ 0
 button1
-Text Label 7700 2550 2    50   ~ 0
+Text Label 7700 2750 2    50   ~ 0
 button2
 Text Label 12050 1600 2    50   ~ 0
 button1
