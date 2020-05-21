@@ -470,7 +470,7 @@ void WM8978::setAnalogueAudioPathControl(int32_t SIDEATT, int32_t SIDETONE, int3
 {
     // Insert description
     int32_t val = ((SIDEATT & 0x03) << 6) | ((SIDETONE & 0x01) << 5) | ((DACSEL & 0x01) << 4) | ((BYPASS & 0x01) << 3) | ((INSEL & 0x01) << 2) | ((MUTEMIC & 0x01) << 1) | ((MICBOOST & 0x01) << 0);
-    writeRegwithError(ANALOG_AUDIO_PATH_CONTROL, 0XD2); // No mic boost, Mute mic, Line input select, Disable bypass, Select DAC, Disable side tone
+    writeRegwithError(ANALOG_AUDIO_PATH_CONTROL, 0XDA); // No mic boost, Mute mic, Line input select, Disable bypass, Select DAC, Disable side tone
 }
 
 void WM8978::setDigitalAudioPathControl(int32_t HPOR, int32_t DACMU, int32_t DEEMP, int32_t ADCHPD)

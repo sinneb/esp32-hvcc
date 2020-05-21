@@ -247,6 +247,23 @@ static void sendHook(HeavyContextInterface *c,
       ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
     }
 
+  if (!strcmp(sendName, "led2")) {
+      uint16_t x = hv_msg_getFloat(m, 0);
+      ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_1, x);
+      ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_1);
+    }
+
+    if (!strcmp(sendName, "led3")) {
+        uint16_t x = hv_msg_getFloat(m, 0);
+        ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_2, x);
+        ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_2);
+      }
+
+    if (!strcmp(sendName, "led4")) {
+        uint16_t x = hv_msg_getFloat(m, 0);
+        ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_3, x);
+        ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_3);
+      }
 
   // // or alternatively...
   // printf("hash: %d\n", sendHash);
@@ -304,7 +321,7 @@ void audioHandler(void *pvParameter)
     for (int i = 0; i < numOutputChannels; ++i) {
       outBuffers[i] = (float *) hv_malloc(blockSize * sizeof(float));
     }
-    
+
     hv_setSendHook(context, sendHook);
     hv_setPrintHook(context, &printHook);
 
@@ -322,9 +339,10 @@ void audioHandler(void *pvParameter)
 
         //ESP_LOG_BUFFER_HEX(tag,samples_data_in,16);
         // send to context every blocksize (16 samples)
+        // >>3 :: 4096 to 512
         hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT1, (float)(adcvalues[4][0]>>3));
-        hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT2, (float)(adcvalues[5][0]>>3));
-        hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT3, (float)(adcvalues[6][0]>>3));
+        hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT3, (float)(adcvalues[5][0]>>3));
+        hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT2, (float)(adcvalues[6][0]>>3));
         hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT4, (float)(adcvalues[7][0]>>3));
         hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT5, (float)(adcvalues[0][0]));
         //hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT3, (float)(adcvalues[6][0]>>3));
@@ -401,7 +419,7 @@ void app_main()
         .bck_io_num = 35,           // 3 SCK
         .ws_io_num = 39,            // 5 7 LRCLK
         .data_out_num = 4,         // 4 DACDAT
-        //.data_in_num = 33          // 6 ADCDAT
+        .data_in_num = 32          // 6 ADCDAT
     };
     i2s_config_t i2s_config = {
         .mode = (i2s_mode_t)(I2S_MODE_SLAVE | I2S_MODE_TX | I2S_MODE_RX),
@@ -449,19 +467,17 @@ void app_main()
     // Start button interrupts & queue
     gpio_config_t io_conf;
     io_conf.intr_type = (gpio_int_type_t)GPIO_PIN_INTR_DISABLE;
-    io_conf.pin_bit_mask = ((1ULL<<26) | (1ULL<<32) | (1ULL<<12) | (1ULL<<13) | (1ULL<<27));
+    io_conf.pin_bit_mask = ((1ULL<<26) | (1ULL<<12) | (1ULL<<13) | (1ULL<<27));
     io_conf.mode = GPIO_MODE_INPUT;
     io_conf.pull_down_en = (gpio_pulldown_t)0;
     io_conf.pull_up_en = (gpio_pullup_t)1;
     gpio_config(&io_conf);
     gpio_set_intr_type((gpio_num_t)26, GPIO_INTR_ANYEDGE);
-    gpio_set_intr_type((gpio_num_t)32, GPIO_INTR_ANYEDGE);
     gpio_set_intr_type((gpio_num_t)12, GPIO_INTR_ANYEDGE);
-    gpio_set_intr_type((gpio_num_t)13, GPIO_INTR_ANYEDGE);  
-    gpio_set_intr_type((gpio_num_t)27, GPIO_INTR_ANYEDGE);    
+    gpio_set_intr_type((gpio_num_t)13, GPIO_INTR_ANYEDGE);
+    gpio_set_intr_type((gpio_num_t)27, GPIO_INTR_ANYEDGE);
     ESP_ERROR_CHECK(gpio_install_isr_service(0));
     gpio_isr_handler_add(GPIO_NUM_26, gpio_isr_handler, (void*) GPIO_NUM_26);
-    gpio_isr_handler_add(GPIO_NUM_32, gpio_isr_handler, (void*) GPIO_NUM_32);
     gpio_isr_handler_add(GPIO_NUM_12, gpio_isr_handler, (void*) GPIO_NUM_12);
     gpio_isr_handler_add(GPIO_NUM_13, gpio_isr_handler, (void*) GPIO_NUM_13);
     gpio_isr_handler_add(GPIO_NUM_27, gpio_isr_handler, (void*) GPIO_NUM_27);
@@ -473,7 +489,7 @@ void app_main()
     gpio_config_t io_conf2;
     io_conf2.intr_type = GPIO_INTR_DISABLE;
     io_conf2.mode = GPIO_MODE_OUTPUT;
-    io_conf2.pin_bit_mask = ((1ULL<<5) | (1ULL<<0) | (1ULL<<2));
+    io_conf2.pin_bit_mask = ((1ULL<<5) | (1ULL<<0) | (1ULL<<2) | (1ULL<<14));
     io_conf2.pull_down_en = GPIO_PULLDOWN_DISABLE;
     io_conf2.pull_up_en = GPIO_PULLUP_DISABLE;
     gpio_config(&io_conf2);
@@ -520,6 +536,17 @@ void app_main()
     };
     ledc_channel_config(&var_ledc_channel2);
 
+    static ledc_channel_config_t var_ledc_channel3 = {
+    .gpio_num   = 14,
+    .speed_mode = LEDC_LOW_SPEED_MODE,
+    .channel    = LEDC_CHANNEL_3,
+    .intr_type  = LEDC_INTR_DISABLE,
+    .timer_sel  = LEDC_TIMER_2,
+    .duty       = 100, // LEDC channel duty, the duty range is [0, (2**bit_num) - 1],
+    .hpoint = 0,
+    };
+    ledc_channel_config(&var_ledc_channel3);
+
 
     // Start button queue handler
     xTaskCreate(gpioHandler, "gpioHandler", 2048, NULL, 10, NULL);
@@ -545,7 +572,7 @@ void app_main()
     // I2S loop -> runs @ 48000
 
     xTaskCreatePinnedToCore(&audioHandler, "audioHandler", 8192, NULL, 4, NULL,1);
-    
+
     // while(1) {
 
     // }
