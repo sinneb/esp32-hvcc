@@ -14,7 +14,7 @@ The goal of this development is to realise a generic eurorack module, based on t
 
 # Hardware setup
 
-Check the Kicad schematics in the schematics folder
+Check the Kicad schematics in the schematics folder (don't build it yet - updated schematics on the way)
 
 # Usage
 
