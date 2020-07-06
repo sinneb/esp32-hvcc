@@ -7,6 +7,8 @@ I made a number of mistakes, which were dealt with accordingly ;)
 
 ![wire soldered to ssop chip](https://raw.githubusercontent.com/sinneb/esp32-hvcc/master/proto2.jpg)
 
+But, unfortunately, the DC performance of the WM8731 is indeed poor. I tried routing the output of the WM8731 back into the MCP3208 to measure offset on startup but those reading were to unpredictable (distortion on the board? Effective bitrate of the ADC?). Anyways, the plan now is to keep one of the WM8731 for audio related duties (both working in hardware and software (I2S)).
+
 # ESP32-DevKitC & hvcc
 
 This repo demonstrates a single file solution for running [hvcc](https://github.com/enzienaudio/hvcc) sources on the [ESP32-devkitc](https://docs.espressif.com/projects/esp-idf/en/latest/hw-reference/get-started-devkitc.html), inspired by the [Faust ESP32 architecture example](https://faust.grame.fr/doc/tutorials/#dsp-on-the-esp32-with-faust). The hvcc compiler leverages the use of (a subset of) puredata operators on the cheap and fast esp32 uprocessor. The ESP32-devkitc combined with dual WM8731 CODECs and an 8 port MCP3208 ADC provides a complete and available audio development platform with a very reasonable pricetag. UI provided via 3 buttons and 4 leds.
