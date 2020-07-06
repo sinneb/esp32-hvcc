@@ -1,5 +1,9 @@
 # Update july 6th 2020
-Got the first prototype PCB manufactured and -with some fiddling- up and running pretty quickly. Check [this instragram](https://www.instagram.com/p/CByjpFthu2I/) post to seesome results.
+Got the first prototype PCB manufactured and -with some fiddling- up and running pretty quickly. Check [this instragram](https://www.instagram.com/p/CByjpFthu2I/) post to see some results.
+
+![photo of prototype 1](https://raw.githubusercontent.com/sinneb/esp32-hvcc/master/proto1.jpg)
+
+I made a number of mistakes, which were dealt with accordingly ;)
 
 
 
