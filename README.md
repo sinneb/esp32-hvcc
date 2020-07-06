@@ -7,7 +7,7 @@ I made a number of mistakes, which were dealt with accordingly ;)
 
 ![wire soldered to ssop chip](https://raw.githubusercontent.com/sinneb/esp32-hvcc/master/proto2.jpg)
 
-But, unfortunately, the DC performance of the WM8731 is indeed poor. I tried routing the output of the WM8731 back into the MCP3208 to measure offset on startup but those reading were to unpredictable (distortion on the board? Effective bitrate of the ADC?). Anyways, the plan now is to keep one of the WM8731 for audio related duties (both working in hardware and software (I2S)).
+But, unfortunately, the DC performance of the WM8731 is indeed poor. I tried routing the output of the WM8731 back into the MCP3208 to measure offset on startup but those reading were to unpredictable (distortion on the board? Effective bitrate of the ADC?). Anyways, the plan now is to keep one of the WM8731 for audio related duties, both hardware and software are working correcly so that's a good start. Then, for DAC and ADC work I'm going to include the AD1939. Capable, affordable and available in the jlcpcb SMT parts library - because soldering a 64 lead LQFP package by hand is not a very good idea ;) So back to the drawing board for a part, but the potential and fun of this puredata eurorack module is there!
 
 # ESP32-DevKitC & hvcc
 
