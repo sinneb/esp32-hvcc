@@ -1,5 +1,7 @@
 # Update july 6th 2020
-<style>.embed-container {position: relative; padding-bottom: 120%; height: 0; overflow: hidden;} .embed-container iframe, .embed-container object, .embed-container embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }</style><div class='embed-container'><iframe src='//instagram.com/p/CByjpFthu2I/embed/' frameborder='0' scrolling='no' allowtransparency='true'></iframe></div>
+Got the first prototype PCB manufactured and -with some fiddling- up and running pretty quickly. Check [this instragram](https://www.instagram.com/p/CByjpFthu2I/) post to seesome results.
+
+
 
 # ESP32-DevKitC & hvcc
 
