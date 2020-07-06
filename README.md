@@ -5,7 +5,7 @@ Got the first prototype PCB manufactured and -with some fiddling- up and running
 
 I made a number of mistakes, which were dealt with accordingly ;)
 
-
+![wire soldered to ssop chip](https://raw.githubusercontent.com/sinneb/esp32-hvcc/master/proto2.jpg)
 
 # ESP32-DevKitC & hvcc
 
