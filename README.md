@@ -7,6 +7,10 @@ This repo demonstrates a single file solution for running [hvcc](https://github.
 
 The goal of this development is to realise a generic eurorack module that is based on the ESP32 and programmable via puredata. Each cheap module consists of four control voltage inputs and four audio / cv outputs (all io -5v -> +5v and fully eurorack compatible). All parts are easily obtainable and all software and hardware is open source, so ordering your own set of PCB's is also possible
 
+# Status
+
+18-oct-2020: Code cleanup and PCB design ongoing. Current schematic tested and working!
+
 # Installation
 
 - Install Espressif IoT Development Framework 4.1, the official development framework for ESP32.
