@@ -1,0 +1,4 @@
+(sym_lib_table
+  (lib (name comp_pcm5102)(type Legacy)(uri ${KIPRJMOD}/components/comp_pcm5102.lib)(options "")(descr ""))
+  (lib (name eurogen-rescue)(type Legacy)(uri C:/Users/Arthur/Github/esp32-hvcc/schematics_v2/eurogen-rescue.lib)(options "")(descr ""))
+)

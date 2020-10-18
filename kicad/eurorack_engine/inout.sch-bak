@@ -1,0 +1,1094 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr A3 16535 11693
+encoding utf-8
+Sheet 4 4
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L eurogen-rescue:PJ301M-12-eurocad J?
+U 1 1 5FA4CC8A
+P 3700 1800
+AR Path="/5F91B719/5FA4CC8A" Ref="J?"  Part="1" 
+AR Path="/5FA42CB5/5FA4CC8A" Ref="J3"  Part="1" 
+F 0 "J3" H 3708 2175 50  0000 C CNN
+F 1 "cv in 1" H 3708 2084 50  0000 C CNN
+F 2 "Eurocad:PJ301M-12" H 3700 1800 50  0001 C CNN
+F 3 "" H 3700 1800 50  0000 C CNN
+	1    3700 1800
+	1    0    0    1   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FA4CC90
+P 4650 2000
+AR Path="/5F91B719/5FA4CC90" Ref="#PWR?"  Part="1" 
+AR Path="/5FA42CB5/5FA4CC90" Ref="#PWR039"  Part="1" 
+F 0 "#PWR039" H 4650 1750 50  0001 C CNN
+F 1 "GND" H 4655 1827 50  0000 C CNN
+F 2 "" H 4650 2000 50  0001 C CNN
+F 3 "" H 4650 2000 50  0001 C CNN
+	1    4650 2000
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4650 2000 4650 1900
+Wire Wire Line
+	4650 1900 4800 1900
+$Comp
+L Device:R R?
+U 1 1 5FA4CC98
+P 4500 1700
+AR Path="/5F91B719/5FA4CC98" Ref="R?"  Part="1" 
+AR Path="/5FA42CB5/5FA4CC98" Ref="R16"  Part="1" 
+F 0 "R16" V 4707 1700 50  0000 C CNN
+F 1 "100k" V 4616 1700 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 4430 1700 50  0001 C CNN
+F 3 "~" H 4500 1700 50  0001 C CNN
+	1    4500 1700
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	4650 1700 4700 1700
+$Comp
+L Device:R R?
+U 1 1 5FA4CCA0
+P 5100 1300
+AR Path="/5F91B719/5FA4CCA0" Ref="R?"  Part="1" 
+AR Path="/5FA42CB5/5FA4CCA0" Ref="R18"  Part="1" 
+F 0 "R18" V 5307 1300 50  0000 C CNN
+F 1 "33k" V 5216 1300 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 5030 1300 50  0001 C CNN
+F 3 "~" H 5100 1300 50  0001 C CNN
+	1    5100 1300
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	4950 1300 4700 1300
+Wire Wire Line
+	4700 1300 4700 1700
+Connection ~ 4700 1700
+Wire Wire Line
+	4700 1700 4800 1700
+Wire Wire Line
+	5250 1300 5550 1300
+Wire Wire Line
+	5550 1300 5550 1800
+Wire Wire Line
+	5550 1800 5400 1800
+Connection ~ 5550 1800
+$Comp
+L Device:R R?
+U 1 1 5FA4CCAE
+P 4350 1050
+AR Path="/5F91B719/5FA4CCAE" Ref="R?"  Part="1" 
+AR Path="/5FA42CB5/5FA4CCAE" Ref="R14"  Part="1" 
+F 0 "R14" V 4557 1050 50  0000 C CNN
+F 1 "200k" V 4466 1050 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 4280 1050 50  0001 C CNN
+F 3 "~" H 4350 1050 50  0001 C CNN
+	1    4350 1050
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	4500 1050 4700 1050
+Wire Wire Line
+	4700 1050 4700 1300
+Connection ~ 4700 1300
+Text Label 4000 1050 2    50   ~ 0
+aref_-10v
+Wire Wire Line
+	4000 1050 4200 1050
+Text Label 6500 1800 0    50   ~ 0
+adc_ch0
+Wire Wire Line
+	5550 1800 6500 1800
+Text Notes 6050 1300 0    50   ~ 10
+CV in -> 0/3V3\n
+$Comp
+L eurogen-rescue:PJ301M-12-eurocad J?
+U 1 1 5FA4CCBC
+P 3650 3600
+AR Path="/5F91B719/5FA4CCBC" Ref="J?"  Part="1" 
+AR Path="/5FA42CB5/5FA4CCBC" Ref="J2"  Part="1" 
+F 0 "J2" H 3658 3975 50  0000 C CNN
+F 1 "cv in 2" H 3658 3884 50  0000 C CNN
+F 2 "Eurocad:PJ301M-12" H 3650 3600 50  0001 C CNN
+F 3 "" H 3650 3600 50  0000 C CNN
+	1    3650 3600
+	1    0    0    1   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FA4CCC2
+P 4600 3800
+AR Path="/5F91B719/5FA4CCC2" Ref="#PWR?"  Part="1" 
+AR Path="/5FA42CB5/5FA4CCC2" Ref="#PWR038"  Part="1" 
+F 0 "#PWR038" H 4600 3550 50  0001 C CNN
+F 1 "GND" H 4605 3627 50  0000 C CNN
+F 2 "" H 4600 3800 50  0001 C CNN
+F 3 "" H 4600 3800 50  0001 C CNN
+	1    4600 3800
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4600 3800 4600 3700
+Wire Wire Line
+	4600 3700 4750 3700
+$Comp
+L Device:R R?
+U 1 1 5FA4CCCA
+P 4450 3500
+AR Path="/5F91B719/5FA4CCCA" Ref="R?"  Part="1" 
+AR Path="/5FA42CB5/5FA4CCCA" Ref="R15"  Part="1" 
+F 0 "R15" V 4657 3500 50  0000 C CNN
+F 1 "100k" V 4566 3500 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 4380 3500 50  0001 C CNN
+F 3 "~" H 4450 3500 50  0001 C CNN
+	1    4450 3500
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	4600 3500 4650 3500
+$Comp
+L Device:R R?
+U 1 1 5FA4CCD2
+P 5050 3100
+AR Path="/5F91B719/5FA4CCD2" Ref="R?"  Part="1" 
+AR Path="/5FA42CB5/5FA4CCD2" Ref="R17"  Part="1" 
+F 0 "R17" V 5257 3100 50  0000 C CNN
+F 1 "33k" V 5166 3100 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 4980 3100 50  0001 C CNN
+F 3 "~" H 5050 3100 50  0001 C CNN
+	1    5050 3100
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	4900 3100 4650 3100
+Wire Wire Line
+	4650 3100 4650 3500
+Connection ~ 4650 3500
+Wire Wire Line
+	4650 3500 4750 3500
+Wire Wire Line
+	5200 3100 5500 3100
+Wire Wire Line
+	5500 3100 5500 3600
+Wire Wire Line
+	5500 3600 5350 3600
+Connection ~ 5500 3600
+$Comp
+L Device:R R?
+U 1 1 5FA4CCE0
+P 4300 2850
+AR Path="/5F91B719/5FA4CCE0" Ref="R?"  Part="1" 
+AR Path="/5FA42CB5/5FA4CCE0" Ref="R11"  Part="1" 
+F 0 "R11" V 4507 2850 50  0000 C CNN
+F 1 "200k" V 4416 2850 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 4230 2850 50  0001 C CNN
+F 3 "~" H 4300 2850 50  0001 C CNN
+	1    4300 2850
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	4450 2850 4650 2850
+Wire Wire Line
+	4650 2850 4650 3100
+Connection ~ 4650 3100
+Text Label 3950 2850 2    50   ~ 0
+aref_-10v
+Wire Wire Line
+	3950 2850 4150 2850
+Text Label 6450 3600 0    50   ~ 0
+adc_ch1
+Wire Wire Line
+	5500 3600 6450 3600
+Text Notes 6000 3100 0    50   ~ 10
+CV in -> 0/3V3\n
+$Comp
+L eurogen-rescue:PJ301M-12-eurocad J?
+U 1 1 5FA4CCEE
+P 8250 1800
+AR Path="/5F91B719/5FA4CCEE" Ref="J?"  Part="1" 
+AR Path="/5FA42CB5/5FA4CCEE" Ref="J7"  Part="1" 
+F 0 "J7" H 8258 2175 50  0000 C CNN
+F 1 "cv in 3" H 8258 2084 50  0000 C CNN
+F 2 "Eurocad:PJ301M-12" H 8250 1800 50  0001 C CNN
+F 3 "" H 8250 1800 50  0000 C CNN
+	1    8250 1800
+	1    0    0    1   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FA4CCF4
+P 9200 2000
+AR Path="/5F91B719/5FA4CCF4" Ref="#PWR?"  Part="1" 
+AR Path="/5FA42CB5/5FA4CCF4" Ref="#PWR045"  Part="1" 
+F 0 "#PWR045" H 9200 1750 50  0001 C CNN
+F 1 "GND" H 9205 1827 50  0000 C CNN
+F 2 "" H 9200 2000 50  0001 C CNN
+F 3 "" H 9200 2000 50  0001 C CNN
+	1    9200 2000
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9200 2000 9200 1900
+Wire Wire Line
+	9200 1900 9350 1900
+$Comp
+L Device:R R?
+U 1 1 5FA4CCFC
+P 9050 1700
+AR Path="/5F91B719/5FA4CCFC" Ref="R?"  Part="1" 
+AR Path="/5FA42CB5/5FA4CCFC" Ref="R28"  Part="1" 
+F 0 "R28" V 9257 1700 50  0000 C CNN
+F 1 "100k" V 9166 1700 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 8980 1700 50  0001 C CNN
+F 3 "~" H 9050 1700 50  0001 C CNN
+	1    9050 1700
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	9200 1700 9250 1700
+$Comp
+L Device:R R?
+U 1 1 5FA4CD04
+P 9650 1300
+AR Path="/5F91B719/5FA4CD04" Ref="R?"  Part="1" 
+AR Path="/5FA42CB5/5FA4CD04" Ref="R32"  Part="1" 
+F 0 "R32" V 9857 1300 50  0000 C CNN
+F 1 "33k" V 9766 1300 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 9580 1300 50  0001 C CNN
+F 3 "~" H 9650 1300 50  0001 C CNN
+	1    9650 1300
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	9500 1300 9250 1300
+Wire Wire Line
+	9250 1300 9250 1700
+Connection ~ 9250 1700
+Wire Wire Line
+	9250 1700 9350 1700
+Wire Wire Line
+	9800 1300 10100 1300
+Wire Wire Line
+	10100 1300 10100 1800
+Wire Wire Line
+	10100 1800 9950 1800
+Connection ~ 10100 1800
+$Comp
+L Device:R R?
+U 1 1 5FA4CD12
+P 8900 1050
+AR Path="/5F91B719/5FA4CD12" Ref="R?"  Part="1" 
+AR Path="/5FA42CB5/5FA4CD12" Ref="R26"  Part="1" 
+F 0 "R26" V 9107 1050 50  0000 C CNN
+F 1 "200k" V 9016 1050 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 8830 1050 50  0001 C CNN
+F 3 "~" H 8900 1050 50  0001 C CNN
+	1    8900 1050
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	9050 1050 9250 1050
+Wire Wire Line
+	9250 1050 9250 1300
+Connection ~ 9250 1300
+Text Label 8550 1050 2    50   ~ 0
+aref_-10v
+Wire Wire Line
+	8550 1050 8750 1050
+Text Label 11050 1800 0    50   ~ 0
+adc_ch2
+Wire Wire Line
+	10100 1800 11050 1800
+Text Notes 10600 1300 0    50   ~ 10
+CV in -> 0/3V3\n
+$Comp
+L eurogen-rescue:PJ301M-12-eurocad J?
+U 1 1 5FA4CD20
+P 8200 3600
+AR Path="/5F91B719/5FA4CD20" Ref="J?"  Part="1" 
+AR Path="/5FA42CB5/5FA4CD20" Ref="J6"  Part="1" 
+F 0 "J6" H 8208 3975 50  0000 C CNN
+F 1 "cv in 4" H 8208 3884 50  0000 C CNN
+F 2 "Eurocad:PJ301M-12" H 8200 3600 50  0001 C CNN
+F 3 "" H 8200 3600 50  0000 C CNN
+	1    8200 3600
+	1    0    0    1   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FA4CD26
+P 9150 3800
+AR Path="/5F91B719/5FA4CD26" Ref="#PWR?"  Part="1" 
+AR Path="/5FA42CB5/5FA4CD26" Ref="#PWR044"  Part="1" 
+F 0 "#PWR044" H 9150 3550 50  0001 C CNN
+F 1 "GND" H 9155 3627 50  0000 C CNN
+F 2 "" H 9150 3800 50  0001 C CNN
+F 3 "" H 9150 3800 50  0001 C CNN
+	1    9150 3800
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9150 3800 9150 3700
+Wire Wire Line
+	9150 3700 9300 3700
+$Comp
+L Device:R R?
+U 1 1 5FA4CD2E
+P 9000 3500
+AR Path="/5F91B719/5FA4CD2E" Ref="R?"  Part="1" 
+AR Path="/5FA42CB5/5FA4CD2E" Ref="R27"  Part="1" 
+F 0 "R27" V 9207 3500 50  0000 C CNN
+F 1 "100k" V 9116 3500 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 8930 3500 50  0001 C CNN
+F 3 "~" H 9000 3500 50  0001 C CNN
+	1    9000 3500
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	9150 3500 9200 3500
+$Comp
+L Device:R R?
+U 1 1 5FA4CD36
+P 9600 3100
+AR Path="/5F91B719/5FA4CD36" Ref="R?"  Part="1" 
+AR Path="/5FA42CB5/5FA4CD36" Ref="R31"  Part="1" 
+F 0 "R31" V 9807 3100 50  0000 C CNN
+F 1 "33k" V 9716 3100 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 9530 3100 50  0001 C CNN
+F 3 "~" H 9600 3100 50  0001 C CNN
+	1    9600 3100
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	9450 3100 9200 3100
+Wire Wire Line
+	9200 3100 9200 3500
+Connection ~ 9200 3500
+Wire Wire Line
+	9200 3500 9300 3500
+Wire Wire Line
+	9750 3100 10050 3100
+Wire Wire Line
+	10050 3100 10050 3600
+Wire Wire Line
+	10050 3600 9900 3600
+Connection ~ 10050 3600
+$Comp
+L Device:R R?
+U 1 1 5FA4CD44
+P 8850 2850
+AR Path="/5F91B719/5FA4CD44" Ref="R?"  Part="1" 
+AR Path="/5FA42CB5/5FA4CD44" Ref="R25"  Part="1" 
+F 0 "R25" V 9057 2850 50  0000 C CNN
+F 1 "200k" V 8966 2850 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 8780 2850 50  0001 C CNN
+F 3 "~" H 8850 2850 50  0001 C CNN
+	1    8850 2850
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	9000 2850 9200 2850
+Wire Wire Line
+	9200 2850 9200 3100
+Connection ~ 9200 3100
+Text Label 8500 2850 2    50   ~ 0
+aref_-10v
+Wire Wire Line
+	8500 2850 8700 2850
+Text Label 11000 3600 0    50   ~ 0
+adc_ch3
+Wire Wire Line
+	10050 3600 11000 3600
+Text Notes 10550 3100 0    50   ~ 10
+CV in -> 0/3V3\n
+$Comp
+L Amplifier_Operational:MCP6004 U?
+U 2 1 5FA4CD52
+P 5050 3600
+AR Path="/5F91B719/5FA4CD52" Ref="U?"  Part="2" 
+AR Path="/5FA42CB5/5FA4CD52" Ref="U6"  Part="2" 
+F 0 "U6" H 5050 3233 50  0000 C CNN
+F 1 "MCP6004" H 5050 3324 50  0000 C CNN
+F 2 "Package_DIP:DIP-14_W7.62mm_Socket" H 5000 3700 50  0001 C CNN
+F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf" H 5100 3800 50  0001 C CNN
+	2    5050 3600
+	1    0    0    1   
+$EndComp
+$Comp
+L Amplifier_Operational:MCP6004 U?
+U 3 1 5FA4CD58
+P 9650 1800
+AR Path="/5F91B719/5FA4CD58" Ref="U?"  Part="3" 
+AR Path="/5FA42CB5/5FA4CD58" Ref="U6"  Part="3" 
+F 0 "U6" H 9650 1433 50  0000 C CNN
+F 1 "MCP6004" H 9650 1524 50  0000 C CNN
+F 2 "Package_DIP:DIP-14_W7.62mm_Socket" H 9600 1900 50  0001 C CNN
+F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf" H 9700 2000 50  0001 C CNN
+	3    9650 1800
+	1    0    0    1   
+$EndComp
+$Comp
+L Amplifier_Operational:MCP6004 U?
+U 4 1 5FA4CD5E
+P 9600 3600
+AR Path="/5F91B719/5FA4CD5E" Ref="U?"  Part="4" 
+AR Path="/5FA42CB5/5FA4CD5E" Ref="U6"  Part="4" 
+F 0 "U6" H 9600 3233 50  0000 C CNN
+F 1 "MCP6004" H 9600 3324 50  0000 C CNN
+F 2 "Package_DIP:DIP-14_W7.62mm_Socket" H 9550 3700 50  0001 C CNN
+F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf" H 9650 3800 50  0001 C CNN
+	4    9600 3600
+	1    0    0    1   
+$EndComp
+$Comp
+L Amplifier_Operational:MCP6004 U?
+U 1 1 5FA4CD64
+P 5100 1800
+AR Path="/5F91B719/5FA4CD64" Ref="U?"  Part="1" 
+AR Path="/5FA42CB5/5FA4CD64" Ref="U6"  Part="1" 
+F 0 "U6" H 5100 1433 50  0000 C CNN
+F 1 "MCP6004" H 5100 1524 50  0000 C CNN
+F 2 "Package_DIP:DIP-14_W7.62mm_Socket" H 5050 1900 50  0001 C CNN
+F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf" H 5150 2000 50  0001 C CNN
+	1    5100 1800
+	1    0    0    1   
+$EndComp
+$Comp
+L Amplifier_Operational:TL074 U?
+U 1 1 5FA6A3BA
+P 4350 5600
+AR Path="/5F91B719/5FA6A3BA" Ref="U?"  Part="1" 
+AR Path="/5FA42CB5/5FA6A3BA" Ref="U4"  Part="1" 
+F 0 "U4" H 4350 5967 50  0000 C CNN
+F 1 "TL074" H 4350 5876 50  0000 C CNN
+F 2 "Package_DIP:DIP-14_W7.62mm_Socket" H 4300 5700 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 4400 5800 50  0001 C CNN
+	1    4350 5600
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 5FA6A3C0
+P 3500 5500
+AR Path="/5F91B719/5FA6A3C0" Ref="R?"  Part="1" 
+AR Path="/5FA42CB5/5FA6A3C0" Ref="R9"  Part="1" 
+F 0 "R9" V 3707 5500 50  0000 C CNN
+F 1 "1k" V 3616 5500 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 3430 5500 50  0001 C CNN
+F 3 "~" H 3500 5500 50  0001 C CNN
+	1    3500 5500
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 5FA6A3C9
+P 4350 5900
+AR Path="/5F91B719/5FA6A3C9" Ref="R?"  Part="1" 
+AR Path="/5FA42CB5/5FA6A3C9" Ref="R12"  Part="1" 
+F 0 "R12" V 4235 5900 50  0000 C CNN
+F 1 "10k" V 4144 5900 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 4280 5900 50  0001 C CNN
+F 3 "~" H 4350 5900 50  0001 C CNN
+	1    4350 5900
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FA6A3E8
+P 5300 5950
+AR Path="/5F91B719/5FA6A3E8" Ref="#PWR?"  Part="1" 
+AR Path="/5FA42CB5/5FA6A3E8" Ref="#PWR040"  Part="1" 
+F 0 "#PWR040" H 5300 5700 50  0001 C CNN
+F 1 "GND" H 5305 5777 50  0000 C CNN
+F 2 "" H 5300 5950 50  0001 C CNN
+F 3 "" H 5300 5950 50  0001 C CNN
+	1    5300 5950
+	1    0    0    -1  
+$EndComp
+Text Notes 5400 5300 0    50   ~ 10
+CODEC out -> -5/+5V
+$Comp
+L eurogen-rescue:PJ301M-12-eurocad J?
+U 1 1 5FA6A3E2
+P 5900 5700
+AR Path="/5F91B719/5FA6A3E2" Ref="J?"  Part="1" 
+AR Path="/5FA42CB5/5FA6A3E2" Ref="J4"  Part="1" 
+F 0 "J4" H 5908 6075 50  0000 C CNN
+F 1 "codec out 1" H 5908 5984 50  0000 C CNN
+F 2 "Eurocad:PJ301M-12" H 5900 5700 50  0001 C CNN
+F 3 "" H 5900 5700 50  0000 C CNN
+	1    5900 5700
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	5450 5850 5300 5850
+Wire Wire Line
+	5300 5850 5300 5950
+Wire Wire Line
+	4750 5900 4750 5600
+Wire Wire Line
+	4750 5600 4650 5600
+Wire Wire Line
+	4500 5900 4750 5900
+Wire Wire Line
+	4050 5700 3900 5700
+Wire Wire Line
+	3900 5700 3900 5900
+Wire Wire Line
+	3900 5900 4200 5900
+Wire Wire Line
+	3650 5500 4050 5500
+$Comp
+L Device:R R?
+U 1 1 5FB16086
+P 3900 6200
+AR Path="/5F91B719/5FB16086" Ref="R?"  Part="1" 
+AR Path="/5FA42CB5/5FB16086" Ref="R8"  Part="1" 
+F 0 "R8" H 3970 6246 50  0000 L CNN
+F 1 "10k" H 3970 6155 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 3830 6200 50  0001 C CNN
+F 3 "~" H 3900 6200 50  0001 C CNN
+	1    3900 6200
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FB16835
+P 3900 6400
+AR Path="/5F91B719/5FB16835" Ref="#PWR?"  Part="1" 
+AR Path="/5FA42CB5/5FB16835" Ref="#PWR0101"  Part="1" 
+F 0 "#PWR0101" H 3900 6150 50  0001 C CNN
+F 1 "GND" H 3905 6227 50  0000 C CNN
+F 2 "" H 3900 6400 50  0001 C CNN
+F 3 "" H 3900 6400 50  0001 C CNN
+	1    3900 6400
+	1    0    0    -1  
+$EndComp
+Connection ~ 3900 5900
+Wire Wire Line
+	3900 5900 3900 6050
+Wire Wire Line
+	3900 6400 3900 6350
+$Comp
+L Device:R R?
+U 1 1 5FB2A540
+P 5100 5600
+AR Path="/5F91B719/5FB2A540" Ref="R?"  Part="1" 
+AR Path="/5FA42CB5/5FB2A540" Ref="R19"  Part="1" 
+F 0 "R19" V 5307 5600 50  0000 C CNN
+F 1 "1k" V 5216 5600 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 5030 5600 50  0001 C CNN
+F 3 "~" H 5100 5600 50  0001 C CNN
+	1    5100 5600
+	0    -1   -1   0   
+$EndComp
+Connection ~ 4750 5600
+Wire Wire Line
+	4750 5600 4950 5600
+Wire Wire Line
+	5250 5600 5450 5600
+Text Label 3050 5500 2    50   ~ 0
+codec_out_1
+Wire Wire Line
+	3050 5500 3350 5500
+$Comp
+L Device:R R?
+U 1 1 5FB577CB
+P 3500 7200
+AR Path="/5F91B719/5FB577CB" Ref="R?"  Part="1" 
+AR Path="/5FA42CB5/5FB577CB" Ref="R7"  Part="1" 
+F 0 "R7" V 3707 7200 50  0000 C CNN
+F 1 "1k" V 3616 7200 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 3430 7200 50  0001 C CNN
+F 3 "~" H 3500 7200 50  0001 C CNN
+	1    3500 7200
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 5FB577D5
+P 4350 7600
+AR Path="/5F91B719/5FB577D5" Ref="R?"  Part="1" 
+AR Path="/5FA42CB5/5FB577D5" Ref="R13"  Part="1" 
+F 0 "R13" V 4235 7600 50  0000 C CNN
+F 1 "10k" V 4144 7600 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 4280 7600 50  0001 C CNN
+F 3 "~" H 4350 7600 50  0001 C CNN
+	1    4350 7600
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FB577DF
+P 5300 7650
+AR Path="/5F91B719/5FB577DF" Ref="#PWR?"  Part="1" 
+AR Path="/5FA42CB5/5FB577DF" Ref="#PWR0102"  Part="1" 
+F 0 "#PWR0102" H 5300 7400 50  0001 C CNN
+F 1 "GND" H 5305 7477 50  0000 C CNN
+F 2 "" H 5300 7650 50  0001 C CNN
+F 3 "" H 5300 7650 50  0001 C CNN
+	1    5300 7650
+	1    0    0    -1  
+$EndComp
+Text Notes 5400 7000 0    50   ~ 10
+CODEC out -> -5/+5V
+$Comp
+L eurogen-rescue:PJ301M-12-eurocad J?
+U 1 1 5FB577EA
+P 5900 7400
+AR Path="/5F91B719/5FB577EA" Ref="J?"  Part="1" 
+AR Path="/5FA42CB5/5FB577EA" Ref="J5"  Part="1" 
+F 0 "J5" H 5908 7775 50  0000 C CNN
+F 1 "codec out 3" H 5908 7684 50  0000 C CNN
+F 2 "Eurocad:PJ301M-12" H 5900 7400 50  0001 C CNN
+F 3 "" H 5900 7400 50  0000 C CNN
+	1    5900 7400
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	5450 7550 5300 7550
+Wire Wire Line
+	5300 7550 5300 7650
+Wire Wire Line
+	4750 7600 4750 7300
+Wire Wire Line
+	4750 7300 4650 7300
+Wire Wire Line
+	4500 7600 4750 7600
+Wire Wire Line
+	4050 7400 3900 7400
+Wire Wire Line
+	3900 7400 3900 7600
+Wire Wire Line
+	3900 7600 4200 7600
+Wire Wire Line
+	3650 7200 4050 7200
+$Comp
+L Device:R R?
+U 1 1 5FB577FD
+P 3900 7900
+AR Path="/5F91B719/5FB577FD" Ref="R?"  Part="1" 
+AR Path="/5FA42CB5/5FB577FD" Ref="R10"  Part="1" 
+F 0 "R10" H 3970 7946 50  0000 L CNN
+F 1 "10k" H 3970 7855 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 3830 7900 50  0001 C CNN
+F 3 "~" H 3900 7900 50  0001 C CNN
+	1    3900 7900
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FB57807
+P 3900 8100
+AR Path="/5F91B719/5FB57807" Ref="#PWR?"  Part="1" 
+AR Path="/5FA42CB5/5FB57807" Ref="#PWR0103"  Part="1" 
+F 0 "#PWR0103" H 3900 7850 50  0001 C CNN
+F 1 "GND" H 3905 7927 50  0000 C CNN
+F 2 "" H 3900 8100 50  0001 C CNN
+F 3 "" H 3900 8100 50  0001 C CNN
+	1    3900 8100
+	1    0    0    -1  
+$EndComp
+Connection ~ 3900 7600
+Wire Wire Line
+	3900 7600 3900 7750
+Wire Wire Line
+	3900 8100 3900 8050
+$Comp
+L Device:R R?
+U 1 1 5FB57814
+P 5100 7300
+AR Path="/5F91B719/5FB57814" Ref="R?"  Part="1" 
+AR Path="/5FA42CB5/5FB57814" Ref="R20"  Part="1" 
+F 0 "R20" V 5307 7300 50  0000 C CNN
+F 1 "1k" V 5216 7300 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 5030 7300 50  0001 C CNN
+F 3 "~" H 5100 7300 50  0001 C CNN
+	1    5100 7300
+	0    -1   -1   0   
+$EndComp
+Connection ~ 4750 7300
+Wire Wire Line
+	4750 7300 4950 7300
+Wire Wire Line
+	5250 7300 5450 7300
+Text Label 3050 7200 2    50   ~ 0
+codec_out_3
+Wire Wire Line
+	3050 7200 3350 7200
+$Comp
+L Amplifier_Operational:TL074 U4
+U 3 1 5FB6FF84
+P 4350 7300
+F 0 "U4" H 4350 7667 50  0000 C CNN
+F 1 "TL074" H 4350 7576 50  0000 C CNN
+F 2 "Package_DIP:DIP-14_W7.62mm_Socket" H 4300 7400 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 4400 7500 50  0001 C CNN
+	3    4350 7300
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 5FB7B8A4
+P 8550 5500
+AR Path="/5F91B719/5FB7B8A4" Ref="R?"  Part="1" 
+AR Path="/5FA42CB5/5FB7B8A4" Ref="R21"  Part="1" 
+F 0 "R21" V 8757 5500 50  0000 C CNN
+F 1 "1k" V 8666 5500 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 8480 5500 50  0001 C CNN
+F 3 "~" H 8550 5500 50  0001 C CNN
+	1    8550 5500
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 5FB7B8AE
+P 9400 5900
+AR Path="/5F91B719/5FB7B8AE" Ref="R?"  Part="1" 
+AR Path="/5FA42CB5/5FB7B8AE" Ref="R29"  Part="1" 
+F 0 "R29" V 9285 5900 50  0000 C CNN
+F 1 "10k" V 9194 5900 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 9330 5900 50  0001 C CNN
+F 3 "~" H 9400 5900 50  0001 C CNN
+	1    9400 5900
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FB7B8B8
+P 10350 5950
+AR Path="/5F91B719/5FB7B8B8" Ref="#PWR?"  Part="1" 
+AR Path="/5FA42CB5/5FB7B8B8" Ref="#PWR041"  Part="1" 
+F 0 "#PWR041" H 10350 5700 50  0001 C CNN
+F 1 "GND" H 10355 5777 50  0000 C CNN
+F 2 "" H 10350 5950 50  0001 C CNN
+F 3 "" H 10350 5950 50  0001 C CNN
+	1    10350 5950
+	1    0    0    -1  
+$EndComp
+Text Notes 10450 5300 0    50   ~ 10
+CODEC out -> -5/+5V
+$Comp
+L eurogen-rescue:PJ301M-12-eurocad J?
+U 1 1 5FB7B8C3
+P 10950 5700
+AR Path="/5F91B719/5FB7B8C3" Ref="J?"  Part="1" 
+AR Path="/5FA42CB5/5FB7B8C3" Ref="J8"  Part="1" 
+F 0 "J8" H 10958 6075 50  0000 C CNN
+F 1 "codec out 2" H 10958 5984 50  0000 C CNN
+F 2 "Eurocad:PJ301M-12" H 10950 5700 50  0001 C CNN
+F 3 "" H 10950 5700 50  0000 C CNN
+	1    10950 5700
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	10500 5850 10350 5850
+Wire Wire Line
+	10350 5850 10350 5950
+Wire Wire Line
+	9800 5900 9800 5600
+Wire Wire Line
+	9800 5600 9700 5600
+Wire Wire Line
+	9550 5900 9800 5900
+Wire Wire Line
+	9100 5700 8950 5700
+Wire Wire Line
+	8950 5700 8950 5900
+Wire Wire Line
+	8950 5900 9250 5900
+Wire Wire Line
+	8700 5500 9100 5500
+$Comp
+L Device:R R?
+U 1 1 5FB7B8D6
+P 8950 6200
+AR Path="/5F91B719/5FB7B8D6" Ref="R?"  Part="1" 
+AR Path="/5FA42CB5/5FB7B8D6" Ref="R23"  Part="1" 
+F 0 "R23" H 9020 6246 50  0000 L CNN
+F 1 "10k" H 9020 6155 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 8880 6200 50  0001 C CNN
+F 3 "~" H 8950 6200 50  0001 C CNN
+	1    8950 6200
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FB7B8E0
+P 8950 6400
+AR Path="/5F91B719/5FB7B8E0" Ref="#PWR?"  Part="1" 
+AR Path="/5FA42CB5/5FB7B8E0" Ref="#PWR036"  Part="1" 
+F 0 "#PWR036" H 8950 6150 50  0001 C CNN
+F 1 "GND" H 8955 6227 50  0000 C CNN
+F 2 "" H 8950 6400 50  0001 C CNN
+F 3 "" H 8950 6400 50  0001 C CNN
+	1    8950 6400
+	1    0    0    -1  
+$EndComp
+Connection ~ 8950 5900
+Wire Wire Line
+	8950 5900 8950 6050
+Wire Wire Line
+	8950 6400 8950 6350
+$Comp
+L Device:R R?
+U 1 1 5FB7B8ED
+P 10150 5600
+AR Path="/5F91B719/5FB7B8ED" Ref="R?"  Part="1" 
+AR Path="/5FA42CB5/5FB7B8ED" Ref="R33"  Part="1" 
+F 0 "R33" V 10357 5600 50  0000 C CNN
+F 1 "1k" V 10266 5600 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 10080 5600 50  0001 C CNN
+F 3 "~" H 10150 5600 50  0001 C CNN
+	1    10150 5600
+	0    -1   -1   0   
+$EndComp
+Connection ~ 9800 5600
+Wire Wire Line
+	9800 5600 10000 5600
+Wire Wire Line
+	10300 5600 10500 5600
+Text Label 8100 5500 2    50   ~ 0
+codec_out_2
+Wire Wire Line
+	8100 5500 8400 5500
+$Comp
+L Device:R R?
+U 1 1 5FB7B8FC
+P 8550 7200
+AR Path="/5F91B719/5FB7B8FC" Ref="R?"  Part="1" 
+AR Path="/5FA42CB5/5FB7B8FC" Ref="R22"  Part="1" 
+F 0 "R22" V 8757 7200 50  0000 C CNN
+F 1 "1k" V 8666 7200 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 8480 7200 50  0001 C CNN
+F 3 "~" H 8550 7200 50  0001 C CNN
+	1    8550 7200
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 5FB7B906
+P 9400 7600
+AR Path="/5F91B719/5FB7B906" Ref="R?"  Part="1" 
+AR Path="/5FA42CB5/5FB7B906" Ref="R30"  Part="1" 
+F 0 "R30" V 9285 7600 50  0000 C CNN
+F 1 "10k" V 9194 7600 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 9330 7600 50  0001 C CNN
+F 3 "~" H 9400 7600 50  0001 C CNN
+	1    9400 7600
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FB7B910
+P 10350 7650
+AR Path="/5F91B719/5FB7B910" Ref="#PWR?"  Part="1" 
+AR Path="/5FA42CB5/5FB7B910" Ref="#PWR042"  Part="1" 
+F 0 "#PWR042" H 10350 7400 50  0001 C CNN
+F 1 "GND" H 10355 7477 50  0000 C CNN
+F 2 "" H 10350 7650 50  0001 C CNN
+F 3 "" H 10350 7650 50  0001 C CNN
+	1    10350 7650
+	1    0    0    -1  
+$EndComp
+Text Notes 10450 7000 0    50   ~ 10
+CODEC out -> -5/+5V
+$Comp
+L eurogen-rescue:PJ301M-12-eurocad J?
+U 1 1 5FB7B91B
+P 10950 7400
+AR Path="/5F91B719/5FB7B91B" Ref="J?"  Part="1" 
+AR Path="/5FA42CB5/5FB7B91B" Ref="J9"  Part="1" 
+F 0 "J9" H 10958 7775 50  0000 C CNN
+F 1 "codec out 4" H 10958 7684 50  0000 C CNN
+F 2 "Eurocad:PJ301M-12" H 10950 7400 50  0001 C CNN
+F 3 "" H 10950 7400 50  0000 C CNN
+	1    10950 7400
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	10500 7550 10350 7550
+Wire Wire Line
+	10350 7550 10350 7650
+Wire Wire Line
+	9800 7600 9800 7300
+Wire Wire Line
+	9800 7300 9700 7300
+Wire Wire Line
+	9550 7600 9800 7600
+Wire Wire Line
+	9100 7400 8950 7400
+Wire Wire Line
+	8950 7400 8950 7600
+Wire Wire Line
+	8950 7600 9250 7600
+Wire Wire Line
+	8700 7200 9100 7200
+$Comp
+L Device:R R?
+U 1 1 5FB7B92E
+P 8950 7900
+AR Path="/5F91B719/5FB7B92E" Ref="R?"  Part="1" 
+AR Path="/5FA42CB5/5FB7B92E" Ref="R24"  Part="1" 
+F 0 "R24" H 9020 7946 50  0000 L CNN
+F 1 "10k" H 9020 7855 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 8880 7900 50  0001 C CNN
+F 3 "~" H 8950 7900 50  0001 C CNN
+	1    8950 7900
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FB7B938
+P 8950 8100
+AR Path="/5F91B719/5FB7B938" Ref="#PWR?"  Part="1" 
+AR Path="/5FA42CB5/5FB7B938" Ref="#PWR037"  Part="1" 
+F 0 "#PWR037" H 8950 7850 50  0001 C CNN
+F 1 "GND" H 8955 7927 50  0000 C CNN
+F 2 "" H 8950 8100 50  0001 C CNN
+F 3 "" H 8950 8100 50  0001 C CNN
+	1    8950 8100
+	1    0    0    -1  
+$EndComp
+Connection ~ 8950 7600
+Wire Wire Line
+	8950 7600 8950 7750
+Wire Wire Line
+	8950 8100 8950 8050
+$Comp
+L Device:R R?
+U 1 1 5FB7B945
+P 10150 7300
+AR Path="/5F91B719/5FB7B945" Ref="R?"  Part="1" 
+AR Path="/5FA42CB5/5FB7B945" Ref="R34"  Part="1" 
+F 0 "R34" V 10357 7300 50  0000 C CNN
+F 1 "1k" V 10266 7300 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 10080 7300 50  0001 C CNN
+F 3 "~" H 10150 7300 50  0001 C CNN
+	1    10150 7300
+	0    -1   -1   0   
+$EndComp
+Connection ~ 9800 7300
+Wire Wire Line
+	9800 7300 10000 7300
+Wire Wire Line
+	10300 7300 10500 7300
+Text Label 8100 7200 2    50   ~ 0
+codec_out_4
+Wire Wire Line
+	8100 7200 8400 7200
+$Comp
+L Amplifier_Operational:TL074 U4
+U 2 1 5FBBF968
+P 9400 5600
+F 0 "U4" H 9400 5967 50  0000 C CNN
+F 1 "TL074" H 9400 5876 50  0000 C CNN
+F 2 "Package_DIP:DIP-14_W7.62mm_Socket" H 9350 5700 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 9450 5800 50  0001 C CNN
+	2    9400 5600
+	1    0    0    -1  
+$EndComp
+$Comp
+L Amplifier_Operational:TL074 U4
+U 4 1 5FBC20EC
+P 9400 7300
+F 0 "U4" H 9400 7667 50  0000 C CNN
+F 1 "TL074" H 9400 7576 50  0000 C CNN
+F 2 "Package_DIP:DIP-14_W7.62mm_Socket" H 9350 7400 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 9450 7500 50  0001 C CNN
+	4    9400 7300
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4150 1700 4350 1700
+$Comp
+L power:GND #PWR?
+U 1 1 5FBCC6E2
+P 4250 2000
+AR Path="/5F91B719/5FBCC6E2" Ref="#PWR?"  Part="1" 
+AR Path="/5FA42CB5/5FBCC6E2" Ref="#PWR0104"  Part="1" 
+F 0 "#PWR0104" H 4250 1750 50  0001 C CNN
+F 1 "GND" H 4255 1827 50  0000 C CNN
+F 2 "" H 4250 2000 50  0001 C CNN
+F 3 "" H 4250 2000 50  0001 C CNN
+	1    4250 2000
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4150 1950 4250 1950
+Wire Wire Line
+	4250 1950 4250 2000
+Wire Wire Line
+	4100 3500 4300 3500
+Wire Wire Line
+	8650 3500 8850 3500
+Wire Wire Line
+	8700 1700 8900 1700
+$Comp
+L power:GND #PWR?
+U 1 1 5FBE7F4D
+P 4200 3800
+AR Path="/5F91B719/5FBE7F4D" Ref="#PWR?"  Part="1" 
+AR Path="/5FA42CB5/5FBE7F4D" Ref="#PWR0105"  Part="1" 
+F 0 "#PWR0105" H 4200 3550 50  0001 C CNN
+F 1 "GND" H 4205 3627 50  0000 C CNN
+F 2 "" H 4200 3800 50  0001 C CNN
+F 3 "" H 4200 3800 50  0001 C CNN
+	1    4200 3800
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FBE83C9
+P 8750 3800
+AR Path="/5F91B719/5FBE83C9" Ref="#PWR?"  Part="1" 
+AR Path="/5FA42CB5/5FBE83C9" Ref="#PWR0106"  Part="1" 
+F 0 "#PWR0106" H 8750 3550 50  0001 C CNN
+F 1 "GND" H 8755 3627 50  0000 C CNN
+F 2 "" H 8750 3800 50  0001 C CNN
+F 3 "" H 8750 3800 50  0001 C CNN
+	1    8750 3800
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FBE8810
+P 8800 2000
+AR Path="/5F91B719/5FBE8810" Ref="#PWR?"  Part="1" 
+AR Path="/5FA42CB5/5FBE8810" Ref="#PWR0107"  Part="1" 
+F 0 "#PWR0107" H 8800 1750 50  0001 C CNN
+F 1 "GND" H 8805 1827 50  0000 C CNN
+F 2 "" H 8800 2000 50  0001 C CNN
+F 3 "" H 8800 2000 50  0001 C CNN
+	1    8800 2000
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4100 3750 4200 3750
+Wire Wire Line
+	4200 3750 4200 3800
+Wire Wire Line
+	8650 3750 8750 3750
+Wire Wire Line
+	8750 3750 8750 3800
+Wire Wire Line
+	8700 1950 8800 1950
+Wire Wire Line
+	8800 1950 8800 2000
+Text Notes 11850 2500 0    157  ~ 0
+INVERTING?
+Text Notes 12000 6650 0    197  ~ 0
+NON_INVERTING?
+$EndSCHEMATC

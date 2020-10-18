@@ -1,0 +1,445 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 3 3
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L eurogen-rescue:EURO_PWR_2x5-eurocad J?
+U 1 1 5F9D8E2B
+P 5400 1700
+F 0 "J?" H 5400 2147 60  0000 C CNN
+F 1 "EURO_PWR_2x5" H 5400 2041 60  0000 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_2x05_P2.54mm_Vertical" H 5400 1700 60  0001 C CNN
+F 3 "" H 5400 1700 60  0000 C CNN
+	1    5400 1700
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+12V #PWR?
+U 1 1 5F9D8E31
+P 4750 1350
+F 0 "#PWR?" H 4750 1200 50  0001 C CNN
+F 1 "+12V" H 4765 1523 50  0000 C CNN
+F 2 "" H 4750 1350 50  0001 C CNN
+F 3 "" H 4750 1350 50  0001 C CNN
+	1    4750 1350
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+12V #PWR?
+U 1 1 5F9D8E37
+P 6050 1350
+F 0 "#PWR?" H 6050 1200 50  0001 C CNN
+F 1 "+12V" H 6065 1523 50  0000 C CNN
+F 2 "" H 6050 1350 50  0001 C CNN
+F 3 "" H 6050 1350 50  0001 C CNN
+	1    6050 1350
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4750 1350 4750 1500
+Wire Wire Line
+	4750 1500 4950 1500
+Wire Wire Line
+	5850 1500 6050 1500
+Wire Wire Line
+	6050 1500 6050 1350
+$Comp
+L power:-12V #PWR?
+U 1 1 5F9D8E41
+P 4450 1900
+F 0 "#PWR?" H 4450 2000 50  0001 C CNN
+F 1 "-12V" H 4465 2073 50  0000 C CNN
+F 2 "" H 4450 1900 50  0001 C CNN
+F 3 "" H 4450 1900 50  0001 C CNN
+	1    4450 1900
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:-12V #PWR?
+U 1 1 5F9D8E47
+P 6400 1900
+F 0 "#PWR?" H 6400 2000 50  0001 C CNN
+F 1 "-12V" H 6415 2073 50  0000 C CNN
+F 2 "" H 6400 1900 50  0001 C CNN
+F 3 "" H 6400 1900 50  0001 C CNN
+	1    6400 1900
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	6400 1900 5850 1900
+Wire Wire Line
+	4950 1900 4450 1900
+$Comp
+L power:GND #PWR?
+U 1 1 5F9D8E4F
+P 4450 1600
+F 0 "#PWR?" H 4450 1350 50  0001 C CNN
+F 1 "GND" H 4455 1427 50  0000 C CNN
+F 2 "" H 4450 1600 50  0001 C CNN
+F 3 "" H 4450 1600 50  0001 C CNN
+	1    4450 1600
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5F9D8E55
+P 6400 1600
+F 0 "#PWR?" H 6400 1350 50  0001 C CNN
+F 1 "GND" H 6405 1427 50  0000 C CNN
+F 2 "" H 6400 1600 50  0001 C CNN
+F 3 "" H 6400 1600 50  0001 C CNN
+	1    6400 1600
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6400 1600 6200 1600
+Wire Wire Line
+	4950 1600 4800 1600
+Wire Wire Line
+	4950 1700 4800 1700
+Wire Wire Line
+	4800 1700 4800 1600
+Connection ~ 4800 1600
+Wire Wire Line
+	4800 1600 4650 1600
+Wire Wire Line
+	4950 1800 4650 1800
+Wire Wire Line
+	4650 1800 4650 1600
+Connection ~ 4650 1600
+Wire Wire Line
+	4650 1600 4450 1600
+Wire Wire Line
+	5850 1700 6050 1700
+Wire Wire Line
+	6050 1700 6050 1600
+Connection ~ 6050 1600
+Wire Wire Line
+	6050 1600 5850 1600
+Wire Wire Line
+	5850 1800 6200 1800
+Wire Wire Line
+	6200 1800 6200 1600
+Connection ~ 6200 1600
+Wire Wire Line
+	6200 1600 6050 1600
+$Comp
+L Regulator_Linear:LM1117-3.3 U?
+U 1 1 5F9D8E6D
+P 3900 3750
+F 0 "U?" H 3900 3992 50  0000 C CNN
+F 1 "LM1117-3.3" H 3900 3901 50  0000 C CNN
+F 2 "Package_TO_SOT_THT:TO-92" H 3900 3750 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/lm1117.pdf" H 3900 3750 50  0001 C CNN
+	1    3900 3750
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5F9D8E73
+P 3900 4150
+F 0 "#PWR?" H 3900 3900 50  0001 C CNN
+F 1 "GND" H 3905 3977 50  0000 C CNN
+F 2 "" H 3900 4150 50  0001 C CNN
+F 3 "" H 3900 4150 50  0001 C CNN
+	1    3900 4150
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3900 4050 3900 4150
+$Comp
+L Device:R R?
+U 1 1 5F9D8E7A
+P 2900 3750
+F 0 "R?" H 2830 3704 50  0000 R CNN
+F 1 "4r7" H 2830 3795 50  0000 R CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 2830 3750 50  0001 C CNN
+F 3 "~" H 2900 3750 50  0001 C CNN
+	1    2900 3750
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:CP C?
+U 1 1 5F9D8E80
+P 3300 4050
+F 0 "C?" H 3182 4096 50  0000 R CNN
+F 1 "47uf" H 3182 4005 50  0000 R CNN
+F 2 "Capacitor_THT:C_Radial_D6.3mm_H5.0mm_P2.50mm" H 3338 3900 50  0001 C CNN
+F 3 "~" H 3300 4050 50  0001 C CNN
+	1    3300 4050
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5F9D8E86
+P 3300 4350
+F 0 "#PWR?" H 3300 4100 50  0001 C CNN
+F 1 "GND" H 3305 4177 50  0000 C CNN
+F 2 "" H 3300 4350 50  0001 C CNN
+F 3 "" H 3300 4350 50  0001 C CNN
+	1    3300 4350
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3300 4200 3300 4350
+Wire Wire Line
+	3050 3750 3300 3750
+Wire Wire Line
+	3300 3900 3300 3750
+Connection ~ 3300 3750
+Wire Wire Line
+	3300 3750 3600 3750
+Wire Wire Line
+	2400 3600 2400 3750
+Wire Wire Line
+	2400 3750 2750 3750
+$Comp
+L Device:CP C?
+U 1 1 5F9D8E93
+P 4550 4050
+F 0 "C?" H 4432 4096 50  0000 R CNN
+F 1 "47uf" H 4432 4005 50  0000 R CNN
+F 2 "Capacitor_THT:C_Radial_D6.3mm_H5.0mm_P2.50mm" H 4588 3900 50  0001 C CNN
+F 3 "~" H 4550 4050 50  0001 C CNN
+	1    4550 4050
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5F9D8E99
+P 4550 4350
+F 0 "#PWR?" H 4550 4100 50  0001 C CNN
+F 1 "GND" H 4555 4177 50  0000 C CNN
+F 2 "" H 4550 4350 50  0001 C CNN
+F 3 "" H 4550 4350 50  0001 C CNN
+	1    4550 4350
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3V3 #PWR?
+U 1 1 5F9D8E9F
+P 5000 3600
+F 0 "#PWR?" H 5000 3450 50  0001 C CNN
+F 1 "+3V3" H 5015 3773 50  0000 C CNN
+F 2 "" H 5000 3600 50  0001 C CNN
+F 3 "" H 5000 3600 50  0001 C CNN
+	1    5000 3600
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 5F9D8EA5
+P 5000 4050
+F 0 "C?" H 4885 4004 50  0000 R CNN
+F 1 "100n" H 4885 4095 50  0000 R CNN
+F 2 "Capacitor_THT:C_Disc_D4.3mm_W1.9mm_P5.00mm" H 5038 3900 50  0001 C CNN
+F 3 "~" H 5000 4050 50  0001 C CNN
+	1    5000 4050
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5F9D8EAB
+P 5000 4350
+F 0 "#PWR?" H 5000 4100 50  0001 C CNN
+F 1 "GND" H 5005 4177 50  0000 C CNN
+F 2 "" H 5000 4350 50  0001 C CNN
+F 3 "" H 5000 4350 50  0001 C CNN
+	1    5000 4350
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4200 3750 4550 3750
+Wire Wire Line
+	5000 3750 5000 3600
+Wire Wire Line
+	5000 3900 5000 3750
+Connection ~ 5000 3750
+Wire Wire Line
+	4550 3900 4550 3750
+Connection ~ 4550 3750
+Wire Wire Line
+	4550 3750 5000 3750
+Wire Wire Line
+	4550 4350 4550 4200
+Wire Wire Line
+	5000 4200 5000 4350
+$Comp
+L Regulator_Linear:LM1117-3.3 U?
+U 1 1 5F9D8EBA
+P 6450 3750
+F 0 "U?" H 6450 3992 50  0000 C CNN
+F 1 "LM1117-3.3" H 6450 3901 50  0000 C CNN
+F 2 "Package_TO_SOT_THT:TO-92" H 6450 3750 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/lm1117.pdf" H 6450 3750 50  0001 C CNN
+	1    6450 3750
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5F9D8EC0
+P 6450 4150
+F 0 "#PWR?" H 6450 3900 50  0001 C CNN
+F 1 "GND" H 6455 3977 50  0000 C CNN
+F 2 "" H 6450 4150 50  0001 C CNN
+F 3 "" H 6450 4150 50  0001 C CNN
+	1    6450 4150
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6450 4050 6450 4150
+$Comp
+L power:+12V #PWR?
+U 1 1 5F9D8EC7
+P 5900 3600
+F 0 "#PWR?" H 5900 3450 50  0001 C CNN
+F 1 "+12V" H 5915 3773 50  0000 C CNN
+F 2 "" H 5900 3600 50  0001 C CNN
+F 3 "" H 5900 3600 50  0001 C CNN
+	1    5900 3600
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5900 3600 5900 3750
+$Comp
+L Device:CP C?
+U 1 1 5F9D8ECE
+P 7100 4050
+F 0 "C?" H 6982 4096 50  0000 R CNN
+F 1 "47uf" H 6982 4005 50  0000 R CNN
+F 2 "Capacitor_THT:C_Radial_D6.3mm_H5.0mm_P2.50mm" H 7138 3900 50  0001 C CNN
+F 3 "~" H 7100 4050 50  0001 C CNN
+	1    7100 4050
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5F9D8ED4
+P 7100 4350
+F 0 "#PWR?" H 7100 4100 50  0001 C CNN
+F 1 "GND" H 7105 4177 50  0000 C CNN
+F 2 "" H 7100 4350 50  0001 C CNN
+F 3 "" H 7100 4350 50  0001 C CNN
+	1    7100 4350
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 5F9D8EDA
+P 7550 4050
+F 0 "C?" H 7435 4004 50  0000 R CNN
+F 1 "100n" H 7435 4095 50  0000 R CNN
+F 2 "Capacitor_THT:C_Disc_D4.3mm_W1.9mm_P5.00mm" H 7588 3900 50  0001 C CNN
+F 3 "~" H 7550 4050 50  0001 C CNN
+	1    7550 4050
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5F9D8EE0
+P 7550 4350
+F 0 "#PWR?" H 7550 4100 50  0001 C CNN
+F 1 "GND" H 7555 4177 50  0000 C CNN
+F 2 "" H 7550 4350 50  0001 C CNN
+F 3 "" H 7550 4350 50  0001 C CNN
+	1    7550 4350
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6750 3750 7100 3750
+Wire Wire Line
+	7550 3750 7550 3600
+Wire Wire Line
+	7550 3900 7550 3750
+Connection ~ 7550 3750
+Wire Wire Line
+	7100 3900 7100 3750
+Connection ~ 7100 3750
+Wire Wire Line
+	7100 3750 7550 3750
+Wire Wire Line
+	7100 4350 7100 4200
+Wire Wire Line
+	7550 4200 7550 4350
+Wire Wire Line
+	5900 3750 6150 3750
+$Comp
+L power:+3.3VA #PWR?
+U 1 1 5F9D8EF0
+P 7550 3600
+F 0 "#PWR?" H 7550 3450 50  0001 C CNN
+F 1 "+3.3VA" H 7565 3773 50  0000 C CNN
+F 2 "" H 7550 3600 50  0001 C CNN
+F 3 "" H 7550 3600 50  0001 C CNN
+	1    7550 3600
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:PWR_FLAG #FLG?
+U 1 1 5F9D8EF6
+P 5450 1050
+F 0 "#FLG?" H 5450 1125 50  0001 C CNN
+F 1 "PWR_FLAG" H 5450 1223 50  0000 C CNN
+F 2 "" H 5450 1050 50  0001 C CNN
+F 3 "~" H 5450 1050 50  0001 C CNN
+	1    5450 1050
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5450 1050 4950 1050
+Wire Wire Line
+	4950 1050 4950 1500
+Connection ~ 4950 1500
+Wire Wire Line
+	5450 1050 5850 1050
+Wire Wire Line
+	5850 1050 5850 1500
+Connection ~ 5450 1050
+Connection ~ 5850 1500
+$Comp
+L power:PWR_FLAG #FLG?
+U 1 1 5F9D8F03
+P 5450 2200
+F 0 "#FLG?" H 5450 2275 50  0001 C CNN
+F 1 "PWR_FLAG" H 5450 2373 50  0000 C CNN
+F 2 "" H 5450 2200 50  0001 C CNN
+F 3 "~" H 5450 2200 50  0001 C CNN
+	1    5450 2200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5450 2200 5850 2200
+Wire Wire Line
+	5850 2200 5850 1900
+Connection ~ 5850 1900
+Wire Wire Line
+	5450 2200 4950 2200
+Wire Wire Line
+	4950 2200 4950 1900
+Connection ~ 5450 2200
+Connection ~ 4950 1900
+$Comp
+L power:+12V #PWR?
+U 1 1 5F9D8F10
+P 2400 3600
+F 0 "#PWR?" H 2400 3450 50  0001 C CNN
+F 1 "+12V" H 2415 3773 50  0000 C CNN
+F 2 "" H 2400 3600 50  0001 C CNN
+F 3 "" H 2400 3600 50  0001 C CNN
+	1    2400 3600
+	1    0    0    -1  
+$EndComp
+Text Notes 5850 3400 0    118  ~ 0
+footprint anders!\n
+$EndSCHEMATC

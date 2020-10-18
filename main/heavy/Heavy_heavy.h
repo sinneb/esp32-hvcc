@@ -46,17 +46,8 @@ extern "C" {
 typedef enum {
   HV_HEAVY_PARAM_IN_POT1 = 0x3AE704A5, // pot1
   HV_HEAVY_PARAM_IN_POT2 = 0xDDC4EBDB, // pot2
-  HV_HEAVY_PARAM_IN_POT3 = 0x125109EA, // pot3
-  HV_HEAVY_PARAM_IN_POT4 = 0x73BEE661, // pot4
   HV_HEAVY_PARAM_IN_POT5 = 0xF2BC7D02, // pot5
 } Hv_heavy_ParameterIn;
-
-typedef enum {
-  HV_HEAVY_PARAM_OUT_LED1 = 0xE817C68D, // led1
-  HV_HEAVY_PARAM_OUT_LED2 = 0xBB2E5490, // led2
-  HV_HEAVY_PARAM_OUT_LED3 = 0xE14EE92B, // led3
-  HV_HEAVY_PARAM_OUT_LED4 = 0x47FF8A5E, // led4
-} Hv_heavy_ParameterOut;
 
 
 /**
