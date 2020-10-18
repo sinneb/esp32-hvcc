@@ -1,3 +1,0 @@
-(sym_lib_table
-  (lib (name eurogen-rescue)(type Legacy)(uri ${KIPRJMOD}/eurogen-rescue.lib)(options "")(descr ""))
-)
