@@ -1,31 +1,21 @@
-# Update july 6th 2020
-Got the first prototype PCB manufactured and -with some fiddling- up and running pretty quickly. Check [this instagram](https://www.instagram.com/p/CByjpFthu2I/) post to see some results.
-
-![photo of prototype 1](https://raw.githubusercontent.com/sinneb/esp32-hvcc/master/proto1.jpg)
-
-I made a number of mistakes, which were dealt with accordingly ;)
-
-![wire soldered to ssop chip](https://raw.githubusercontent.com/sinneb/esp32-hvcc/master/proto2.jpg)
-
-But, unfortunately, the DC performance of the WM8731 is indeed poor. I tried routing the output of the WM8731 back into the MCP3208 to measure offset on startup but those reading were to unpredictable (distortion on the board? Effective bitrate of the ADC?). Anyways, the plan now is to keep one of the WM8731 for audio related duties, both hardware and software are working correcly so that's a good start. Then, for DAC and ADC work I'm going to include the AD1939. Capable, affordable and available in the jlcpcb SMT parts library - because soldering a 64 lead LQFP package by hand is not a very good idea ;) So back to the drawing board for a part, but the potential and fun of this puredata eurorack module is there!
 
 # ESP32-DevKitC & hvcc
 
-This repo demonstrates a single file solution for running [hvcc](https://github.com/enzienaudio/hvcc) sources on the [ESP32-devkitc](https://docs.espressif.com/projects/esp-idf/en/latest/hw-reference/get-started-devkitc.html), inspired by the [Faust ESP32 architecture example](https://faust.grame.fr/doc/tutorials/#dsp-on-the-esp32-with-faust). The hvcc compiler leverages the use of (a subset of) puredata operators on the cheap and fast esp32 uprocessor. The ESP32-devkitc combined with dual WM8731 CODECs and an 8 port MCP3208 ADC provides a complete and available audio development platform with a very reasonable pricetag. UI provided via 3 buttons and 4 leds.
+This repo demonstrates a single file solution for running [hvcc](https://github.com/enzienaudio/hvcc) sources on the [ESP32-devkitc](https://docs.espressif.com/projects/esp-idf/en/latest/hw-reference/get-started-devkitc.html), inspired by the [Faust ESP32 architecture example](https://faust.grame.fr/doc/tutorials/#dsp-on-the-esp32-with-faust). The hvcc compiler leverages the use of (a subset of) puredata operators on the cheap and fast esp32 uprocessor. The ESP32-devkitc combined with dual PCM5102 CODECs and an 8 port MCP3208 ADC provides a complete and available audio development platform with a very reasonable pricetag. UI provided via 4 buttons, 4 potentiometers and 4 leds.
 
 # Goal
 
-The goal of this development is to realise a generic eurorack module, based on the ESP32 and programmable via puredata. Each cheap module consists of four control voltage inputs, four audio inputs, and four audio / cv outputs (all io -5v -> +5v and fully eurorack compatible).
+The goal of this development is to realise a generic eurorack module that is based on the ESP32 and programmable via puredata. Each cheap module consists of four control voltage inputs and four audio / cv outputs (all io -5v -> +5v and fully eurorack compatible). All parts are easily obtainable and all software and hardware is open source, so ordering your own set of PCB's is also possible
 
 # Installation
 
-- Install Espressif IoT Development Framework, the official development framework for ESP32.
+- Install Espressif IoT Development Framework 4.1, the official development framework for ESP32.
 - Install the hvcc compiler
 - Clone this repo
 
 # Hardware setup
 
-Check the Kicad schematics in the schematics folder (don't build it yet - updated schematics on the way)
+Check the Kicad schematics in the schematics folder
 
 # Usage
 
