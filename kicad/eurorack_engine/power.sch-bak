@@ -14,7 +14,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L eurogen-rescue:EURO_PWR_2x5-eurocad J?
+L eurorack_engine-rescue:EURO_PWR_2x5-eurocad-eurogen-rescue J?
 U 1 1 5F9D8E2B
 P 5400 1700
 AR Path="/5F9D8E2B" Ref="J?"  Part="1" 
@@ -257,14 +257,14 @@ $EndComp
 $Comp
 L power:+3V3 #PWR?
 U 1 1 5F9D8E9F
-P 5350 3750
+P 5350 3050
 AR Path="/5F9D8E9F" Ref="#PWR?"  Part="1" 
 AR Path="/5F9CA337/5F9D8E9F" Ref="#PWR09"  Part="1" 
-F 0 "#PWR09" H 5350 3600 50  0001 C CNN
-F 1 "+3V3" H 5365 3923 50  0000 C CNN
-F 2 "" H 5350 3750 50  0001 C CNN
-F 3 "" H 5350 3750 50  0001 C CNN
-	1    5350 3750
+F 0 "#PWR09" H 5350 2900 50  0001 C CNN
+F 1 "+3V3" H 5365 3223 50  0000 C CNN
+F 2 "" H 5350 3050 50  0001 C CNN
+F 3 "" H 5350 3050 50  0001 C CNN
+	1    5350 3050
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -370,8 +370,6 @@ F 3 "" H 2750 3750 50  0001 C CNN
 	1    2750 3750
 	1    0    0    -1  
 $EndComp
-Text Notes 3450 3350 0    118  ~ 0
-footprint anders!\n
 $Comp
 L Amplifier_Operational:TL074 U?
 U 5 1 5FAC5714
@@ -631,4 +629,17 @@ F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf" H 10200 1900 50
 	1    0    0    -1  
 $EndComp
 Connection ~ 10050 1400
+$Comp
+L Switch:SW_DIP_x01 SW?
+U 1 1 5F92448C
+P 5350 3450
+F 0 "SW?" V 5304 3580 50  0000 L CNN
+F 1 "DIP_USBpwr" V 5395 3580 50  0000 L CNN
+F 2 "" H 5350 3450 50  0001 C CNN
+F 3 "~" H 5350 3450 50  0001 C CNN
+	1    5350 3450
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	5350 3050 5350 3150
 $EndSCHEMATC

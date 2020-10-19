@@ -14,11 +14,12 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L eurogen-rescue:PJ301M-12-eurocad J?
+L eurorack_engine-rescue:PJ301M-12-eurocad-eurogen-rescue J?
 U 1 1 5FA4CC8A
 P 3700 1800
 AR Path="/5F91B719/5FA4CC8A" Ref="J?"  Part="1" 
 AR Path="/5FA42CB5/5FA4CC8A" Ref="J3"  Part="1" 
+AR Path="/5FA4CC8A" Ref="J3"  Part="1" 
 F 0 "J3" H 3708 2175 50  0000 C CNN
 F 1 "cv in 1" H 3708 2084 50  0000 C CNN
 F 2 "Eurocad:PJ301M-12" H 3700 1800 50  0001 C CNN
@@ -114,11 +115,12 @@ Wire Wire Line
 Text Notes 6050 1300 0    50   ~ 10
 CV in -> 0/3V3\n
 $Comp
-L eurogen-rescue:PJ301M-12-eurocad J?
+L eurorack_engine-rescue:PJ301M-12-eurocad-eurogen-rescue J?
 U 1 1 5FA4CCBC
 P 3650 3600
 AR Path="/5F91B719/5FA4CCBC" Ref="J?"  Part="1" 
 AR Path="/5FA42CB5/5FA4CCBC" Ref="J2"  Part="1" 
+AR Path="/5FA4CCBC" Ref="J2"  Part="1" 
 F 0 "J2" H 3658 3975 50  0000 C CNN
 F 1 "cv in 2" H 3658 3884 50  0000 C CNN
 F 2 "Eurocad:PJ301M-12" H 3650 3600 50  0001 C CNN
@@ -214,11 +216,12 @@ Wire Wire Line
 Text Notes 6000 3100 0    50   ~ 10
 CV in -> 0/3V3\n
 $Comp
-L eurogen-rescue:PJ301M-12-eurocad J?
+L eurorack_engine-rescue:PJ301M-12-eurocad-eurogen-rescue J?
 U 1 1 5FA4CCEE
 P 8250 1800
 AR Path="/5F91B719/5FA4CCEE" Ref="J?"  Part="1" 
 AR Path="/5FA42CB5/5FA4CCEE" Ref="J7"  Part="1" 
+AR Path="/5FA4CCEE" Ref="J7"  Part="1" 
 F 0 "J7" H 8258 2175 50  0000 C CNN
 F 1 "cv in 3" H 8258 2084 50  0000 C CNN
 F 2 "Eurocad:PJ301M-12" H 8250 1800 50  0001 C CNN
@@ -314,11 +317,12 @@ Wire Wire Line
 Text Notes 10600 1300 0    50   ~ 10
 CV in -> 0/3V3\n
 $Comp
-L eurogen-rescue:PJ301M-12-eurocad J?
+L eurorack_engine-rescue:PJ301M-12-eurocad-eurogen-rescue J?
 U 1 1 5FA4CD20
 P 8200 3600
 AR Path="/5F91B719/5FA4CD20" Ref="J?"  Part="1" 
 AR Path="/5FA42CB5/5FA4CD20" Ref="J6"  Part="1" 
+AR Path="/5FA4CD20" Ref="J6"  Part="1" 
 F 0 "J6" H 8208 3975 50  0000 C CNN
 F 1 "cv in 4" H 8208 3884 50  0000 C CNN
 F 2 "Eurocad:PJ301M-12" H 8200 3600 50  0001 C CNN
@@ -520,11 +524,12 @@ $EndComp
 Text Notes 5400 5300 0    50   ~ 10
 CODEC out -> -5/+5V
 $Comp
-L eurogen-rescue:PJ301M-12-eurocad J?
+L eurorack_engine-rescue:PJ301M-12-eurocad-eurogen-rescue J?
 U 1 1 5FA6A3E2
 P 5900 5700
 AR Path="/5F91B719/5FA6A3E2" Ref="J?"  Part="1" 
 AR Path="/5FA42CB5/5FA6A3E2" Ref="J4"  Part="1" 
+AR Path="/5FA6A3E2" Ref="J4"  Part="1" 
 F 0 "J4" H 5908 6075 50  0000 C CNN
 F 1 "codec out 1" H 5908 5984 50  0000 C CNN
 F 2 "Eurocad:PJ301M-12" H 5900 5700 50  0001 C CNN
@@ -645,11 +650,12 @@ $EndComp
 Text Notes 5400 7000 0    50   ~ 10
 CODEC out -> -5/+5V
 $Comp
-L eurogen-rescue:PJ301M-12-eurocad J?
+L eurorack_engine-rescue:PJ301M-12-eurocad-eurogen-rescue J?
 U 1 1 5FB577EA
 P 5900 7400
 AR Path="/5F91B719/5FB577EA" Ref="J?"  Part="1" 
 AR Path="/5FA42CB5/5FB577EA" Ref="J5"  Part="1" 
+AR Path="/5FB577EA" Ref="J5"  Part="1" 
 F 0 "J5" H 5908 7775 50  0000 C CNN
 F 1 "codec out 3" H 5908 7684 50  0000 C CNN
 F 2 "Eurocad:PJ301M-12" H 5900 7400 50  0001 C CNN
@@ -781,11 +787,12 @@ $EndComp
 Text Notes 10450 5300 0    50   ~ 10
 CODEC out -> -5/+5V
 $Comp
-L eurogen-rescue:PJ301M-12-eurocad J?
+L eurorack_engine-rescue:PJ301M-12-eurocad-eurogen-rescue J?
 U 1 1 5FB7B8C3
 P 10950 5700
 AR Path="/5F91B719/5FB7B8C3" Ref="J?"  Part="1" 
 AR Path="/5FA42CB5/5FB7B8C3" Ref="J8"  Part="1" 
+AR Path="/5FB7B8C3" Ref="J8"  Part="1" 
 F 0 "J8" H 10958 6075 50  0000 C CNN
 F 1 "codec out 2" H 10958 5984 50  0000 C CNN
 F 2 "Eurocad:PJ301M-12" H 10950 5700 50  0001 C CNN
@@ -906,11 +913,12 @@ $EndComp
 Text Notes 10450 7000 0    50   ~ 10
 CODEC out -> -5/+5V
 $Comp
-L eurogen-rescue:PJ301M-12-eurocad J?
+L eurorack_engine-rescue:PJ301M-12-eurocad-eurogen-rescue J?
 U 1 1 5FB7B91B
 P 10950 7400
 AR Path="/5F91B719/5FB7B91B" Ref="J?"  Part="1" 
 AR Path="/5FA42CB5/5FB7B91B" Ref="J9"  Part="1" 
+AR Path="/5FB7B91B" Ref="J9"  Part="1" 
 F 0 "J9" H 10958 7775 50  0000 C CNN
 F 1 "codec out 4" H 10958 7684 50  0000 C CNN
 F 2 "Eurocad:PJ301M-12" H 10950 7400 50  0001 C CNN
