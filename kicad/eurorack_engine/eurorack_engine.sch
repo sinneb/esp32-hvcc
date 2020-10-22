@@ -2720,4 +2720,70 @@ Wire Wire Line
 	11250 7900 12200 7900
 Text Label 12200 7900 0    50   ~ 0
 adc_ch0
+$Comp
+L Mechanical:MountingHole H1
+U 1 1 5FA39E89
+P 4950 4850
+F 0 "H1" H 5050 4896 50  0000 L CNN
+F 1 "MountingHole" H 5050 4805 50  0000 L CNN
+F 2 "MountingHole:MountingHole_3.2mm_M3" H 4950 4850 50  0001 C CNN
+F 3 "~" H 4950 4850 50  0001 C CNN
+	1    4950 4850
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole H2
+U 1 1 5FA3AFBB
+P 4950 5050
+F 0 "H2" H 5050 5096 50  0000 L CNN
+F 1 "MountingHole" H 5050 5005 50  0000 L CNN
+F 2 "MountingHole:MountingHole_3.2mm_M3" H 4950 5050 50  0001 C CNN
+F 3 "~" H 4950 5050 50  0001 C CNN
+	1    4950 5050
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole H3
+U 1 1 5FA3B461
+P 4950 5250
+F 0 "H3" H 5050 5296 50  0000 L CNN
+F 1 "MountingHole" H 5050 5205 50  0000 L CNN
+F 2 "MountingHole:MountingHole_3.2mm_M3" H 4950 5250 50  0001 C CNN
+F 3 "~" H 4950 5250 50  0001 C CNN
+	1    4950 5250
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole H4
+U 1 1 5FA3B662
+P 4950 5450
+F 0 "H4" H 5050 5496 50  0000 L CNN
+F 1 "MountingHole" H 5050 5405 50  0000 L CNN
+F 2 "MountingHole:MountingHole_3.2mm_M3" H 4950 5450 50  0001 C CNN
+F 3 "~" H 4950 5450 50  0001 C CNN
+	1    4950 5450
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole H5
+U 1 1 5FA3B7D9
+P 4950 5650
+F 0 "H5" H 5050 5696 50  0000 L CNN
+F 1 "MountingHole" H 5050 5605 50  0000 L CNN
+F 2 "MountingHole:MountingHole_3.2mm_M3" H 4950 5650 50  0001 C CNN
+F 3 "~" H 4950 5650 50  0001 C CNN
+	1    4950 5650
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole H6
+U 1 1 5FA3B957
+P 4950 5850
+F 0 "H6" H 5050 5896 50  0000 L CNN
+F 1 "MountingHole" H 5050 5805 50  0000 L CNN
+F 2 "MountingHole:MountingHole_3.2mm_M3" H 4950 5850 50  0001 C CNN
+F 3 "~" H 4950 5850 50  0001 C CNN
+	1    4950 5850
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC
