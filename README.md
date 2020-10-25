@@ -10,6 +10,7 @@ The goal of this development is to realise a generic eurorack module that is bas
 # Status
 
 25-oct-2020: PCB design ready, gerbers generated and boards ordered.
+
 18-oct-2020: Code cleanup and PCB design ongoing. Current schematic tested and working!
 
 # Installation
