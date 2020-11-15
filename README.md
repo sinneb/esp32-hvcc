@@ -8,6 +8,7 @@ This repo demonstrates a single file solution for running [hvcc](https://github.
 The goal of this development is to realise a generic eurorack module that is based on the ESP32 and programmable via puredata. Each cheap module consists of four control voltage inputs and four audio / cv outputs (all io -5v -> +5v and fully eurorack compatible). All parts are easily obtainable and all software and hardware is open source, so ordering your own set of PCB's is also possible
 
 # Status
+15-nov-2020: Replaced one of the PCM5102 with a WM8731 to have audio stereo line in over i2s
 
 25-oct-2020: PCB design ready, gerbers generated and boards ordered.
 
