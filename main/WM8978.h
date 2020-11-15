@@ -7,9 +7,9 @@
 #include "esp_err.h"
 
 #define I2C_MASTER_NUM 1 /*!< I2C port number for master dev */
-#define I2C_MASTER_SCL_IO 21   // * 18
-#define I2C_MASTER_SDA_IO 22   // * 19
-#define I2C_MASTER_FREQ_HZ 400000
+#define I2C_MASTER_SCL_IO 32   // * 18
+#define I2C_MASTER_SDA_IO 33   // * 19
+#define I2C_MASTER_FREQ_HZ 100000
 #define I2C_MASTER_TX_BUF_DISABLE 0
 #define I2C_MASTER_RX_BUF_DISABLE 0
 

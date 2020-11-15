@@ -43,15 +43,15 @@ static uint16_t WM8978_REGVAL_TBL[58]=
 // WM8978 init
 uint8_t WM8978::init(uint8_t id)
 {
-  if(id==0) {
-    wm8731device = 26;
+  // if(id==0) {
+  //  wm8731device = 27;
     initI2C();
     vTaskDelay(1000 / portTICK_RATE_MS);
-  } else if(id==1) {
-    wm8731device = 27;
-  } else if(id==2) {
-    wm8731device = 26;
-  }
+  // } else if(id==1) {
+  //   wm8731device = 27;
+  // } else if(id==2) {
+  //   wm8731device = 26;
+  // }
 
     //vTaskDelay(1000 / portTICK_RATE_MS);
     //uint8_t res;
@@ -79,7 +79,7 @@ uint8_t WM8978::init(uint8_t id)
 
     //setDigitalAudioInterfaceFormat(int32_t BCLKINV, int32_t MS, int32_t LRSWAP, int32_t LRP, int32_t IWL, int32_t FORMAT)
     //no bit clocl invert, slave, no DAC Left Right Clock Swap, Right Channel DAC data when DACLRC low, 16bit, I2S Format MSB left justfied
-    setDigitalAudioInterfaceFormat(0,1,0,0,1,0x2);
+    setDigitalAudioInterfaceFormat(0,0,0,0,0x3,0x2);
 
     //setSamplingControl(int32 _t CLKODIV2, int32_t CLKIDIV2, int32_t SR, int32_t BOSR, int32_t USBNORM)
     setSamplingControl(0, 0, 0, 0, 0);//48kHz
@@ -131,7 +131,7 @@ uint8_t WM8978::writeReg(uint8_t reg,uint16_t val)
 
     i2c_cmd_handle_t cmd = i2c_cmd_link_create();
     i2c_master_start(cmd);
-    i2c_master_write_byte(cmd, (wm8731device << 1) | WRITE_BIT, ACK_CHECK_EN);
+    i2c_master_write_byte(cmd, (26 << 1) | WRITE_BIT, ACK_CHECK_EN);
     i2c_master_write(cmd, buf, 2, ACK_CHECK_EN);
     i2c_master_stop(cmd);
     i2c_master_cmd_begin((i2c_port_t) 1, cmd, 1000 / portTICK_RATE_MS);
@@ -153,7 +153,7 @@ esp_err_t WM8978::writeRegwithError(uint8_t reg,uint8_t val)
 
     i2c_cmd_handle_t cmd = i2c_cmd_link_create();
     errret |= i2c_master_start(cmd);
-    errret |= i2c_master_write_byte(cmd, (wm8731device << 1) | WRITE_BIT, ACK_CHECK_EN);
+    errret |= i2c_master_write_byte(cmd, (26 << 1) | WRITE_BIT, ACK_CHECK_EN);
     errret |= i2c_master_write(cmd, buf, 2, ACK_CHECK_EN);
     errret |= i2c_master_stop(cmd);
     errret |= i2c_master_cmd_begin((i2c_port_t) 1, cmd, 1000 / portTICK_RATE_MS);
@@ -469,8 +469,8 @@ void WM8978::setRightHeadphoneOut(int32_t RLHPBOTH, int32_t RZCEN, int32_t RHPVO
 void WM8978::setAnalogueAudioPathControl(int32_t SIDEATT, int32_t SIDETONE, int32_t DACSEL, int32_t BYPASS, int32_t INSEL, int32_t MUTEMIC, int32_t MICBOOST)
 {
     // Insert description
-    int32_t val = ((SIDEATT & 0x03) << 6) | ((SIDETONE & 0x01) << 5) | ((DACSEL & 0x01) << 4) | ((BYPASS & 0x01) << 3) | ((INSEL & 0x01) << 2) | ((MUTEMIC & 0x01) << 1) | ((MICBOOST & 0x01) << 0);
-    writeRegwithError(ANALOG_AUDIO_PATH_CONTROL, 0XDA); // No mic boost, Mute mic, Line input select, Disable bypass, Select DAC, Disable side tone
+    int32_t val = ((SIDEATT & 0x03) << 6) | ((SIDETONE & 0x01) << 5) | ((DACSEL & 0x01) << 4) | (0 << 3) | ((INSEL & 0x01) << 2) | ((MUTEMIC & 0x01) << 1) | ((MICBOOST & 0x01) << 0);
+    writeRegwithError(ANALOG_AUDIO_PATH_CONTROL, val); // No mic boost, Mute mic, Line input select, Disable bypass, Select DAC, Disable side tone
 }
 
 void WM8978::setDigitalAudioPathControl(int32_t HPOR, int32_t DACMU, int32_t DEEMP, int32_t ADCHPD)

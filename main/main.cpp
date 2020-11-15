@@ -43,6 +43,7 @@
 int fadelevel = 0;
 
 #define MULT_S32 1826500000
+#define MULT_S24 8388607
 //#define MULT_S32 2147483647
 //#define MULT_S32 1373741823
 #define ADC_CS 15 // chip 10
@@ -58,15 +59,12 @@ HeavyContextInterface *context;
 int blockSize = 16;
 uint8_t i2s_ready=1;
 uint8_t calc_busy = 0;
-int32_t samples_data_out[64];
-int32_t samples_data_out2[64];
 
 int32_t calib[32];
 
 uint16_t dmareqs = 0;
 
-int32_t samples_data_in[32];
-int32_t samples_data_in2[32];
+size_t free8start, free32start, free8, free32;
 
 static intr_handle_t s_timer_handle;
 static intr_handle_t s_timer_handle2;
@@ -239,6 +237,14 @@ void spi_write_reg(spi_device_handle_t spi, uint8_t reg, uint8_t val)
   //return *(uint32_t*)t.rx_data;
 }
 
+void printram() {
+  ESP_LOGI(TAG, "RAM left %d", esp_get_free_heap_size());
+
+  free8start = heap_caps_get_free_size(MALLOC_CAP_8BIT);
+free32start = heap_caps_get_free_size(MALLOC_CAP_32BIT);
+printf("Free 8bit-capable memory (start): %dK, 32-bit capable memory %dK\n", free8start, free32start);
+}
+
 void displayHandler(void *pvParameter)
 {
   uint8_t xpos = 10;
@@ -256,6 +262,32 @@ void displayHandler(void *pvParameter)
     printf("ADC6: %d\n", adcvalues[6][0]);
     printf("ADC7: %d\n", adcvalues[7][0]);
     printf("\n");
+    printram();
+
+    // app main
+    // I (1262) EurorackEngine: RAM left 299960
+//     I (3502) EurorackEngine: RAM left 264300
+// ADC7: 1094
+//
+// I (3502) EurorackEngine: RAM left 264300
+// I (3512) EurorackEngine: heap 261888
+// I (3512) EurorackEngine: heap 229444
+// heavys # outputs: 4
+// heavsy # inputs: 2
+// [@ 0.000ms] print: seconds
+// teller: 41283
+// teller2: 1032
+// ADC0: 11
+// ADC1: 16
+// ADC2: 15
+// ADC3: 9
+// ADC4: 1420
+// ADC5: 720
+// ADC6: 2557
+// ADC7: 1095
+//
+// I (4512) EurorackEngine: RAM left 41928
+
     //
     // // ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, fadelevel);
     // // ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
@@ -270,7 +302,8 @@ void displayHandler(void *pvParameter)
     // if(fadelevel>1000)fadelevel=0;
     //printf("-->");
     //uint32_t lcd_id = spiget(spi, 1);
-    printf("--> lock? \n");
+    //printf("--> lock? \n");
+    //ESP_LOGI(TAG, "RAM left %d", esp_get_free_heap_size());
     //lcd_id = spiget(spi, 3);
     //printf("--> 0: %08X\n", lcd_id);
     //printf("dma: %d\n",dmareqs);
@@ -279,45 +312,46 @@ void displayHandler(void *pvParameter)
 
     //printf("lock?: %d\n",recvbuf);
 
-    vTaskDelay(1000 / portTICK_RATE_MS);
+    vTaskDelay(10000 / portTICK_RATE_MS);
   }
 }
 
 static void IRAM_ATTR gpio_isr_handler(void* arg)
 {
-    uint32_t gpio_num = (uint32_t) arg;
-    xQueueSendFromISR(gpio_evt_queue, &gpio_num, NULL);
+    //uint32_t gpio_num = (uint32_t) arg;
+    //xQueueSendFromISR(gpio_evt_queue, &gpio_num, NULL);
 }
 
 
 int ledstate = 0;
 static void gpioHandler(void* arg)
 {
-  uint32_t i2s_evt;
-  for(;;) {
-    xQueueReceive(i2sDMA, &i2s_evt, portMAX_DELAY);
-    //if (i2s_evt.type == I2S_EVENT_TX_DONE) {
-    //printf("yo\n");
-    dmareqs++;
-    if(dmareqs==8) {
-      if(ledstate==0) {
-        gpio_set_level((gpio_num_t)13, 1);
-        ledstate = 1;
-      } else {
-        gpio_set_level((gpio_num_t)13, 0);
-        ledstate = 0;
-      }
-      dmareqs=0;
-
+  // uint32_t i2s_evt;
+  // for(;;) {
+  //   xQueueReceive(i2sDMA, &i2s_evt, portMAX_DELAY);
+  //   //if (i2s_evt.type == I2S_EVENT_TX_DONE) {
+  //   //printf("yo\n");
+  //   dmareqs++;
+  //   if(dmareqs==8) {
+  //     if(ledstate==0) {
+  //       gpio_set_level((gpio_num_t)13, 1);
+  //       ledstate = 1;
+  //     } else {
+  //       gpio_set_level((gpio_num_t)13, 0);
+  //       ledstate = 0;
+  //     }
+  //     dmareqs=0;
+  //
+  //   }
+  //   //}
+  // }
+    uint32_t io_num;
+    for(;;) {
+        if(xQueueReceive(gpio_evt_queue, &io_num, portMAX_DELAY)) {
+            printf("GPIO[%d] intr, val: %d\n", io_num, gpio_get_level((gpio_num_t)io_num));
+            //hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_BUT1, (float)gpio_get_level((gpio_num_t)io_num));
+        }
     }
-    //}
-  }
-    // uint32_t io_num;
-    // for(;;) {
-    //     if(xQueueReceive(gpio_evt_queue, &io_num, portMAX_DELAY)) {
-    //         printf("GPIO[%d] intr, val: %d\n", io_num, gpio_get_level((gpio_num_t)io_num));
-    //     }
-    // }
 }
 
 void printHook(HeavyContextInterface *c, const char *printName, const char *str, const HvMessage *m) {
@@ -406,8 +440,8 @@ void audioHandler(void *pvParameter)
 {
       // setup and start heavy compiler
 
-    int numOutputChannels = hv_getNumOutputChannels(context);
-    int numInputChannels = hv_getNumInputChannels(context);
+    int numOutputChannels = 4;//hv_getNumOutputChannels(context);
+    int numInputChannels = 2;//hv_getNumInputChannels(context);
 
     float **inBuffers = (float **) hv_malloc(numInputChannels * sizeof(float *));
     for (int i = 0; i < numInputChannels; ++i) {
@@ -422,26 +456,39 @@ void audioHandler(void *pvParameter)
     hv_setSendHook(context, sendHook);
     hv_setPrintHook(context, &printHook);
 
+    int32_t samples_data_in[32];
+
+    int32_t samples_data_out[32];
+    int32_t samples_data_out2[32];
+
+    //int32_t samples_data_in2[32];
+
+    // int32_t **samples_data_in[32] = (int32_t **) malloc(32*sizeof(int32_t*));
+    // for (int i = 0; i < 32; ++i) {
+    //   samples_data_in[i] = (int32_t *) malloc(blockSize * sizeof(int32_t*));
+    // }
+
     printf("heavys # outputs: %d \n",numOutputChannels);
     printf("heavsy # inputs: %d \n",numInputChannels);
 
   while(true) {
         size_t bytes_read = 0;
-        //i2s_read((i2s_port_t)0, &samples_data_in, blockSize*2*sizeof(int32_t), &bytes_read, portMAX_DELAY);
+        i2s_read((i2s_port_t)0, &samples_data_in, blockSize*2*sizeof(int32_t), &bytes_read, portMAX_DELAY);
 
-        //for (int i = 0; i < blockSize; i++) {
-        //  inBuffers[0][i] = (float)(samples_data_in[i*2] / 1.0f / MULT_S32);
-        //  inBuffers[1][i] = (float)(samples_data_in[i*2+1] / 1.0f / MULT_S32);
-        //}
+        for (int i = 0; i < blockSize; i++) {
+         inBuffers[0][i] = (float)(samples_data_in[i*2] / 0.1f / MULT_S32);
+         inBuffers[1][i] = (float)(samples_data_in[i*2+1] / 0.1f / MULT_S32);
+        }
 
         //ESP_LOG_BUFFER_HEX(tag,samples_data_in,16);
         // send to context every blocksize (16 samples)
         // >>3 :: 4096 to 512
-        hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT1, (float)(adcvalues[4][0]>>3));
-        hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT2, (float)(adcvalues[5][0]>>3));
+        uint32_t io_num;
+        //hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT1, (float)(adcvalues[4][0]>>3));
+        //hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT2, (float)(adcvalues[5][0]>>3));
         // hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT2, (float)(adcvalues[6][0]>>3));
         // hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT4, (float)(adcvalues[7][0]>>3));
-        hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT5, (float)(adcvalues[0][0]));
+        //hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT5, (float)(adcvalues[0][0]));
         //hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT3, (float)(adcvalues[6][0]>>3));
         //hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT4, (float)(adcvalues[7][0]));
         //hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_CONTROLV1, (float)(adcvalues[7][0]));
@@ -451,10 +498,14 @@ void audioHandler(void *pvParameter)
         // hv_sendFloatToReceiver(context, HV_HEAVY_PARAM_IN_POT4, 200.0f);
         hv_process(context, inBuffers, outBuffers, blockSize);
         for (int i = 0; i < blockSize; i++) {
-          samples_data_out[i*2] = (outBuffers[0][i]   * 1826500000) - 8000000;//((int)2000000000);//(int32_t)(outBuffers[0][i] * MULT_S32);
-          samples_data_out[i*2+1] = (outBuffers[1][i] * 1777000000) - 8000000;//((int)2000000000);//MULT_S32;//;//(int32_t)(outBuffers[1][i] * MULT_S32);
-          samples_data_out2[i*2] = (outBuffers[2][i] * 1821000000)  - 9000000;
-          samples_data_out2[i*2+1] = (outBuffers[3][i] * 1833000000)  - 9000000;
+          // samples_data_out[i*2] = (outBuffers[0][i]   * 1826500000) - 8000000;//((int)2000000000);//(int32_t)(outBuffers[0][i] * MULT_S32);
+          // samples_data_out[i*2+1] = (outBuffers[1][i] * 1777000000) - 8000000;//((int)2000000000);//MULT_S32;//;//(int32_t)(outBuffers[1][i] * MULT_S32);
+          // samples_data_out2[i*2] = (outBuffers[2][i] * 1821000000)  - 9000000;
+          // samples_data_out2[i*2+1] = (outBuffers[3][i] * 1833000000)  - 9000000;
+          samples_data_out[i*2] = (outBuffers[0][i]   * MULT_S32);// - 8000000;
+          samples_data_out[i*2+1] = (outBuffers[1][i] * MULT_S32);
+          samples_data_out2[i*2] = (outBuffers[2][i] * MULT_S32); // - 9000000;
+          samples_data_out2[i*2+1] = (outBuffers[3][i] * MULT_S32);//  - 9000000;
         }
         //samples_data_out[31] = 0;
       size_t bytes_written = 0;
@@ -466,8 +517,10 @@ void audioHandler(void *pvParameter)
        // 128 bclk per frame = 32 bclk's per channel
        // 48000 sample rate
        // ((bits+8)/16)*16*4 = 40/16*16*4 = 200
-      i2s_write((i2s_port_t)0, &samples_data_out, blockSize*2*sizeof(int), &bytes_written2, portMAX_DELAY);
-      i2s_write((i2s_port_t)1, &samples_data_out2, blockSize*2*sizeof(int), &bytes_written, portMAX_DELAY);
+       i2s_write((i2s_port_t)1, &samples_data_out2, blockSize*2*sizeof(int32_t), &bytes_written, portMAX_DELAY);
+       //printf("write 1 done\n");
+       i2s_write((i2s_port_t)0, &samples_data_out, blockSize*2*sizeof(int32_t), &bytes_written2, portMAX_DELAY);
+       //printf("write 0 done\n");
   }
 }
 
@@ -507,6 +560,8 @@ void app_main()
 {
     printf("app main\n");
 
+    printram();
+
     // setup global spi_transaction_t
     t_res = &t;
     memset(&t, 0, sizeof(t));
@@ -535,7 +590,7 @@ void app_main()
 
 
 
-    vTaskDelay(1000 / portTICK_RATE_MS);
+
 
 //     uint32_t lcd_id = spiget(spi, 3);
 //     printf("LCD3  ID: %08X\n", lcd_id);
@@ -569,9 +624,14 @@ ESP_ERROR_CHECK(ret);
 ret=spi_bus_add_device(HSPI_HOST, &devcfg, &spi);
 ESP_ERROR_CHECK(ret);
 
-    //WM8978 wm8978;
-    //wm8978.init(0);
+gpio_reset_pin((gpio_num_t)27);
+gpio_set_direction((gpio_num_t)27, GPIO_MODE_OUTPUT);
+gpio_set_level((gpio_num_t)27,0);
+
+    WM8978 wm8978;
+    wm8978.init(0);
     printf("starting wm8731.2\n");
+printram();
     //rtc_clk_apll_enable(1, 0, 0, 4, 0);
     //WM8978 wm8978_2;
     //wm8978_2.init(1);
@@ -586,7 +646,7 @@ ESP_ERROR_CHECK(ret);
         .bck_io_num = 27,           // 3 SCK
         .ws_io_num = 12,            // 5 7 LRCLK
         .data_out_num = 13,         // 4 DACDAT
-        //.data_in_num = 36           // 6 ADCDAT
+        .data_in_num = 34           // 6 ADCDAT
     };
     pin_config2 = {                  // 0 -> 25 MCLK
         .bck_io_num = 21,           // 3 SCK
@@ -595,31 +655,49 @@ ESP_ERROR_CHECK(ret);
         //.data_in_num = 34          // 6 ADCDAT
     };
     i2s_config_t i2s_config = {
-        .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_TX),
+        .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_TX | I2S_MODE_RX),
         .sample_rate = 48000,
-        .bits_per_sample = (i2s_bits_per_sample_t)32,
+        .bits_per_sample = (i2s_bits_per_sample_t)24,
         //.channel_num = 4,
         .channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT,
         .communication_format = (i2s_comm_format_t)(I2S_COMM_FORMAT_I2S |I2S_COMM_FORMAT_I2S_MSB),
-        .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1, // high interrupt priority, level 2 because of HSPI conflict @ level 1
+        .intr_alloc_flags = ESP_INTR_FLAG_LEVEL2, // high interrupt priority, level 2 because of HSPI conflict @ level 1
         .dma_buf_count = 6,
         .dma_buf_len = 60,
-        .use_apll = true,
+        //.use_apll = true,
         //.tx_desc_auto_clear   = false,
         //.fixed_mclk           = 0
         //.fixed_mclk = 40000000
     };
-    i2s_config_t i2s_config2 = {
-        .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_TX),
-        .sample_rate = 48000,
-        .bits_per_sample = I2S_BITS_PER_SAMPLE_32BIT,
-        .channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT,
-        .communication_format = (i2s_comm_format_t)(I2S_COMM_FORMAT_I2S |I2S_COMM_FORMAT_I2S_MSB),
-        .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1, // high interrupt priority
-        .dma_buf_count = 6,
-        .dma_buf_len = 60,
-        .use_apll = true,
-    };
+    // i2s_config_t i2s_config = {
+    //     .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_TX),
+    //     .sample_rate = 48000,
+    //     .bits_per_sample = (i2s_bits_per_sample_t)32,
+    //     //.channel_num = 4,
+    //     .channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT,
+    //     .communication_format = (i2s_comm_format_t)(I2S_COMM_FORMAT_I2S |I2S_COMM_FORMAT_I2S_MSB),
+    //     .intr_alloc_flags = ESP_INTR_FLAG_LEVEL2, // high interrupt priority, level 2 because of HSPI conflict @ level 1
+    //     .dma_buf_count = 6,
+    //     .dma_buf_len = 60,
+    //     .use_apll = true,
+    //     //.tx_desc_auto_clear   = false,
+    //     //.fixed_mclk           = 0
+    //     //.fixed_mclk = 40000000
+    // };
+    //
+    // i2s_config_t i2s_wm8731 = {
+    //     .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_TX),
+    //     .sample_rate = 48000,
+    //     .bits_per_sample = (i2s_bits_per_sample_t)32,
+    //     .channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT,
+    //     .communication_format = (i2s_comm_format_t)(I2S_COMM_FORMAT_I2S |I2S_COMM_FORMAT_I2S_MSB),
+    //     .intr_alloc_flags = ESP_INTR_FLAG_LEVEL2, // high interrupt priority
+    //     .dma_buf_count = 6,
+    //     .dma_buf_len = 60,
+    //     .use_apll = true,
+    //     //.use_apll = true,
+    //     //.fixed_mclk = 12288000
+    // };
 
     // I2S0.conf_chan.tx_chan_mod = 0x1;
     // I2S0.fifo_conf.tx_fifo_mod = 0x1;
@@ -630,13 +708,49 @@ ESP_ERROR_CHECK(ret);
 
     //i2sDMA = xQueueCreate(10, sizeof(uint32_t));
 
+    esp_err_t err;
+    printf("i2s port 0 \n");
+    err = i2s_driver_install((i2s_port_t)0, &i2s_config, 0, NULL);
+    if (err != ESP_OK) {
+      printf("Failed installing driver: %d\n", err);
+      while (true);
+    }
+    err = i2s_set_pin((i2s_port_t)0, &pin_config);
+    if (err != ESP_OK) {
+      printf("Failed setting pin: %d\n", err);
+      while (true);
+    }
+
+    printf("i2s port 1 \n");
+    err = i2s_driver_install((i2s_port_t)1, &i2s_config, 0, NULL);
+    if (err != ESP_OK) {
+    printf("Failed installing driver: %d\n", err);
+      while (true);
+    }
+    err = i2s_set_pin((i2s_port_t)1, &pin_config2);
+    if (err != ESP_OK) {
+      printf("Failed setting pin: %d\n", err);
+      while (true);
+    }
+printram();
+    // i2s_driver_install((i2s_port_t)1, &i2s_wm8731, 0, NULL);
 
 
-    i2s_driver_install((i2s_port_t)1, &i2s_config, 0, NULL);
-    i2s_driver_install((i2s_port_t)0, &i2s_config, 0, NULL);
-    i2s_set_pin((i2s_port_t)1, &pin_config);
-    // i2s_driver_install((i2s_port_t)1, &i2s_config2, 0, NULL);
-    i2s_set_pin((i2s_port_t)0, &pin_config2);
+    //vTaskDelay(3000 / portTICK_RATE_MS);
+
+
+
+
+
+    PIN_FUNC_SELECT(PERIPHS_IO_MUX_GPIO0_U, FUNC_GPIO0_CLK_OUT1);
+    WRITE_PERI_REG(PIN_CTRL, READ_PERI_REG(PIN_CTRL) & 0xFFFFFFF0);
+
+    // gpio_set_direction((gpio_num_t)0, GPIO_MODE_OUTPUT);
+    // PIN_FUNC_SELECT(PERIPHS_IO_MUX_GPIO0_U, FUNC_GPIO0_CLK_OUT1);
+    // REG_WRITE(PIN_CTRL,0);
+
+    //vTaskDelay(3000 / portTICK_RATE_MS);
+
 
     // VSPI DMA Channel 2
     // ret=spi_bus_initialize(VSPI_HOST, &buscfg, 2);
@@ -650,7 +764,7 @@ ESP_ERROR_CHECK(ret);
     printf("start ADC callback \n");
     timer_tg0_initialise(50);
     printf("ADC callback started \n");
-
+printram();
     // let the ADC flow
     vTaskDelay(1000 / portTICK_RATE_MS);
 
@@ -659,30 +773,30 @@ ESP_ERROR_CHECK(ret);
     // gpio_set_direction((gpio_num_t)0, GPIO_MODE_INPUT);
     // gpio_set_direction((gpio_num_t)2, GPIO_MODE_INPUT);
     //
-    // // Start button interrupts & queue
-    // gpio_config_t io_conf;
-    // io_conf.intr_type = (gpio_int_type_t)GPIO_PIN_INTR_DISABLE;
-    // io_conf.pin_bit_mask = ((1ULL<<26) | (1ULL<<2) | (1ULL<<0) | (1ULL<<27));
-    // io_conf.mode = GPIO_MODE_INPUT;
-    // io_conf.pull_down_en = (gpio_pulldown_t)0;
-    // io_conf.pull_up_en = (gpio_pullup_t)1;
-    // gpio_config(&io_conf);
-    // gpio_set_intr_type((gpio_num_t)26, GPIO_INTR_ANYEDGE);
-    // gpio_set_intr_type((gpio_num_t)2, GPIO_INTR_ANYEDGE);
-    // gpio_set_intr_type((gpio_num_t)0, GPIO_INTR_ANYEDGE);
-    // gpio_set_intr_type((gpio_num_t)27, GPIO_INTR_ANYEDGE);
-    // ESP_ERROR_CHECK(gpio_install_isr_service(0));
-    // gpio_isr_handler_add(GPIO_NUM_26, gpio_isr_handler, (void*) GPIO_NUM_26);
-    // gpio_isr_handler_add(GPIO_NUM_2, gpio_isr_handler, (void*) GPIO_NUM_2);
-    // gpio_isr_handler_add(GPIO_NUM_0, gpio_isr_handler, (void*) GPIO_NUM_0);
-    // gpio_isr_handler_add(GPIO_NUM_27, gpio_isr_handler, (void*) GPIO_NUM_27);
-    // gpio_evt_queue = xQueueCreate(10, sizeof(uint32_t));
+    // Start button interrupts & queue
+    gpio_config_t io_conf;
+    io_conf.intr_type = (gpio_int_type_t)GPIO_PIN_INTR_DISABLE;
+    io_conf.pin_bit_mask = ((1ULL<<14) | (1ULL<<16) | (1ULL<<17) | (1ULL<<18));
+    io_conf.mode = GPIO_MODE_INPUT;
+    io_conf.pull_down_en = (gpio_pulldown_t)0;
+    io_conf.pull_up_en = (gpio_pullup_t)1;
+    gpio_config(&io_conf);
+    gpio_set_intr_type((gpio_num_t)14, GPIO_INTR_ANYEDGE);
+    gpio_set_intr_type((gpio_num_t)16, GPIO_INTR_ANYEDGE);
+    gpio_set_intr_type((gpio_num_t)17, GPIO_INTR_ANYEDGE);
+    gpio_set_intr_type((gpio_num_t)18, GPIO_INTR_ANYEDGE);
+    ESP_ERROR_CHECK(gpio_install_isr_service(0));
+    gpio_isr_handler_add(GPIO_NUM_14, gpio_isr_handler, (void*) GPIO_NUM_14);
+    gpio_isr_handler_add(GPIO_NUM_16, gpio_isr_handler, (void*) GPIO_NUM_16);
+    gpio_isr_handler_add(GPIO_NUM_17, gpio_isr_handler, (void*) GPIO_NUM_17);
+    gpio_isr_handler_add(GPIO_NUM_18, gpio_isr_handler, (void*) GPIO_NUM_18);
+    gpio_evt_queue = xQueueCreate(10, sizeof(uint32_t));
     //
     //
     gpio_config_t io_conf2;
     io_conf2.intr_type = GPIO_INTR_DISABLE;
     io_conf2.mode = GPIO_MODE_OUTPUT;
-    io_conf2.pin_bit_mask = ((1ULL<<0) | (1ULL<<2) | (1ULL<<4) | (1ULL<<15));
+    io_conf2.pin_bit_mask = ((1ULL<<2) | (1ULL<<4) | (1ULL<<15)); //(1ULL<<0)
     io_conf2.pull_down_en = GPIO_PULLDOWN_DISABLE;
     io_conf2.pull_up_en = GPIO_PULLUP_DISABLE;
     gpio_config(&io_conf2);
@@ -697,7 +811,7 @@ ESP_ERROR_CHECK(ret);
     ledc_timer_config(&ledc_timer2);
     //
     static ledc_channel_config_t var_ledc_channel0 = {
-    .gpio_num   = 0,
+    .gpio_num   = 4,
     .speed_mode = LEDC_LOW_SPEED_MODE,
     .channel    = LEDC_CHANNEL_0,
     .intr_type  = LEDC_INTR_DISABLE,
@@ -718,16 +832,16 @@ ESP_ERROR_CHECK(ret);
     };
     ledc_channel_config(&var_ledc_channel1);
 
-    static ledc_channel_config_t var_ledc_channel2 = {
-    .gpio_num   = 4,
-    .speed_mode = LEDC_LOW_SPEED_MODE,
-    .channel    = LEDC_CHANNEL_2,
-    .intr_type  = LEDC_INTR_DISABLE,
-    .timer_sel  = LEDC_TIMER_2,
-    .duty       = 100, // LEDC channel duty, the duty range is [0, (2**bit_num) - 1],
-    .hpoint = 0,
-    };
-    ledc_channel_config(&var_ledc_channel2);
+    // static ledc_channel_config_t var_ledc_channel2 = {
+    // .gpio_num   = 0,
+    // .speed_mode = LEDC_LOW_SPEED_MODE,
+    // .channel    = LEDC_CHANNEL_2,
+    // .intr_type  = LEDC_INTR_DISABLE,
+    // .timer_sel  = LEDC_TIMER_2,
+    // .duty       = 100, // LEDC channel duty, the duty range is [0, (2**bit_num) - 1],
+    // .hpoint = 0,
+    // };
+    //ledc_channel_config(&var_ledc_channel2);
 
     static ledc_channel_config_t var_ledc_channel3 = {
     .gpio_num   = 15,
@@ -767,19 +881,17 @@ ESP_ERROR_CHECK(ret);
     // 2045320 1.634
     // 2080066 1.636
 
-    // gpio_reset_pin((gpio_num_t)19);
-    // gpio_set_direction((gpio_num_t)19, GPIO_MODE_OUTPUT);
-    // gpio_set_level((gpio_num_t)19,0);
+printram();
 
 
-    // Start button queue handler
-    //xTaskCreate(gpioHandler, "gpioHandler", 2048, NULL, 10, NULL);
+
 
     // Start display task
     xTaskCreate(&displayHandler, "displayHandler", 2048, NULL, 5, NULL);
 
-
-
+printf("after displayhandler\n");
+printram();
+vTaskDelay(1000 / portTICK_RATE_MS);
     // measure load
     // int numIterations = 5000;
     // struct timeval elapsed, start, end;
@@ -798,19 +910,26 @@ ESP_ERROR_CHECK(ret);
     double sampleRate = 48000.0;
     context = hv_heavy_new(sampleRate);
 
-    ESP_LOGI(TAG, "RAM left %d", esp_get_free_heap_size());
+    printf("after heavy\n");
+    printram();
+    vTaskDelay(1000 / portTICK_RATE_MS);
 
-    xTaskCreatePinnedToCore(&audioHandler, "audioHandler", 8192, NULL, 4, NULL,1);
+    // Start button queue handler
+    xTaskCreate(gpioHandler, "gpioHandler", 2048, NULL, 10, NULL);
 
-    ESP_LOGI(TAG, "RAM left %d", esp_get_free_heap_size());
+    printf("after gpio\n");
+    printram();
+    vTaskDelay(1000 / portTICK_RATE_MS);
 
-    vTaskDelay(500 / portTICK_RATE_MS);
-    printf("starting ad1939\n");
-    printf("please execute reset\n");
-    vTaskDelay(100 / portTICK_RATE_MS);
-    printf("continue\n");
+    xTaskCreatePinnedToCore(&audioHandler, "audioHandler", 32000, NULL, 4, NULL,1);
+    printf("after audiohandler\n");
+    printram();
+    vTaskDelay(1000 / portTICK_RATE_MS);
+    //xTaskCreate(&audioHandler, "audioHandler", 640000, NULL, 4, NULL);
 
+    //vTaskDelay(1000 / portTICK_RATE_MS);
 
+    //ESP_LOGI(TAG, "xtask RAM left %d", esp_get_free_heap_size());
 
   //   //0 PLL and Clock Control 0
 	// 	spi_write_reg(spi, AD1938_PLL_CLK_CTRL0, (DIS_ADC_DAC  | INPUT256 | PLL_IN_MCLK | MCLK_OUT_XTAL | PLL_PWR_UP));
